@@ -1,0 +1,748 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><meta http-equiv=x-ua-compatible content="IE=edge, chrome=1"><title>配置icarus主题 - pujic</title><meta name=Description content><meta property="og:title" content="配置icarus主题"><meta property="og:description" content="将博客的主题设置为icarus后还需要设置一些东西，更改一下这个主题的配置文件！ 修改语言 icarus主题的默认语言是英文，将语言修改为中文，"><meta property="og:type" content="article"><meta property="og:url" content="http://example.org/posts/%E9%85%8D%E7%BD%AEicarus%E4%B8%BB%E9%A2%98/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2020-01-06T18:10:46+08:00"><meta property="article:modified_time" content="2020-01-06T18:10:46+08:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="配置icarus主题"><meta name=twitter:description content="将博客的主题设置为icarus后还需要设置一些东西，更改一下这个主题的配置文件！ 修改语言 icarus主题的默认语言是英文，将语言修改为中文，"><meta name=application-name content="pujic"><meta name=apple-mobile-web-app-title content="pujic"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=http://example.org/posts/%E9%85%8D%E7%BD%AEicarus%E4%B8%BB%E9%A2%98/><link rel=prev href=http://example.org/posts/%E4%BB%A3%E7%A0%81%E6%B5%8B%E8%AF%95/><link rel=next href=http://example.org/posts/python%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/><link rel=stylesheet href=/lib/normalize/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=/lib/fontawesome-free/all.min.css><link rel=stylesheet href=/lib/animate/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"配置icarus主题","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/example.org\/posts\/%E9%85%8D%E7%BD%AEicarus%E4%B8%BB%E9%A2%98\/"},"genre":"posts","keywords":"icarus, Hexo, blog","wordcount":4033,"url":"http:\/\/example.org\/posts\/%E9%85%8D%E7%BD%AEicarus%E4%B8%BB%E9%A2%98\/","datePublished":"2020-01-06T18:10:46+08:00","dateModified":"2020-01-06T18:10:46+08:00","publisher":{"@type":"Organization","name":"普吉春"},"author":{"@type":"Person","name":"普吉春"},"description":""}</script></head><body header-desktop=fixed header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":""==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:""==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title=pujic><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-1 class=typeit></span></a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>所有文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/categories/>分类 </a><a class=menu-item href=/about/>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin"></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw"></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=pujic><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-2 class=typeit></span></a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin"></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=/posts/ title>所有文章</a><a class=menu-item href=/tags/ title>标签</a><a class=menu-item href=/categories/ title>分类</a><a class=menu-item href=/about/ title>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw"></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animated flipInX">配置icarus主题</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=http://pujichun.ink title=Author target=_blank rel="noopener noreffer author" class=author><i class="fas fa-user-circle fa-fw"></i>普吉春</a></span>&nbsp;<span class=post-category>收录于 <a href=/categories/blog/><i class="far fa-folder fa-fw"></i>blog</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2020-01-06>2020-01-06</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 4033 字&nbsp;
+<i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 9 分钟&nbsp;</div></div><div class="details toc" id=toc-static kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right"></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#修改语言>修改语言</a></li><li><a href=#修改主题配置文件>修改主题配置文件</a><ul><li><a href=#标签页图标>标签页图标</a></li><li><a href=#logo图标>logo图标</a></li><li><a href=#导航栏>导航栏</a></li><li><a href=#页脚链接>页脚链接</a></li><li><a href=#文章设置>文章设置</a></li><li><a href=#搜索>搜索</a></li><li><a href=#评论>评论</a></li><li><a href=#打赏功能>打赏功能</a></li><li><a href=#分享功能>分享功能</a></li><li><a href=#侧边栏粘滞>侧边栏粘滞</a></li><li><a href=#修改小部件>修改小部件</a></li></ul></li><li><a href=#添加雪花效果>添加雪花效果</a><ul><li><a href=#添加snowjs文件>添加snow.js文件</a></li><li><a href=#引用snowjs文件>引用snow.js文件</a></li><li><a href=#文章发表日期>文章发表日期</a></li><li><a href=#增加文章版权>增加文章版权</a></li></ul></li></ul></nav></div></div><div class=content id=content><p>将博客的主题设置为icarus后还需要设置一些东西，更改一下这个主题的配置文件！</p><h2 id=修改语言>修改语言</h2><p>icarus主题的默认语言是英文，将语言修改为中文，进入到主题文件夹的<code>languages</code>文件夹中可以看到，是有一个叫<code>zh-CN.yml</code>的文件的</p><p>这个就是icarus主题的中文语言包，然后退到博客项目的目录下，将<code>config.yml</code>中的<code>language</code>改为<code>zh-CN</code>同时也可以给title，author，description加上自己的个性信息</p><p>需要注意的是，不同主题的语言包名字可能不同，但是只要进入主题的language文件夹下面查看就可以了。</p><p>修改之后，如果觉得像<code>链接</code>、<code>标签</code>这样的名字不喜欢，可以到<code>zh-CN.yml</code>这个语言包里面去修改相关语言配置，只需要将引号里的中文改为自己喜欢的就可以了。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yml data-lang=yml><span class=line><span class=cl><span class=nt>common</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>archive</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>one</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;归档&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>other</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;归档&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>category</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>one</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;分类&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>other</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;分类&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>tag</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>one</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;标签&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>other</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;标签&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>post</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>one</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;文章&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>other</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;文章&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>prev</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;上一页&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>next</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;下一页&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>widget</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>follow</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;关注我&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>recents</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;最新文章&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>links</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;友情链接&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>tag_cloud</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;标签云&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>catalogue</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;目录&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>article</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>more</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;阅读更多&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>comments</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;评论&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>read</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;读完&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>about</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;大约&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>words</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;个字&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>donate</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>title</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;如果你觉得这篇文章对你有帮助，可以请作者喝杯茶！&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>alipay</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;支付宝&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>wechat</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;微信&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>plugin</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>backtotop</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;回到顶端&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>visit</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;%s次访问&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>visitor</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;共%s个访客&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>search</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>search</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;搜索&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>hint</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;想要查找什么...&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>insight</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>hint</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;想要查找什么...&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>posts</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;文章&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>pages</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;页面&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>categories</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;分类&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>tags</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;标签&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>untitled</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;(无标题)&#39;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h2 id=修改主题配置文件>修改主题配置文件</h2><p>配置文件全是英文，阅读起来难度的确不小，但是需要修改的地方还是大多能看懂知道是在哪的。</p><p>不想要的东西直接注释掉掉，或者将链接删除掉就行了，但是如果前面有<code>-</code>要把<code>-</code>也注释掉。</p><p>下面要修改的配置文件中很多都会涉及到图片的地址，如果有云床可以使用云床。如果没有云窗，可以将图片就放到本地文件夹当中，然后使用文件路径即可。</p><p>图片放到云床就没有什么好说的了，如果放到本地，建议在<code>主题文件夹</code>的<code>source</code>文件夹下面新建一个<code>assets</code>文件夹，然后在<code>assets</code>中建一个<code>img</code>文件夹（<strong>注意：是在主题文件夹下面的source文件夹，路径为\icarus\source</strong>），然后将需要的图片放到里面，然后 直接引用地址即可。如我的标签页图标地址就是<code>D:\blog\themes\icarus\source\assets\img\favicon.png</code>，但是在填写地址的时候只能填写<code>相对路径</code>，不然部署后的博客是无法正常显示图片的。</p><h3 id=标签页图标>标签页图标</h3><p>注意是<code>/</code></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yml data-lang=yml><span class=line><span class=cl><span class=nt>favicon</span><span class=p>:</span><span class=w> </span><span class=l>/assets/img/favicon.png</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=logo图标>logo图标</h3><p>这个logo是icarus主题左上角的图标</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yml data-lang=yml><span class=line><span class=cl><span class=nt>logo</span><span class=p>:</span><span class=w> </span><span class=l>/assets/img/logo.png</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=导航栏>导航栏</h3><p>导航栏的菜单可以直接改为中文，链接是主题右上角的Github图标的链接，如果可以改为自己的Github链接，如果不喜欢也可以注释掉</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yml data-lang=yml><span class=line><span class=cl><span class=nt>navbar</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># Navigation bar menu links</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>menu</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>主页</span><span class=p>:</span><span class=w> </span><span class=l>/</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>归档</span><span class=p>:</span><span class=w> </span><span class=l>/archives</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>分类</span><span class=p>:</span><span class=w> </span><span class=l>/categories</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>标签</span><span class=p>:</span><span class=w> </span><span class=l>/tags</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>关于</span><span class=p>:</span><span class=w> </span><span class=l>/about</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># Navigation bar links to be shown on the right</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>links</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>Download on GitHub</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>fab fa-github</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>url</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;https://github.com/ppoffice/hexo-theme-icarus&#39;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=页脚链接>页脚链接</h3><p>这部分是左边页脚的链接，可以换成自己的，也可以注释掉</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yml data-lang=yml><span class=line><span class=cl><span class=nt>footer</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># Links to be shown on the right of the footer section</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>links</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>Creative Commons</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>fab fa-creative-commons</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>url</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;https://creativecommons.org/&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>Attribution 4.0 International</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>fab fa-creative-commons-by</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>url</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;https://creativecommons.org/licenses/by/4.0/&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>Download on GitHub</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>fab fa-github</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>url</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;https://github.com/ppoffice/hexo-theme-icarus&#39;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=文章设置>文章设置</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yml data-lang=yml><span class=line><span class=cl><span class=nt>article</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># 代码高亮显示设置</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>highlight</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># 代码高亮主题</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># https://github.com/highlightjs/highlight.js/tree/master/src/styles这个项目有很多代码         # 高亮主题，下载下来放到博客项目的 node_modules\_highlight.js@9.17.1@highlight.js\styles         # 这个目录下然后将这里的 atom-one-light 修改既可</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>theme</span><span class=p>:</span><span class=w> </span><span class=l>atom-one-light</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># 显示代码复制按钮</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>clipboard</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># 代码块的默认折叠状态。&#34;folded&#34;是折叠, &#34;unfolded&#34;是展开</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>fold</span><span class=p>:</span><span class=w> </span><span class=l>unfolded</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># 是否显示文章缩略图</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>thumbnail</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># 是否显示预估文章阅读时间</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>readtime</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=搜索>搜索</h3><p>搜索就是主题右上角的搜索，设为默认即可，如果有需要也可以改为百度或者Google的搜索引擎</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yml data-lang=yml><span class=line><span class=cl><span class=nt>search</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># Name of the search plugin</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>insight</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=评论>评论</h3><p>关于评论，会用一篇专门的文章讲解</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yml data-lang=yml><span class=line><span class=cl><span class=nt>comment</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># Name of the comment plugin</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>type</span><span class=p>:</span><span class=w> 
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=打赏功能>打赏功能</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yml data-lang=yml><span class=line><span class=cl><span class=nt>donate</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>-<span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>alipay</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>qrcode</span><span class=p>:</span><span class=w> </span><span class=l>图片地址</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>-<span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>wechat</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>qrcode</span><span class=p>:</span><span class=w> </span><span class=l>地址地址</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=分享功能>分享功能</h3><p>想要使用分享功能需要使用插件</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yml data-lang=yml><span class=line><span class=cl><span class=nt>share</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># Share plugin name</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>type</span><span class=p>:</span><span class=w> 
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=侧边栏粘滞>侧边栏粘滞</h3><p>这个功能就是让侧边栏不随页面的滚动而上移，但是要侧边栏的部件至少有一个的时候才能开启</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yml data-lang=yml><span class=line><span class=cl><span class=nt>sidebar</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># 左边的侧边栏设置</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>left</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># https://ppoffice.github.io/hexo-theme-icarus/Configuration/Theme/make-a-sidebar-sticky-when-page-scrolls/</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>sticky</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># right sidebar settings</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>right</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># https://ppoffice.github.io/hexo-theme-icarus/Configuration/Theme/make-a-sidebar-sticky-when-page-scrolls/</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>sticky</span><span class=p>:</span><span class=w> </span><span class=kc>false</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=修改小部件>修改小部件</h3><p>小部件就是在博客页面中左右两侧一块一块功能分类的东西，同样，不需要的可以注释掉。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yml data-lang=yml><span class=line><span class=cl><span class=nt>widgets</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>-<span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># 放头像的那一块部件</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>profile</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># 放置的位置，左边还是右边</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>position</span><span class=p>:</span><span class=w> </span><span class=l>left</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># 作者的名字</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>author</span><span class=p>:</span><span class=w> </span><span class=l>黑白</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># 在个人资料小部件中显示的作者标题</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>author_title</span><span class=p>:</span><span class=w> </span><span class=l>普通的我 · 读着普通的书</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># 作者的位置</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>location</span><span class=p>:</span><span class=w> </span><span class=l>攀枝花</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># 头像地址</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>avatar</span><span class=p>:</span><span class=w> </span><span class=l>/assets/img/head.png</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># 这一项目前不知道是干嘛的</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>gravatar</span><span class=p>:</span><span class=w> 
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># 将头像显示为圆形还是正方形 false是正方形</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>avatar_rounded</span><span class=p>:</span><span class=w> </span><span class=kc>false</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># 关注我这个按钮的URL</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>follow_link</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;https://github.com&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># 这个部件底部的图标以及URL</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>social_links</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>Github</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>fab fa-github</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=nt>url</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;https://github.com&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>Facebook</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>fab fa-facebook</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=nt>url</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;https://facebook.com&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>Twitter</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>fab fa-twitter</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=nt>url</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;https://twitter.com&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>Dribbble</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>fab fa-dribbble</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=nt>url</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;https://dribbble.com&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>RSS</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=nt>icon</span><span class=p>:</span><span class=w> </span><span class=l>fas fa-rss</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=nt>url</span><span class=p>:</span><span class=w> </span><span class=l>/</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>-<span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># 目录</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>toc</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># 显示在左边还是右边</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>position</span><span class=p>:</span><span class=w> </span><span class=l>left</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>-<span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># 链接</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>links</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># 显示在左边还是右边</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>position</span><span class=p>:</span><span class=w> </span><span class=l>right</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># 链接地址</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>links</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>廖雪峰博客</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;https://www.liaoxuefeng.com/&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>夜幕博客</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;https://blog.nightteam.cn/&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>骆昊Python-100-Days</span><span class=p>:</span><span class=w> </span><span class=s1>&#39;https://github.com/jackfrued/Python-100-Days&#39;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>-<span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># 归档</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>category</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># Where should the widget be placed, left or right</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>position</span><span class=p>:</span><span class=w> </span><span class=l>left</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>-<span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># 标签云</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>tagcloud</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># Where should the widget be placed, left or right</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>position</span><span class=p>:</span><span class=w> </span><span class=l>right</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>-<span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># 最近文章</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>recent_posts</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># Where should the widget be placed, left or right</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>position</span><span class=p>:</span><span class=w> </span><span class=l>right</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>-<span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># 分类</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>archive</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># Where should the widget be placed, left or right</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>position</span><span class=p>:</span><span class=w> </span><span class=l>right</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c>#-</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=c># 标签</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>type</span><span class=p>:</span><span class=w> </span><span class=l>tag</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=l>Where should the widget be placed, left or right</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>position</span><span class=p>:</span><span class=w> </span><span class=l>right</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h2 id=添加雪花效果>添加雪花效果</h2><p>白色背景的博客虽然看上去的感觉挺清新的，但是整体效果却差了一点，加个雪花效果</p><h3 id=添加snowjs文件>添加snow.js文件</h3><p>在主题文件夹的<code>\icarus\source\js</code>路径下新建一个<code>src</code>文件夹，然后在<code>scr</code>文件夹下新建一个<code>snow.js</code></p><p>文件，将下面的代码写入<code>snow.js</code>中</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-javascript data-lang=javascript><span class=line><span class=cl><span class=kd>function</span> <span class=nx>snowFall</span><span class=p>(</span><span class=nx>snow</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>snow</span> <span class=o>=</span> <span class=nx>snow</span> <span class=o>||</span> <span class=p>{};</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>maxFlake</span> <span class=o>=</span> <span class=nx>snow</span><span class=p>.</span><span class=nx>maxFlake</span> <span class=o>||</span> <span class=mi>100</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>flakeSize</span> <span class=o>=</span> <span class=nx>snow</span><span class=p>.</span><span class=nx>flakeSize</span> <span class=o>||</span> <span class=mi>10</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>fallSpeed</span> <span class=o>=</span> <span class=nx>snow</span><span class=p>.</span><span class=nx>fallSpeed</span> <span class=o>||</span> <span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>requestAnimationFrame</span> <span class=o>=</span> <span class=nb>window</span><span class=p>.</span><span class=nx>requestAnimationFrame</span> <span class=o>||</span>
+</span></span><span class=line><span class=cl>    <span class=nb>window</span><span class=p>.</span><span class=nx>mozRequestAnimationFrame</span> <span class=o>||</span>
+</span></span><span class=line><span class=cl>    <span class=nb>window</span><span class=p>.</span><span class=nx>webkitRequestAnimationFrame</span> <span class=o>||</span>
+</span></span><span class=line><span class=cl>    <span class=nb>window</span><span class=p>.</span><span class=nx>msRequestAnimationFrame</span> <span class=o>||</span>
+</span></span><span class=line><span class=cl>    <span class=nb>window</span><span class=p>.</span><span class=nx>oRequestAnimationFrame</span> <span class=o>||</span>
+</span></span><span class=line><span class=cl>    <span class=kd>function</span><span class=p>(</span><span class=nx>callback</span><span class=p>)</span> <span class=p>{</span> <span class=nx>setTimeout</span><span class=p>(</span><span class=nx>callback</span><span class=p>,</span> <span class=mi>1000</span> <span class=o>/</span> <span class=mi>60</span><span class=p>);</span> <span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>cancelAnimationFrame</span> <span class=o>=</span> <span class=nb>window</span><span class=p>.</span><span class=nx>cancelAnimationFrame</span> <span class=o>||</span>
+</span></span><span class=line><span class=cl>    <span class=nb>window</span><span class=p>.</span><span class=nx>mozCancelAnimationFrame</span> <span class=o>||</span>
+</span></span><span class=line><span class=cl>    <span class=nb>window</span><span class=p>.</span><span class=nx>webkitCancelAnimationFrame</span> <span class=o>||</span>
+</span></span><span class=line><span class=cl>    <span class=nb>window</span><span class=p>.</span><span class=nx>msCancelAnimationFrame</span> <span class=o>||</span>
+</span></span><span class=line><span class=cl>	<span class=nb>window</span><span class=p>.</span><span class=nx>oCancelAnimationFrame</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>snowFall</span><span class=p>.</span><span class=nx>prototype</span><span class=p>.</span><span class=nx>start</span> <span class=o>=</span> <span class=kd>function</span><span class=p>(){</span>
+</span></span><span class=line><span class=cl>    <span class=nx>snowCanvas</span><span class=p>.</span><span class=nx>apply</span><span class=p>(</span><span class=k>this</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=nx>createFlakes</span><span class=p>.</span><span class=nx>apply</span><span class=p>(</span><span class=k>this</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=nx>drawSnow</span><span class=p>.</span><span class=nx>apply</span><span class=p>(</span><span class=k>this</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>function</span> <span class=nx>snowCanvas</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>var</span> <span class=nx>snowcanvas</span> <span class=o>=</span> <span class=nb>document</span><span class=p>.</span><span class=nx>createElement</span><span class=p>(</span><span class=s2>&#34;canvas&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=nx>snowcanvas</span><span class=p>.</span><span class=nx>id</span> <span class=o>=</span> <span class=s2>&#34;snowfall&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nx>snowcanvas</span><span class=p>.</span><span class=nx>width</span> <span class=o>=</span> <span class=nb>window</span><span class=p>.</span><span class=nx>innerWidth</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nx>snowcanvas</span><span class=p>.</span><span class=nx>height</span> <span class=o>=</span> <span class=nb>document</span><span class=p>.</span><span class=nx>body</span><span class=p>.</span><span class=nx>clientHeight</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nx>snowcanvas</span><span class=p>.</span><span class=nx>setAttribute</span><span class=p>(</span><span class=s2>&#34;style&#34;</span><span class=p>,</span> <span class=s2>&#34;position:absolute; top: 0; left: 0; z-index: 1; pointer-events: none;&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=nb>document</span><span class=p>.</span><span class=nx>getElementsByTagName</span><span class=p>(</span><span class=s2>&#34;body&#34;</span><span class=p>)[</span><span class=mi>0</span><span class=p>].</span><span class=nx>appendChild</span><span class=p>(</span><span class=nx>snowcanvas</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>canvas</span> <span class=o>=</span> <span class=nx>snowcanvas</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>ctx</span> <span class=o>=</span> <span class=nx>snowcanvas</span><span class=p>.</span><span class=nx>getContext</span><span class=p>(</span><span class=s2>&#34;2d&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=nb>window</span><span class=p>.</span><span class=nx>onresize</span> <span class=o>=</span> <span class=kd>function</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nx>snowcanvas</span><span class=p>.</span><span class=nx>width</span> <span class=o>=</span> <span class=nb>window</span><span class=p>.</span><span class=nx>innerWidth</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=cm>/* snowcanvas.height = window.innerHeight */</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>function</span> <span class=nx>flakeMove</span><span class=p>(</span><span class=nx>canvasWidth</span><span class=p>,</span> <span class=nx>canvasHeight</span><span class=p>,</span> <span class=nx>flakeSize</span><span class=p>,</span> <span class=nx>fallSpeed</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>x</span> <span class=o>=</span> <span class=nb>Math</span><span class=p>.</span><span class=nx>floor</span><span class=p>(</span><span class=nb>Math</span><span class=p>.</span><span class=nx>random</span><span class=p>()</span> <span class=o>*</span> <span class=nx>canvasWidth</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>y</span> <span class=o>=</span> <span class=nb>Math</span><span class=p>.</span><span class=nx>floor</span><span class=p>(</span><span class=nb>Math</span><span class=p>.</span><span class=nx>random</span><span class=p>()</span> <span class=o>*</span> <span class=nx>canvasHeight</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>size</span> <span class=o>=</span> <span class=nb>Math</span><span class=p>.</span><span class=nx>random</span><span class=p>()</span> <span class=o>*</span> <span class=nx>flakeSize</span> <span class=o>+</span> <span class=mi>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>maxSize</span> <span class=o>=</span> <span class=nx>flakeSize</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>speed</span> <span class=o>=</span> <span class=nb>Math</span><span class=p>.</span><span class=nx>random</span><span class=p>()</span> <span class=o>*</span> <span class=mi>1</span> <span class=o>+</span> <span class=nx>fallSpeed</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>fallSpeed</span> <span class=o>=</span> <span class=nx>fallSpeed</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>velY</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=nx>speed</span><span class=p>;</span> 
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>velX</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>                                   
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>stepSize</span> <span class=o>=</span> <span class=nb>Math</span><span class=p>.</span><span class=nx>random</span><span class=p>()</span> <span class=o>/</span> <span class=mi>30</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>step</span> <span class=o>=</span> <span class=mi>0</span>                                       
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=nx>flakeMove</span><span class=p>.</span><span class=nx>prototype</span><span class=p>.</span><span class=nx>update</span> <span class=o>=</span> <span class=kd>function</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>var</span> <span class=nx>x</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=nx>x</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nx>y</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=nx>y</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=cm>/* 摆动曲线，这里是余弦*/</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>velX</span> <span class=o>*=</span> <span class=mf>0.98</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=nx>velY</span> <span class=o>&lt;=</span> <span class=k>this</span><span class=p>.</span><span class=nx>speed</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>this</span><span class=p>.</span><span class=nx>velY</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=nx>speed</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>velX</span> <span class=o>+=</span> <span class=nb>Math</span><span class=p>.</span><span class=nx>cos</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=nx>step</span> <span class=o>+=</span> <span class=p>.</span><span class=mi>05</span><span class=p>)</span> <span class=o>*</span> <span class=k>this</span><span class=p>.</span><span class=nx>stepSize</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>y</span> <span class=o>+=</span> <span class=k>this</span><span class=p>.</span><span class=nx>velY</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>x</span> <span class=o>+=</span> <span class=k>this</span><span class=p>.</span><span class=nx>velX</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=nx>x</span> <span class=o>&gt;=</span> <span class=nx>canvas</span><span class=p>.</span><span class=nx>width</span> <span class=o>||</span> <span class=k>this</span><span class=p>.</span><span class=nx>x</span> <span class=o>&lt;=</span> <span class=mi>0</span> <span class=o>||</span> <span class=k>this</span><span class=p>.</span><span class=nx>y</span> <span class=o>&gt;=</span> <span class=nx>canvas</span><span class=p>.</span><span class=nx>height</span> <span class=o>||</span> <span class=k>this</span><span class=p>.</span><span class=nx>y</span> <span class=o>&lt;=</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>this</span><span class=p>.</span><span class=nx>reset</span><span class=p>(</span><span class=nx>canvas</span><span class=p>.</span><span class=nx>width</span><span class=p>,</span> <span class=nx>canvas</span><span class=p>.</span><span class=nx>height</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>flakeMove</span><span class=p>.</span><span class=nx>prototype</span><span class=p>.</span><span class=nx>reset</span> <span class=o>=</span> <span class=kd>function</span><span class=p>(</span><span class=nx>width</span><span class=p>,</span> <span class=nx>height</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>x</span> <span class=o>=</span> <span class=nb>Math</span><span class=p>.</span><span class=nx>floor</span><span class=p>(</span><span class=nb>Math</span><span class=p>.</span><span class=nx>random</span><span class=p>()</span> <span class=o>*</span> <span class=nx>width</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>y</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>size</span> <span class=o>=</span> <span class=nb>Math</span><span class=p>.</span><span class=nx>random</span><span class=p>()</span> <span class=o>*</span> <span class=k>this</span><span class=p>.</span><span class=nx>maxSize</span> <span class=o>+</span> <span class=mi>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>speed</span> <span class=o>=</span> <span class=nb>Math</span><span class=p>.</span><span class=nx>random</span><span class=p>()</span> <span class=o>*</span> <span class=mi>1</span> <span class=o>+</span> <span class=k>this</span><span class=p>.</span><span class=nx>fallSpeed</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>velY</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=nx>speed</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>velX</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span><span class=line><span class=cl><span class=c1>// 渲染雪花-随机形状（此处可修改雪花颜色！！！）
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nx>flakeMove</span><span class=p>.</span><span class=nx>prototype</span><span class=p>.</span><span class=nx>render</span> <span class=o>=</span> <span class=kd>function</span><span class=p>(</span><span class=nx>ctx</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>var</span> <span class=nx>snowFlake</span> <span class=o>=</span> <span class=nx>ctx</span><span class=p>.</span><span class=nx>createRadialGradient</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=nx>x</span><span class=p>,</span> <span class=k>this</span><span class=p>.</span><span class=nx>y</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=k>this</span><span class=p>.</span><span class=nx>x</span><span class=p>,</span> <span class=k>this</span><span class=p>.</span><span class=nx>y</span><span class=p>,</span> <span class=k>this</span><span class=p>.</span><span class=nx>size</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=nx>snowFlake</span><span class=p>.</span><span class=nx>addColorStop</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=s2>&#34;rgba(255,255,255, 0.9)&#34;</span><span class=p>);</span>  <span class=cm>/* 此处是雪花RGB颜色，默认是白色 */</span>
+</span></span><span class=line><span class=cl>    <span class=nx>snowFlake</span><span class=p>.</span><span class=nx>addColorStop</span><span class=p>(.</span><span class=mi>5</span><span class=p>,</span> <span class=s2>&#34;rgba(255,255,255, 0.5)&#34;</span><span class=p>);</span> <span class=cm>/* 若要改为其他颜色，请自行查 */</span>
+</span></span><span class=line><span class=cl>    <span class=nx>snowFlake</span><span class=p>.</span><span class=nx>addColorStop</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=s2>&#34;rgba(255,255,255, 0)&#34;</span><span class=p>);</span>    <span class=cm>/* 找16进制的RGB 颜色代码。 */</span>
+</span></span><span class=line><span class=cl>    <span class=nx>ctx</span><span class=p>.</span><span class=nx>save</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=nx>ctx</span><span class=p>.</span><span class=nx>fillStyle</span> <span class=o>=</span> <span class=nx>snowFlake</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nx>ctx</span><span class=p>.</span><span class=nx>beginPath</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=nx>ctx</span><span class=p>.</span><span class=nx>arc</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=nx>x</span><span class=p>,</span> <span class=k>this</span><span class=p>.</span><span class=nx>y</span><span class=p>,</span> <span class=k>this</span><span class=p>.</span><span class=nx>size</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=nb>Math</span><span class=p>.</span><span class=nx>PI</span> <span class=o>*</span> <span class=mi>2</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=nx>ctx</span><span class=p>.</span><span class=nx>fill</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=nx>ctx</span><span class=p>.</span><span class=nx>restore</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>function</span> <span class=nx>createFlakes</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>var</span> <span class=nx>maxFlake</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=nx>maxFlake</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nx>flakes</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=nx>flakes</span> <span class=o>=</span> <span class=p>[],</span>
+</span></span><span class=line><span class=cl>        <span class=nx>canvas</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=nx>canvas</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=p>(</span><span class=kd>var</span> <span class=nx>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=nx>i</span> <span class=o>&lt;</span> <span class=nx>maxFlake</span><span class=p>;</span> <span class=nx>i</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nx>flakes</span><span class=p>.</span><span class=nx>push</span><span class=p>(</span><span class=k>new</span> <span class=nx>flakeMove</span><span class=p>(</span><span class=nx>canvas</span><span class=p>.</span><span class=nx>width</span><span class=p>,</span> <span class=nx>canvas</span><span class=p>.</span><span class=nx>height</span><span class=p>,</span> <span class=k>this</span><span class=p>.</span><span class=nx>flakeSize</span><span class=p>,</span> <span class=k>this</span><span class=p>.</span><span class=nx>fallSpeed</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>function</span> <span class=nx>drawSnow</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>var</span> <span class=nx>maxFlake</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=nx>maxFlake</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nx>flakes</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=nx>flakes</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nx>ctx</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>canvas</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=nx>canvas</span><span class=p>,</span> <span class=nx>that</span> <span class=o>=</span> <span class=k>this</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nx>ctx</span><span class=p>.</span><span class=nx>clearRect</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=nx>canvas</span><span class=p>.</span><span class=nx>width</span><span class=p>,</span> <span class=nx>canvas</span><span class=p>.</span><span class=nx>height</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=p>(</span><span class=kd>var</span> <span class=nx>e</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=nx>e</span> <span class=o>&lt;</span> <span class=nx>maxFlake</span><span class=p>;</span> <span class=nx>e</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nx>flakes</span><span class=p>[</span><span class=nx>e</span><span class=p>].</span><span class=nx>update</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=nx>flakes</span><span class=p>[</span><span class=nx>e</span><span class=p>].</span><span class=nx>render</span><span class=p>(</span><span class=nx>ctx</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=nx>loop</span> <span class=o>=</span> <span class=nx>requestAnimationFrame</span><span class=p>(</span><span class=kd>function</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nx>drawSnow</span><span class=p>.</span><span class=nx>apply</span><span class=p>(</span><span class=nx>that</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>});</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=cm>/* 修改maxFlake能修改雪花的最大数量 */</span>
+</span></span><span class=line><span class=cl><span class=kd>var</span> <span class=nx>snow</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>snowFall</span><span class=p>({</span><span class=nx>maxFlake</span><span class=o>:</span><span class=mi>50</span><span class=p>});</span>
+</span></span><span class=line><span class=cl><span class=nx>snow</span><span class=p>.</span><span class=nx>start</span><span class=p>();</span>
+</span></span></code></pre></td></tr></table></div></div><p>修改上面代码中的<code>RGB</code>值和<code>maxFlake</code>就可以更改雪花的颜色和最大数量</p><h3 id=引用snowjs文件>引用snow.js文件</h3><p>在<code>/icarus/layout/layout.ejs的bodybodybody</code>标签中添加代码：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-javascript data-lang=javascript><span class=line><span class=cl>    <span class=o>&lt;</span><span class=nx>script</span> <span class=nx>type</span><span class=o>=</span><span class=s2>&#34;text/javascript&#34;</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl>      <span class=kd>var</span> <span class=nx>windowWidth</span> <span class=o>=</span> <span class=nx>$</span><span class=p>(</span><span class=nb>window</span><span class=p>).</span><span class=nx>width</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>      <span class=k>if</span> <span class=p>(</span><span class=nx>windowWidth</span> <span class=o>&gt;</span> <span class=mi>480</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nb>document</span><span class=p>.</span><span class=nx>write</span><span class=p>(</span><span class=s1>&#39;&lt;script type=&#34;text/javascript&#34; src=&#34;/js/src/snow.js&#34;&gt;&lt;\/script&gt;&#39;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>      <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=o>&lt;</span><span class=err>/script&gt;</span>
+</span></span></code></pre></td></tr></table></div></div><p>添加代码后的文件</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>&lt;!DOCTYPE html&gt;
+</span></span><span class=line><span class=cl>&lt;html &lt;%- has_config(&#39;language&#39;) ? &#39; lang=&#34;&#39; + get_config(&#39;language&#39;).substring(0, 2) + &#39;&#34;&#39; : &#39;&#39; %&gt;&gt;
+</span></span><span class=line><span class=cl>&lt;head&gt;
+</span></span><span class=line><span class=cl>    &lt;%- _partial(&#39;common/head&#39;) %&gt;
+</span></span><span class=line><span class=cl>&lt;/head&gt;
+</span></span><span class=line><span class=cl>&lt;body class=&#34;is-&lt;%= column_count() %&gt;-column&#34;&gt;
+</span></span><span class=line><span class=cl>    &lt;%- _partial(&#39;common/navbar&#39;) %&gt;
+</span></span><span class=line><span class=cl>    &lt;% function main_column_class() {
+</span></span><span class=line><span class=cl>        switch (column_count()) {
+</span></span><span class=line><span class=cl>            case 1:
+</span></span><span class=line><span class=cl>                return &#39;is-12&#39;;
+</span></span><span class=line><span class=cl>            case 2:
+</span></span><span class=line><span class=cl>                return &#39;is-8-tablet is-8-desktop is-8-widescreen&#39;;
+</span></span><span class=line><span class=cl>            case 3:
+</span></span><span class=line><span class=cl>                return &#39;is-8-tablet is-8-desktop is-6-widescreen&#39;
+</span></span><span class=line><span class=cl>        }
+</span></span><span class=line><span class=cl>        return &#39;&#39;;
+</span></span><span class=line><span class=cl>    } %&gt;
+</span></span><span class=line><span class=cl>    &lt;section class=&#34;section&#34;&gt;
+</span></span><span class=line><span class=cl>        &lt;div class=&#34;container&#34;&gt;
+</span></span><span class=line><span class=cl>            &lt;div class=&#34;columns&#34;&gt;
+</span></span><span class=line><span class=cl>                &lt;div class=&#34;column &lt;%= main_column_class() %&gt; has-order-2 column-main&#34;&gt;&lt;%- body %&gt;&lt;/div&gt;
+</span></span><span class=line><span class=cl>                &lt;%- _partial(&#39;common/widget&#39;, { position: &#39;left&#39; }) %&gt;
+</span></span><span class=line><span class=cl>                &lt;%- _partial(&#39;common/widget&#39;, { position: &#39;right&#39; }) %&gt;
+</span></span><span class=line><span class=cl>            &lt;/div&gt;
+</span></span><span class=line><span class=cl>        &lt;/div&gt;
+</span></span><span class=line><span class=cl>    &lt;/section&gt;
+</span></span><span class=line><span class=cl>    &lt;%- _partial(&#39;common/footer&#39;) %&gt;
+</span></span><span class=line><span class=cl>    &lt;%- _partial(&#39;common/scripts&#39;) %&gt;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    &lt;% if (has_config(&#39;search.type&#39;)) { %&gt;
+</span></span><span class=line><span class=cl>    &lt;%- _partial(&#39;search/&#39; + get_config(&#39;search.type&#39;)) %&gt;
+</span></span><span class=line><span class=cl>    &lt;% } %&gt;
+</span></span><span class=line><span class=cl>    &lt;script type=&#34;text/javascript&#34;&gt;
+</span></span><span class=line><span class=cl>      var windowWidth = $(window).width();
+</span></span><span class=line><span class=cl>      if (windowWidth &gt; 480) {
+</span></span><span class=line><span class=cl>        document.write(&#39;&lt;script type=&#34;text/javascript&#34; src=&#34;/js/src/snow.js&#34;&gt;&lt;\/script&gt;&#39;);
+</span></span><span class=line><span class=cl>      }
+</span></span><span class=line><span class=cl>    &lt;/script&gt;
+</span></span><span class=line><span class=cl>&lt;/body&gt;
+</span></span><span class=line><span class=cl>&lt;/html&gt;
+</span></span></code></pre></td></tr></table></div></div><p>保存后刷新博客就可以看到效果了。</p><h3 id=文章发表日期>文章发表日期</h3><p>icarus主题的文章左上角文章发表日期默认是几天前这样的信息，看起来其实是不太方便的</p><p>需要修改<code>\themes\icarus\source\js</code>下的<code>main.js</code>文件，</p><center><img src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/alter_main_js.png style=zoom:67%></center><h3 id=增加文章版权>增加文章版权</h3><p>修改<code>themes/icarus/layout/common/article.ejs</code></p><p>在下面的代码中增加</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-html data-lang=html><span class=line><span class=cl><span class=p>&lt;</span><span class=nt>div</span> <span class=na>class</span><span class=o>=</span><span class=s>&#34;content&#34;</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>             <span class=err>&lt;</span>%- index <span class=err>&amp;&amp;</span> post.excerpt ? post.excerpt : post.content %&gt;
+</span></span><span class=line><span class=cl>         <span class=p>&lt;/</span><span class=nt>div</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=cp>&lt;!- 在这中间添加 -&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=err>&lt;</span>% if (!index <span class=err>&amp;&amp;</span> post.tags <span class=err>&amp;&amp;</span> post.tags.length) { %&gt;
+</span></span></code></pre></td></tr></table></div></div><p>在中间添加如下程序</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-html data-lang=html><span class=line><span class=cl><span class=err>&lt;</span>% if (!index <span class=err>&amp;&amp;</span> post.layout === &#39;post&#39; <span class=err>&amp;&amp;</span> post.copyright !== false) { %&gt;
+</span></span><span class=line><span class=cl>            <span class=p>&lt;</span><span class=nt>ul</span> <span class=na>class</span><span class=o>=</span><span class=s>&#34;post-copyright&#34;</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>            <span class=p>&lt;</span><span class=nt>li</span><span class=p>&gt;&lt;</span><span class=nt>strong</span><span class=p>&gt;</span>本文标题：<span class=p>&lt;/</span><span class=nt>strong</span><span class=p>&gt;&lt;</span><span class=nt>a</span> <span class=na>href</span><span class=o>=</span><span class=s>&#34;&lt;%= post.permalink %&gt;&#34;</span><span class=p>&gt;</span><span class=err>&lt;</span>%= page.title %&gt;<span class=p>&lt;/</span><span class=nt>a</span><span class=p>&gt;&lt;/</span><span class=nt>li</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>            <span class=p>&lt;</span><span class=nt>li</span><span class=p>&gt;&lt;</span><span class=nt>strong</span><span class=p>&gt;</span>本文作者：<span class=p>&lt;/</span><span class=nt>strong</span><span class=p>&gt;&lt;</span><span class=nt>a</span> <span class=na>href</span><span class=o>=</span><span class=s>&#34;&lt;%= theme.url %&gt;&#34;</span><span class=p>&gt;</span><span class=err>&lt;</span>%= theme.author %&gt;<span class=p>&lt;/</span><span class=nt>a</span><span class=p>&gt;&lt;/</span><span class=nt>li</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>            <span class=p>&lt;</span><span class=nt>li</span><span class=p>&gt;&lt;</span><span class=nt>strong</span><span class=p>&gt;</span>本文链接：<span class=p>&lt;/</span><span class=nt>strong</span><span class=p>&gt;&lt;</span><span class=nt>a</span> <span class=na>href</span><span class=o>=</span><span class=s>&#34;&lt;%= post.permalink %&gt;&#34;</span><span class=p>&gt;</span><span class=err>&lt;</span>%= post.permalink %&gt;<span class=p>&lt;/</span><span class=nt>a</span><span class=p>&gt;&lt;/</span><span class=nt>li</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>            <span class=p>&lt;</span><span class=nt>li</span><span class=p>&gt;&lt;</span><span class=nt>strong</span><span class=p>&gt;</span>发布时间：<span class=p>&lt;/</span><span class=nt>strong</span><span class=p>&gt;</span><span class=err>&lt;</span>%= post.date.format(&#34;YYYY-MM-DD&#34;) %&gt;<span class=p>&lt;/</span><span class=nt>li</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>            <span class=p>&lt;</span><span class=nt>li</span><span class=p>&gt;&lt;</span><span class=nt>strong</span><span class=p>&gt;</span>版权声明：<span class=p>&lt;/</span><span class=nt>strong</span><span class=p>&gt;</span>本博客所有文章除特别声明外，均采用 <span class=p>&lt;</span><span class=nt>a</span> <span class=na>href</span><span class=o>=</span><span class=s>&#34;https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh&#34;</span> <span class=na>rel</span><span class=o>=</span><span class=s>&#34;external nofollow&#34;</span> <span class=na>target</span><span class=o>=</span><span class=s>&#34;_blank&#34;</span><span class=p>&gt;</span>CC BY-NC-SA 4.0<span class=p>&lt;/</span><span class=nt>a</span><span class=p>&gt;</span> 许可协议。转载请注明出处！
+</span></span><span class=line><span class=cl>            <span class=p>&lt;/</span><span class=nt>li</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>            <span class=p>&lt;/</span><span class=nt>ul</span><span class=p>&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=err>&lt;</span>% } %&gt;
+</span></span></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2020-01-06</span></div><div class=post-info-license></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw"></i>&nbsp;<a href=/tags/icarus/>icarus</a>,&nbsp;<a href=/tags/hexo/>Hexo</a>,&nbsp;<a href=/tags/blog/>blog</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/posts/%E4%BB%A3%E7%A0%81%E6%B5%8B%E8%AF%95/ class=prev rel=prev title=测试代码块颜色><i class="fas fa-angle-left fa-fw"></i>测试代码块颜色</a>
+<a href=/posts/python%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/ class=next rel=next title=Python虚拟环境>Python虚拟环境<i class="fas fa-angle-right fa-fw"></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2019 - 2023</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=http://pujichun.ink target=_blank>普吉春</a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw"></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw"></i></a></div><script type=text/javascript src=/lib/smooth-scroll/smooth-scroll.min.js></script><script type=text/javascript src=/lib/autocomplete/autocomplete.min.js></script><script type=text/javascript src=/lib/lunr/lunr.min.js></script><script type=text/javascript src=/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=/lib/lazysizes/lazysizes.min.js></script><script type=text/javascript src=/lib/clipboard/clipboard.min.js></script><script type=text/javascript src=/lib/typeit/typeit.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:10},comment:{},data:{"id-1":"pujic","id-2":"pujic"},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"lunr"},typeit:{cursorChar:null,cursorSpeed:null,data:{"id-1":["id-1"],"id-2":["id-2"]},duration:null,speed:null}}</script><script type=text/javascript src=/js/theme.min.js></script></body></html>

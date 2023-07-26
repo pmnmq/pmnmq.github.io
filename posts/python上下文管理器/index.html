@@ -1,0 +1,414 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><meta http-equiv=x-ua-compatible content="IE=edge, chrome=1"><title>Python上下文管理器 - pujic</title><meta name=Description content><meta property="og:title" content="Python上下文管理器"><meta property="og:description" content="如果经常使用Python应该能注意到Python中经常出现with关键字。"><meta property="og:type" content="article"><meta property="og:url" content="http://example.org/posts/python%E4%B8%8A%E4%B8%8B%E6%96%87%E7%AE%A1%E7%90%86%E5%99%A8/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2021-04-24T21:56:09+00:00"><meta property="article:modified_time" content="2021-04-24T21:56:09+00:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="Python上下文管理器"><meta name=twitter:description content="如果经常使用Python应该能注意到Python中经常出现with关键字。"><meta name=application-name content="pujic"><meta name=apple-mobile-web-app-title content="pujic"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=http://example.org/posts/python%E4%B8%8A%E4%B8%8B%E6%96%87%E7%AE%A1%E7%90%86%E5%99%A8/><link rel=prev href=http://example.org/posts/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/><link rel=next href=http://example.org/posts/%E5%8A%A0%E9%80%9F%E4%B8%8B%E7%8F%AD%E4%B9%8Bcollections%E4%B8%AD%E7%9A%84%E6%A8%A1%E5%9D%97/><link rel=stylesheet href=/lib/normalize/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=/lib/fontawesome-free/all.min.css><link rel=stylesheet href=/lib/animate/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Python上下文管理器","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/example.org\/posts\/python%E4%B8%8A%E4%B8%8B%E6%96%87%E7%AE%A1%E7%90%86%E5%99%A8\/"},"genre":"posts","keywords":"Python","wordcount":2512,"url":"http:\/\/example.org\/posts\/python%E4%B8%8A%E4%B8%8B%E6%96%87%E7%AE%A1%E7%90%86%E5%99%A8\/","datePublished":"2021-04-24T21:56:09+00:00","dateModified":"2021-04-24T21:56:09+00:00","publisher":{"@type":"Organization","name":"普吉春"},"author":{"@type":"Person","name":"普吉春"},"description":""}</script></head><body header-desktop=fixed header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":""==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:""==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title=pujic><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-1 class=typeit></span></a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>所有文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/categories/>分类 </a><a class=menu-item href=/about/>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin"></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw"></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=pujic><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-2 class=typeit></span></a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin"></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=/posts/ title>所有文章</a><a class=menu-item href=/tags/ title>标签</a><a class=menu-item href=/categories/ title>分类</a><a class=menu-item href=/about/ title>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw"></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animated flipInX">Python上下文管理器</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=http://pujichun.ink title=Author target=_blank rel="noopener noreffer author" class=author><i class="fas fa-user-circle fa-fw"></i>普吉春</a></span>&nbsp;<span class=post-category>收录于 <a href=/categories/python/><i class="far fa-folder fa-fw"></i>Python</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2021-04-24>2021-04-24</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 2512 字&nbsp;
+<i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 6 分钟&nbsp;</div></div><div class="details toc" id=toc-static kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right"></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#前言>前言</a></li><li><a href=#上下文管理器协议>上下文管理器协议</a></li><li><a href=#手动实现open方法>手动实现open方法</a><ul><li><a href=#contextmanager装饰器>contextmanager装饰器</a></li><li><a href=#contextmanager原理>contextmanager原理</a></li></ul></li></ul></nav></div></div><div class=content id=content><p>如果经常使用Python应该能注意到Python中经常出现<code>with</code>关键字。</p><h2 id=前言>前言</h2><p>在程序中当文件资源使用完之后我们需要将文件对象关闭，数据库连接操作完成之后需要将数据库关闭，线程池、连接池、进程池使用完之后我们需要将资源对象放回队列中维护，socket长链接用完之后我们需要断开连接。</p><p>在写程序的时候我们总是需要考虑资源的回收，在Go语言中经常要用到<code>defer</code>对资源进行管理，在Python中我们可以考虑的方式很多，如<code>__del__</code>协议，但是使用<code>__del__</code>协议在一些场景下并不能简单优雅的完成需求，因为我们需要花更多的精力去构建一个能用的对象以及控制对象的销毁，如果遇到循环引用和多引用将导致无法正常销毁实例。而使用上下文协议将会使程序的健壮性更强。</p><h2 id=上下文管理器协议>上下文管理器协议</h2><p>在Python中任何实现了<code>__enter__</code>和<code>__exit__</code>的类实例化的对象都可以被称作上下文管理器对象，上下文管理器对象可以被<code>with</code>关键字进行管理，通常<code>with</code>管理上下文管理器的基本语法如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>class</span> <span class=nc>ContextManagerObject</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__enter__</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=k>pass</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__exit__</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=k>pass</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>with</span> <span class=n>ContextManagerObject</span> <span class=k>as</span> <span class=n>cmo</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=o>...</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>with</code>关键字后面跟实现上线文管理器协议的对象，然后<code>__enter__</code>方法会被执行，得到的结果将赋值给<code>as</code>后的变量，当<code>with</code>的作用域结束后将执行对象的<code>__exit__</code>方法</p><h2 id=手动实现open方法>手动实现open方法</h2><p>示例：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>class</span> <span class=nc>Open</span><span class=p>(</span><span class=nb>object</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>file</span><span class=p>,</span> <span class=n>mode</span><span class=p>,</span> <span class=n>encoding</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>file</span> <span class=o>=</span> <span class=n>file</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>mode</span> <span class=o>=</span> <span class=n>mode</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>encoding</span> <span class=o>=</span> <span class=n>encoding</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>kwargs</span> <span class=o>=</span> <span class=n>kwargs</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__enter__</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;执行__enter__&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>f</span> <span class=o>=</span> <span class=nb>open</span><span class=p>(</span><span class=n>file</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>file</span><span class=p>,</span> <span class=n>mode</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>mode</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>encoding</span><span class=p>,</span> <span class=o>**</span><span class=bp>self</span><span class=o>.</span><span class=n>kwargs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>f</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__exit__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>exc_type</span><span class=p>,</span> <span class=n>exc_value</span><span class=p>,</span> <span class=n>traceback</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;执行__exit__&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>f</span><span class=o>.</span><span class=n>close</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>with</span> <span class=n>Open</span><span class=p>(</span><span class=s1>&#39;./demo&#39;</span><span class=p>,</span> <span class=n>mode</span><span class=o>=</span><span class=s2>&#34;w&#34;</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=s2>&#34;utf8&#34;</span><span class=p>)</span> <span class=k>as</span> <span class=n>f</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>f</span><span class=o>.</span><span class=n>write</span><span class=p>(</span><span class=s2>&#34;Hello World!&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>在上面的程序中尝试着模仿内建的<code>open</code>去实现了一个支持上下文管理器协议的<code>Open</code>类，这个类型的对象只要被<code>with</code>进行管理，就会执行<code>__enter__</code>方法，当作用域范围结束之后就会执行<code>__exit__</code>方法，因此我们不需要手动再去关闭文件，这样让我们的程序的健壮性以及可维护性都得到了提高。在协程中如果想要这样使用，需要实现<code>__aenter__</code>方法和<code>__aexit__</code>方法。</p><h3 id=contextmanager装饰器>contextmanager装饰器</h3><p>上面提到的上下文管理器协议是需要在类中实现的，如果想将类中的方法，或者是将一个普通的函数变为可以通过<code>with</code>关键字进行管理，就可以使用<code>contextmanager</code>装饰器装饰，<code>contextmanager</code>装饰器可以让被装饰的普通函数变为一个可以被<code>with</code>关键字管理的上下文管理器对象。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>contextlib</span> <span class=kn>import</span> <span class=n>contextmanager</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nd>@contextmanager</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>open_file</span><span class=p>(</span><span class=n>file</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>mode</span><span class=p>:</span> <span class=nb>str</span><span class=p>,</span> <span class=n>encoding</span><span class=p>:</span> <span class=nb>str</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=c1># 使用with关键字之后返回yield后面的内容</span>
+</span></span><span class=line><span class=cl>    <span class=n>f</span> <span class=o>=</span> <span class=nb>open</span><span class=p>(</span><span class=n>file</span><span class=o>=</span><span class=n>file</span><span class=p>,</span> <span class=n>mode</span><span class=o>=</span><span class=n>mode</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=n>encoding</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>try</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>	    <span class=k>yield</span> <span class=n>f</span>
+</span></span><span class=line><span class=cl>    <span class=c1># with作用域结束后</span>
+</span></span><span class=line><span class=cl>    <span class=k>finally</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>	    <span class=n>f</span><span class=o>.</span><span class=n>close</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl><span class=k>with</span> <span class=n>open_file</span><span class=p>(</span><span class=n>file</span><span class=o>=</span><span class=s1>&#39;./demo&#39;</span><span class=p>,</span> <span class=n>mode</span><span class=o>=</span><span class=s1>&#39;w&#39;</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=s1>&#39;utf8&#39;</span><span class=p>)</span> <span class=k>as</span> <span class=n>f</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>f</span><span class=o>.</span><span class=n>write</span><span class=p>(</span><span class=s1>&#39;Hello World&#39;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=contextmanager原理>contextmanager原理</h3><p>从装饰器的原理中可以知道，<code>contextmanager</code>应该是将函数包装成了一个实现了上下文管理器协议的对象，然后将这个对象的引用指向了这个函数名。因此看似是在调用函数，其实是在调用这个类。</p><p><code>contextmanager</code>源码</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>def</span> <span class=nf>contextmanager</span><span class=p>(</span><span class=n>func</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;@contextmanager decorator.
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2>    Typical usage:
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2>        @contextmanager
+</span></span></span><span class=line><span class=cl><span class=s2>        def some_generator(&lt;arguments&gt;):
+</span></span></span><span class=line><span class=cl><span class=s2>            &lt;setup&gt;
+</span></span></span><span class=line><span class=cl><span class=s2>            try:
+</span></span></span><span class=line><span class=cl><span class=s2>                yield &lt;value&gt;
+</span></span></span><span class=line><span class=cl><span class=s2>            finally:
+</span></span></span><span class=line><span class=cl><span class=s2>                &lt;cleanup&gt;
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2>    This makes this:
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2>        with some_generator(&lt;arguments&gt;) as &lt;variable&gt;:
+</span></span></span><span class=line><span class=cl><span class=s2>            &lt;body&gt;
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2>    equivalent to this:
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2>        &lt;setup&gt;
+</span></span></span><span class=line><span class=cl><span class=s2>        try:
+</span></span></span><span class=line><span class=cl><span class=s2>            &lt;variable&gt; = &lt;value&gt;
+</span></span></span><span class=line><span class=cl><span class=s2>            &lt;body&gt;
+</span></span></span><span class=line><span class=cl><span class=s2>        finally:
+</span></span></span><span class=line><span class=cl><span class=s2>            &lt;cleanup&gt;
+</span></span></span><span class=line><span class=cl><span class=s2>    &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=nd>@wraps</span><span class=p>(</span><span class=n>func</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>helper</span><span class=p>(</span><span class=o>*</span><span class=n>args</span><span class=p>,</span> <span class=o>**</span><span class=n>kwds</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>_GeneratorContextManager</span><span class=p>(</span><span class=n>func</span><span class=p>,</span> <span class=n>args</span><span class=p>,</span> <span class=n>kwds</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>helper</span>
+</span></span></code></pre></td></tr></table></div></div><p>从源码中可以看到的确是这样，<code>contextmanager</code>将被装饰函数作为参数传给了<code>_GeneratorContextManager</code>这个类进行实例化</p><p><code>_GeneratorContextManager</code>源码</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>class</span> <span class=nc>_GeneratorContextManager</span><span class=p>(</span><span class=n>_GeneratorContextManagerBase</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                               <span class=n>AbstractContextManager</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                               <span class=n>ContextDecorator</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;Helper for @contextmanager decorator.&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>_recreate_cm</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=c1># _GCM instances are one-shot context managers, so the</span>
+</span></span><span class=line><span class=cl>        <span class=c1># CM must be recreated each time a decorated function is</span>
+</span></span><span class=line><span class=cl>        <span class=c1># called</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=vm>__class__</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>func</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>args</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>kwds</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__enter__</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=c1># do not keep args and kwds alive unnecessarily</span>
+</span></span><span class=line><span class=cl>        <span class=c1># they are only needed for recreation, which is not possible anymore</span>
+</span></span><span class=line><span class=cl>        <span class=k>del</span> <span class=bp>self</span><span class=o>.</span><span class=n>args</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>kwds</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>func</span>
+</span></span><span class=line><span class=cl>        <span class=k>try</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=nb>next</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>gen</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>except</span> <span class=ne>StopIteration</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>raise</span> <span class=ne>RuntimeError</span><span class=p>(</span><span class=s2>&#34;generator didn&#39;t yield&#34;</span><span class=p>)</span> <span class=kn>from</span> <span class=bp>None</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__exit__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=nb>type</span><span class=p>,</span> <span class=n>value</span><span class=p>,</span> <span class=n>traceback</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=nb>type</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>try</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=nb>next</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>gen</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>except</span> <span class=ne>StopIteration</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=k>return</span> <span class=kc>False</span>
+</span></span><span class=line><span class=cl>            <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=k>raise</span> <span class=ne>RuntimeError</span><span class=p>(</span><span class=s2>&#34;generator didn&#39;t stop&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>value</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=c1># Need to force instantiation so we can reliably</span>
+</span></span><span class=line><span class=cl>                <span class=c1># tell if we get the same exception back</span>
+</span></span><span class=line><span class=cl>                <span class=n>value</span> <span class=o>=</span> <span class=nb>type</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>            <span class=k>try</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=bp>self</span><span class=o>.</span><span class=n>gen</span><span class=o>.</span><span class=n>throw</span><span class=p>(</span><span class=nb>type</span><span class=p>,</span> <span class=n>value</span><span class=p>,</span> <span class=n>traceback</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>except</span> <span class=ne>StopIteration</span> <span class=k>as</span> <span class=n>exc</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=c1># Suppress StopIteration *unless* it&#39;s the same exception that</span>
+</span></span><span class=line><span class=cl>                <span class=c1># was passed to throw().  This prevents a StopIteration</span>
+</span></span><span class=line><span class=cl>                <span class=c1># raised inside the &#34;with&#34; statement from being suppressed.</span>
+</span></span><span class=line><span class=cl>                <span class=k>return</span> <span class=n>exc</span> <span class=ow>is</span> <span class=ow>not</span> <span class=n>value</span>
+</span></span><span class=line><span class=cl>            <span class=k>except</span> <span class=ne>RuntimeError</span> <span class=k>as</span> <span class=n>exc</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=c1># Don&#39;t re-raise the passed in exception. (issue27122)</span>
+</span></span><span class=line><span class=cl>                <span class=k>if</span> <span class=n>exc</span> <span class=ow>is</span> <span class=n>value</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=k>return</span> <span class=kc>False</span>
+</span></span><span class=line><span class=cl>                <span class=c1># Likewise, avoid suppressing if a StopIteration exception</span>
+</span></span><span class=line><span class=cl>                <span class=c1># was passed to throw() and later wrapped into a RuntimeError</span>
+</span></span><span class=line><span class=cl>                <span class=c1># (see PEP 479).</span>
+</span></span><span class=line><span class=cl>                <span class=k>if</span> <span class=nb>type</span> <span class=ow>is</span> <span class=ne>StopIteration</span> <span class=ow>and</span> <span class=n>exc</span><span class=o>.</span><span class=n>__cause__</span> <span class=ow>is</span> <span class=n>value</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=k>return</span> <span class=kc>False</span>
+</span></span><span class=line><span class=cl>                <span class=k>raise</span>
+</span></span><span class=line><span class=cl>            <span class=k>except</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=c1># only re-raise if it&#39;s *not* the exception that was</span>
+</span></span><span class=line><span class=cl>                <span class=c1># passed to throw(), because __exit__() must not raise</span>
+</span></span><span class=line><span class=cl>                <span class=c1># an exception unless __exit__() itself failed.  But throw()</span>
+</span></span><span class=line><span class=cl>                <span class=c1># has to raise the exception to signal propagation, so this</span>
+</span></span><span class=line><span class=cl>                <span class=c1># fixes the impedance mismatch between the throw() protocol</span>
+</span></span><span class=line><span class=cl>                <span class=c1># and the __exit__() protocol.</span>
+</span></span><span class=line><span class=cl>                <span class=c1>#</span>
+</span></span><span class=line><span class=cl>                <span class=c1># This cannot use &#39;except BaseException as exc&#39; (as in the</span>
+</span></span><span class=line><span class=cl>                <span class=c1># async implementation) to maintain compatibility with</span>
+</span></span><span class=line><span class=cl>                <span class=c1># Python 2, where old-style class exceptions are not caught</span>
+</span></span><span class=line><span class=cl>                <span class=c1># by &#39;except BaseException&#39;.</span>
+</span></span><span class=line><span class=cl>                <span class=k>if</span> <span class=n>sys</span><span class=o>.</span><span class=n>exc_info</span><span class=p>()[</span><span class=mi>1</span><span class=p>]</span> <span class=ow>is</span> <span class=n>value</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=k>return</span> <span class=kc>False</span>
+</span></span><span class=line><span class=cl>                <span class=k>raise</span>
+</span></span><span class=line><span class=cl>            <span class=k>raise</span> <span class=ne>RuntimeError</span><span class=p>(</span><span class=s2>&#34;generator didn&#39;t stop after throw()&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>_GeneratorContextManager</code>是多继承，但是这里的关键是上下文管理器协议，在<code>__enter__</code>方法中return了一个<code>next(self.gen)</code>，我们外部定义的函数是一个生成器，可以通过<code>next</code>函数从执行结果中取值，因此这个<code>self.gen</code>可能就是外部函数执行的结果。而事实也是如此</p><p><code>_GeneratorContextManagerBase</code>源码</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>class</span> <span class=nc>_GeneratorContextManagerBase</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;Shared functionality for @contextmanager and @asynccontextmanager.&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>func</span><span class=p>,</span> <span class=n>args</span><span class=p>,</span> <span class=n>kwds</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>gen</span> <span class=o>=</span> <span class=n>func</span><span class=p>(</span><span class=o>*</span><span class=n>args</span><span class=p>,</span> <span class=o>**</span><span class=n>kwds</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>func</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>args</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>kwds</span> <span class=o>=</span> <span class=n>func</span><span class=p>,</span> <span class=n>args</span><span class=p>,</span> <span class=n>kwds</span>
+</span></span><span class=line><span class=cl>        <span class=c1># Issue 19330: ensure context manager instances have good docstrings</span>
+</span></span><span class=line><span class=cl>        <span class=n>doc</span> <span class=o>=</span> <span class=nb>getattr</span><span class=p>(</span><span class=n>func</span><span class=p>,</span> <span class=s2>&#34;__doc__&#34;</span><span class=p>,</span> <span class=kc>None</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>doc</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>doc</span> <span class=o>=</span> <span class=nb>type</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span><span class=o>.</span><span class=vm>__doc__</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=vm>__doc__</span> <span class=o>=</span> <span class=n>doc</span>
+</span></span><span class=line><span class=cl>        <span class=c1># Unfortunately, this still doesn&#39;t provide good help output when</span>
+</span></span><span class=line><span class=cl>        <span class=c1># inspecting the created context manager instances, since pydoc</span>
+</span></span><span class=line><span class=cl>        <span class=c1># currently bypasses the instance docstring and shows the docstring</span>
+</span></span><span class=line><span class=cl>        <span class=c1># for the class instead.</span>
+</span></span><span class=line><span class=cl>        <span class=c1># See http://bugs.python.org/issue19404 for more details.</span>
+</span></span></code></pre></td></tr></table></div></div><p>在<code>_GeneratorContextManagerBase</code>的源码中，初始化函数<code>__init__</code>就执行了外部传入的<code>func</code>函数，然后赋值给了<code>self.gen</code></p><p>当<code>with</code>语句块结束之后，将执行<code>__exit__</code>中的内容，因此继续使用<code>next(self.gen)</code>将执行外部被装饰函数中<code>yield</code>中的内容</p><p>而<code>AbstractContextManager</code>就是多态</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>class</span> <span class=nc>AbstractContextManager</span><span class=p>(</span><span class=n>abc</span><span class=o>.</span><span class=n>ABC</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;An abstract base class for context managers.&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>__class_getitem__</span> <span class=o>=</span> <span class=nb>classmethod</span><span class=p>(</span><span class=n>GenericAlias</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__enter__</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;Return `self` upon entering the runtime context.&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>self</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nd>@abc.abstractmethod</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__exit__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>exc_type</span><span class=p>,</span> <span class=n>exc_value</span><span class=p>,</span> <span class=n>traceback</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;Raise any exception triggered within the runtime context.&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=kc>None</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nd>@classmethod</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>__subclasshook__</span><span class=p>(</span><span class=bp>cls</span><span class=p>,</span> <span class=n>C</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=bp>cls</span> <span class=ow>is</span> <span class=n>AbstractContextManager</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>_collections_abc</span><span class=o>.</span><span class=n>_check_methods</span><span class=p>(</span><span class=n>C</span><span class=p>,</span> <span class=s2>&#34;__enter__&#34;</span><span class=p>,</span> <span class=s2>&#34;__exit__&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>NotImplemented</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>AbstractContextManager</code>定义了<code>ContextManager</code>类型的行为，也就是必须要定义的协议，这里必须有的是<code>__exit__</code></p><p>至于<code>ContextDecorator</code>则通过<code>__cell__</code>协议定义了装饰器的行为。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>class</span> <span class=nc>ContextDecorator</span><span class=p>(</span><span class=nb>object</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;A base class or mixin that enables context managers to work as decorators.&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>_recreate_cm</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;Return a recreated instance of self.
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2>        Allows an otherwise one-shot context manager like
+</span></span></span><span class=line><span class=cl><span class=s2>        _GeneratorContextManager to support use as
+</span></span></span><span class=line><span class=cl><span class=s2>        a decorator via implicit recreation.
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2>        This is a private interface just for _GeneratorContextManager.
+</span></span></span><span class=line><span class=cl><span class=s2>        See issue #11647 for details.
+</span></span></span><span class=line><span class=cl><span class=s2>        &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>self</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__call__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>func</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=nd>@wraps</span><span class=p>(</span><span class=n>func</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>def</span> <span class=nf>inner</span><span class=p>(</span><span class=o>*</span><span class=n>args</span><span class=p>,</span> <span class=o>**</span><span class=n>kwds</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=k>with</span> <span class=bp>self</span><span class=o>.</span><span class=n>_recreate_cm</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>                <span class=k>return</span> <span class=n>func</span><span class=p>(</span><span class=o>*</span><span class=n>args</span><span class=p>,</span> <span class=o>**</span><span class=n>kwds</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>inner</span>
+</span></span></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2021-04-24</span></div><div class=post-info-license></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw"></i>&nbsp;<a href=/tags/python/>Python</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/posts/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/ class=prev rel=prev title=单例模式><i class="fas fa-angle-left fa-fw"></i>单例模式</a>
+<a href=/posts/%E5%8A%A0%E9%80%9F%E4%B8%8B%E7%8F%AD%E4%B9%8Bcollections%E4%B8%AD%E7%9A%84%E6%A8%A1%E5%9D%97/ class=next rel=next title=加速下班之collections模块>加速下班之collections模块<i class="fas fa-angle-right fa-fw"></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2019 - 2023</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=http://pujichun.ink target=_blank>普吉春</a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw"></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw"></i></a></div><script type=text/javascript src=/lib/smooth-scroll/smooth-scroll.min.js></script><script type=text/javascript src=/lib/autocomplete/autocomplete.min.js></script><script type=text/javascript src=/lib/lunr/lunr.min.js></script><script type=text/javascript src=/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=/lib/lazysizes/lazysizes.min.js></script><script type=text/javascript src=/lib/clipboard/clipboard.min.js></script><script type=text/javascript src=/lib/typeit/typeit.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:10},comment:{},data:{"id-1":"pujic","id-2":"pujic"},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"lunr"},typeit:{cursorChar:null,cursorSpeed:null,data:{"id-1":["id-1"],"id-2":["id-2"]},duration:null,speed:null}}</script><script type=text/javascript src=/js/theme.min.js></script></body></html>

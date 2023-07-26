@@ -1,0 +1,202 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><meta http-equiv=x-ua-compatible content="IE=edge, chrome=1"><title>Go操作Docker - pujic</title><meta name=Description content><meta property="og:title" content="Go操作Docker"><meta property="og:description" content="尽管Docker的操作十分简单，但是仍然不是所有开发者都会，大多数开发者往往只关注于本身所在领域，服务部署这件事情上并不擅长。"><meta property="og:type" content="article"><meta property="og:url" content="http://example.org/posts/go%E6%93%8D%E4%BD%9Cdocker/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2022-04-06T13:18:12+08:00"><meta property="article:modified_time" content="2022-04-06T13:18:12+08:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="Go操作Docker"><meta name=twitter:description content="尽管Docker的操作十分简单，但是仍然不是所有开发者都会，大多数开发者往往只关注于本身所在领域，服务部署这件事情上并不擅长。"><meta name=application-name content="pujic"><meta name=apple-mobile-web-app-title content="pujic"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=http://example.org/posts/go%E6%93%8D%E4%BD%9Cdocker/><link rel=prev href=http://example.org/posts/docker-swarm%E9%9B%86%E7%BE%A4/><link rel=next href=http://example.org/posts/grpc-client-resolver-etcd/><link rel=stylesheet href=/lib/normalize/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=/lib/fontawesome-free/all.min.css><link rel=stylesheet href=/lib/animate/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Go操作Docker","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/example.org\/posts\/go%E6%93%8D%E4%BD%9Cdocker\/"},"genre":"posts","keywords":"Docker, GO","wordcount":1029,"url":"http:\/\/example.org\/posts\/go%E6%93%8D%E4%BD%9Cdocker\/","datePublished":"2022-04-06T13:18:12+08:00","dateModified":"2022-04-06T13:18:12+08:00","publisher":{"@type":"Organization","name":"普吉春"},"author":{"@type":"Person","name":"普吉春"},"description":""}</script></head><body header-desktop=fixed header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":""==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:""==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title=pujic><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-1 class=typeit></span></a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>所有文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/categories/>分类 </a><a class=menu-item href=/about/>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin"></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw"></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=pujic><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-2 class=typeit></span></a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin"></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=/posts/ title>所有文章</a><a class=menu-item href=/tags/ title>标签</a><a class=menu-item href=/categories/ title>分类</a><a class=menu-item href=/about/ title>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw"></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animated flipInX">Go操作Docker</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=http://pujichun.ink title=Author target=_blank rel="noopener noreffer author" class=author><i class="fas fa-user-circle fa-fw"></i>普吉春</a></span>&nbsp;<span class=post-category>收录于 <a href=/categories/docker/><i class="far fa-folder fa-fw"></i>Docker</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2022-04-06>2022-04-06</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 1029 字&nbsp;
+<i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 3 分钟&nbsp;</div></div><div class="details toc" id=toc-static kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right"></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#go为什么能够操作docker>Go为什么能够操作Docker？</a></li><li><a href=#先决条件>先决条件</a></li><li><a href=#镜像>镜像</a><ul><li><a href=#获取镜像列表>获取镜像列表</a></li><li><a href=#拉取指定镜像>拉取指定镜像</a></li></ul></li></ul></nav></div></div><div class=content id=content><p>尽管Docker的操作十分简单，但是仍然不是所有开发者都会，大多数开发者往往只关注于本身所在领域，服务部署这件事情上并不擅长。</p><h2 id=go为什么能够操作docker>Go为什么能够操作Docker？</h2><p>Docker使用的是C-S架构，我们开发者在终端操作Docker时，使用的是Docker的客户端。而真正控制Docker镜像、容器的都是Docker Daemon</p><p><img class=lazyload src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220406132933.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220406132933.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220406132933.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220406132933.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220406132933.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220406132933.png></p><p>Docker官方提供了Go和Python的SDK，本文将使用Go操作Docker</p><h2 id=先决条件>先决条件</h2><p>本文使用的Docker环境和<a href=/posts/docker-swarm%e9%9b%86%e7%be%a4/ rel>Docker Swarm集群</a>中的环境相同</p><p>本文将通过<code>VS Code</code>远程连接的方式，连接集群中的manger节点。</p><table><thead><tr><th>环境名称</th><th>版本</th></tr></thead><tbody><tr><td>Go</td><td>1.17.6</td></tr><tr><td>github.com/docker/docker/client</td><td>20.10.14</td></tr><tr><td>Docker</td><td>20.10.14</td></tr></tbody></table><p>目录结构如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>.
+</span></span><span class=line><span class=cl>├── go.mod
+</span></span><span class=line><span class=cl>├── go.sum
+</span></span><span class=line><span class=cl>├── main.go
+</span></span><span class=line><span class=cl>└── Makefile
+</span></span></code></pre></td></tr></table></div></div><p>由于操作Docker需要root权限，所以使用Makefile构建</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-Makefile data-lang=Makefile><span class=line><span class=cl><span class=nf>.PHONY</span><span class=o>:</span> <span class=n>build</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>build</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	@go build
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>run</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	sudo ./<span class=s2>&#34;docker-go&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nf>clean</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>	@go clean
+</span></span></code></pre></td></tr></table></div></div><p>创建Docker结构体</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>Docker</span> <span class=kd>struct</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>Cli</span> <span class=o>*</span><span class=nx>client</span><span class=p>.</span><span class=nx>Client</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>ctx</span> <span class=o>:=</span> <span class=nx>context</span><span class=p>.</span><span class=nf>Background</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>	<span class=nx>cli</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>client</span><span class=p>.</span><span class=nf>NewClientWithOpts</span><span class=p>(</span><span class=nx>client</span><span class=p>.</span><span class=nx>FromEnv</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Fatal</span><span class=p>(</span><span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=nx>docker</span> <span class=o>:=</span> <span class=nx>Docker</span><span class=p>{</span><span class=nx>Cli</span><span class=p>:</span> <span class=nx>cli</span><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=镜像>镜像</h2><h3 id=获取镜像列表>获取镜像列表</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>d</span> <span class=o>*</span><span class=nx>Docker</span><span class=p>)</span> <span class=nf>GetImages</span><span class=p>(</span><span class=nx>ctx</span> <span class=nx>context</span><span class=p>.</span><span class=nx>Context</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>imgOpt</span> <span class=o>:=</span> <span class=nx>types</span><span class=p>.</span><span class=nx>ImageListOptions</span><span class=p>{</span><span class=nx>All</span><span class=p>:</span> <span class=kc>true</span><span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=nx>imgSums</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>d</span><span class=p>.</span><span class=nx>Cli</span><span class=p>.</span><span class=nf>ImageList</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>imgOpt</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Fatal</span><span class=p>(</span><span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>for</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>img</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>imgSums</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;%+v\n&#34;</span><span class=p>,</span> <span class=nx>img</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>运行make build && make run</p><p>输出如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>{Containers:-1 Created:1649160806 ID:sha256:554eaad3b8fc804b411ff398bcd4b5d59c4891a4770048270697a75a54dc65a3 Labels:map[] ParentID:sha256:5d0ab176d25dca0a7b0ee04685fa79120666d548805ad14dbb0f2fb062b5a7f2 RepoDigests:[] RepoTags:[getip:latest] SharedSize:-1 Size:11761646 VirtualSize:11761646}
+</span></span><span class=line><span class=cl>{Containers:-1 Created:1649160806 ID:sha256:5185163db340a8cdb581aaf2ae4c1e7003980a7709147162f005107f6dc6f441 Labels:map[] ParentID:sha256:0ac33e5f5afa79e084075e8698a22d574816eea8d7b7d480586835657c3e1c8b RepoDigests:[&lt;none&gt;@&lt;none&gt;] RepoTags:[&lt;none&gt;:&lt;none&gt;] SharedSize:-1 Size:11761646 VirtualSize:11761646}
+</span></span><span class=line><span class=cl>{Containers:-1 Created:1649160806 ID:sha256:5d0ab176d25dca0a7b0ee04685fa79120666d548805ad14dbb0f2fb062b5a7f2 Labels:map[] ParentID:sha256:5185163db340a8cdb581aaf2ae4c1e7003980a7709147162f005107f6dc6f441 RepoDigests:[&lt;none&gt;@&lt;none&gt;] RepoTags:[&lt;none&gt;:&lt;none&gt;] SharedSize:-1 Size:11761646 VirtualSize:11761646}
+</span></span><span class=line><span class=cl>{Containers:-1 Created:1649117999 ID:sha256:0ac33e5f5afa79e084075e8698a22d574816eea8d7b7d480586835657c3e1c8b Labels:map[] ParentID: RepoDigests:[alpine@sha256:4edbd2beb5f78b1014028f4fbb99f3237d9561100b6881aabbf5acce2c4f9454] RepoTags:[alpine:3.15] SharedSize:-1 Size:5574964 VirtualSize:5574964}
+</span></span><span class=line><span class=cl>{Containers:-1 Created:1648569764 ID:sha256:12766a6745eea133de9fdcd03ff720fa971fdaf21113d4bc72b417c123b15619 Labels:map[maintainer:NGINX Docker Maintainers &lt;docker-maint@nginx.com&gt;] ParentID: RepoDigests:[nginx@sha256:2275af0f20d71b293916f1958f8497f987b8d8fd8113df54635f2a5915002bf1] RepoTags:[nginx:latest] SharedSize:-1 Size:141522028 VirtualSize:141522028}
+</span></span><span class=line><span class=cl>{Containers:-1 Created:1646356536 ID:sha256:7642119cd16177d874dcbfe1c550affd336dbe4cabb3339ef685ac1d6ec71ccc Labels:map[] ParentID: RepoDigests:[golang@sha256:5616dca835fa90ef13a843824ba58394dad356b7d56198fb7c93cbe76d7d67fe] RepoTags:[golang:1.16-alpine] SharedSize:-1 Size:301868964 VirtualSize:301868964}
+</span></span><span class=line><span class=cl>{Containers:-1 Created:1616097222 ID:sha256:580c0e4e98b06d258754cf28c55f21a6fa0dc386e6fe0bf67e453c3642de9b8b Labels:map[] ParentID: RepoDigests:[portainer/portainer@sha256:fb45b43738646048a0a0cc74fcee2865b69efde857e710126084ee5de9be0f3f] RepoTags:[portainer/portainer:latest] SharedSize:-1 Size:79085285 VirtualSize:79085285}
+</span></span></code></pre></td></tr></table></div></div><p>通过sudo docker images查看镜像信息</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>REPOSITORY            TAG           IMAGE ID       CREATED         SIZE
+</span></span><span class=line><span class=cl>getip                 latest        554eaad3b8fc   19 hours ago    11.8MB
+</span></span><span class=line><span class=cl>alpine                3.15          0ac33e5f5afa   30 hours ago    5.57MB
+</span></span><span class=line><span class=cl>nginx                 latest        12766a6745ee   7 days ago      142MB
+</span></span><span class=line><span class=cl>golang                1.16-alpine   7642119cd161   4 weeks ago     302MB
+</span></span><span class=line><span class=cl>portainer/portainer   latest        580c0e4e98b0   12 months ago   79.1MB
+</span></span></code></pre></td></tr></table></div></div><p><strong>Q1: 为什么得到镜像数量和镜像ID是不匹配的？</strong></p><p><strong>A1: 通过docker images命令获取到的镜像信息有限，通过docker images -a &ndash;digests &ndash;no-trunc就能看到相同信息了</strong></p><p>简单模拟docker images改造<code>GetImages</code>方法</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>type</span> <span class=nx>Img</span> <span class=kd>struct</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>Created</span>    <span class=kt>string</span>
+</span></span><span class=line><span class=cl>	<span class=nx>ID</span>         <span class=kt>string</span>
+</span></span><span class=line><span class=cl>	<span class=nx>Tag</span>        <span class=kt>string</span>
+</span></span><span class=line><span class=cl>	<span class=nx>Size</span>       <span class=kt>string</span>
+</span></span><span class=line><span class=cl>	<span class=nx>Repository</span> <span class=kt>string</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>const</span> <span class=nx>timeLayout</span> <span class=p>=</span> <span class=s>&#34;2006年01月02日 15:04:05&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>d</span> <span class=o>*</span><span class=nx>Docker</span><span class=p>)</span> <span class=nf>GetImages</span><span class=p>(</span><span class=nx>ctx</span> <span class=nx>context</span><span class=p>.</span><span class=nx>Context</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>imgOpt</span> <span class=o>:=</span> <span class=nx>types</span><span class=p>.</span><span class=nx>ImageListOptions</span><span class=p>{</span><span class=nx>All</span><span class=p>:</span> <span class=kc>true</span><span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=nx>imgSums</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>d</span><span class=p>.</span><span class=nx>Cli</span><span class=p>.</span><span class=nf>ImageList</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>imgOpt</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Fatal</span><span class=p>(</span><span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=kd>var</span> <span class=nx>imgs</span> <span class=p>[]</span><span class=o>*</span><span class=nx>Img</span>
+</span></span><span class=line><span class=cl>	<span class=k>for</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>img</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>imgSums</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>tagAndName</span> <span class=o>:=</span> <span class=nx>strings</span><span class=p>.</span><span class=nf>Split</span><span class=p>(</span><span class=nx>img</span><span class=p>.</span><span class=nx>RepoTags</span><span class=p>[</span><span class=mi>0</span><span class=p>],</span> <span class=s>&#34;:&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=nx>imgs</span> <span class=p>=</span> <span class=nb>append</span><span class=p>(</span><span class=nx>imgs</span><span class=p>,</span> <span class=o>&amp;</span><span class=nx>Img</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=nx>Created</span><span class=p>:</span>    <span class=nx>time</span><span class=p>.</span><span class=nf>Unix</span><span class=p>(</span><span class=nx>img</span><span class=p>.</span><span class=nx>Created</span><span class=p>,</span> <span class=mi>0</span><span class=p>).</span><span class=nf>Format</span><span class=p>(</span><span class=nx>timeLayout</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>			<span class=nx>Size</span><span class=p>:</span>       <span class=nx>fmt</span><span class=p>.</span><span class=nf>Sprintf</span><span class=p>(</span><span class=s>&#34;%.2fMB&#34;</span><span class=p>,</span> <span class=nb>float64</span><span class=p>(</span><span class=nx>img</span><span class=p>.</span><span class=nx>Size</span><span class=p>)</span><span class=o>/</span><span class=nb>float64</span><span class=p>(</span><span class=mi>1024</span><span class=o>*</span><span class=mi>1024</span><span class=p>)),</span>
+</span></span><span class=line><span class=cl>			<span class=nx>Tag</span><span class=p>:</span>        <span class=nx>tagAndName</span><span class=p>[</span><span class=mi>1</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>			<span class=nx>Repository</span><span class=p>:</span> <span class=nx>tagAndName</span><span class=p>[</span><span class=mi>0</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>			<span class=nx>ID</span><span class=p>:</span>         <span class=nx>img</span><span class=p>.</span><span class=nx>ID</span><span class=p>[</span><span class=mi>7</span><span class=p>:</span><span class=mi>19</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>		<span class=p>})</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>for</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>img</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>imgs</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;%+v\n&#34;</span><span class=p>,</span> <span class=nx>img</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>至于filter这里就不做了</p><h3 id=拉取指定镜像>拉取指定镜像</h3><p>这里使用了"github.com/docker/docker/pkg/jsonmessage"这个包，能够在控制台中输出和通过Docker客户端拉取镜像时相同的样式</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>d</span> <span class=o>*</span><span class=nx>Docker</span><span class=p>)</span> <span class=nf>ImagePull</span><span class=p>(</span><span class=nx>ctx</span> <span class=nx>context</span><span class=p>.</span><span class=nx>Context</span><span class=p>,</span> <span class=nx>name</span> <span class=kt>string</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>opt</span> <span class=o>:=</span> <span class=nx>types</span><span class=p>.</span><span class=nx>ImagePullOptions</span><span class=p>{}</span>
+</span></span><span class=line><span class=cl>	<span class=nx>reader</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>d</span><span class=p>.</span><span class=nx>Cli</span><span class=p>.</span><span class=nf>ImagePull</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>name</span><span class=p>,</span> <span class=nx>opt</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Fatal</span><span class=p>(</span><span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>defer</span> <span class=nx>reader</span><span class=p>.</span><span class=nf>Close</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>	<span class=nx>termFd</span><span class=p>,</span> <span class=nx>isTerm</span> <span class=o>:=</span> <span class=nx>term</span><span class=p>.</span><span class=nf>GetFdInfo</span><span class=p>(</span><span class=nx>os</span><span class=p>.</span><span class=nx>Stderr</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nx>jsonmessage</span><span class=p>.</span><span class=nf>DisplayJSONMessagesStream</span><span class=p>(</span><span class=nx>reader</span><span class=p>,</span> <span class=nx>os</span><span class=p>.</span><span class=nx>Stderr</span><span class=p>,</span> <span class=nx>termFd</span><span class=p>,</span> <span class=nx>isTerm</span><span class=p>,</span> <span class=kc>nil</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2022-04-06</span></div><div class=post-info-license></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw"></i>&nbsp;<a href=/tags/docker/>Docker</a>,&nbsp;<a href=/tags/go/>Go</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/posts/docker-swarm%E9%9B%86%E7%BE%A4/ class=prev rel=prev title="Docker Swarm集群"><i class="fas fa-angle-left fa-fw"></i>Docker Swarm集群</a>
+<a href=/posts/grpc-client-resolver-etcd/ class=next rel=next title="gRPC client resolve etcd">gRPC client resolve etcd<i class="fas fa-angle-right fa-fw"></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2019 - 2023</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=http://pujichun.ink target=_blank>普吉春</a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw"></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw"></i></a></div><script type=text/javascript src=/lib/smooth-scroll/smooth-scroll.min.js></script><script type=text/javascript src=/lib/autocomplete/autocomplete.min.js></script><script type=text/javascript src=/lib/lunr/lunr.min.js></script><script type=text/javascript src=/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=/lib/lazysizes/lazysizes.min.js></script><script type=text/javascript src=/lib/clipboard/clipboard.min.js></script><script type=text/javascript src=/lib/typeit/typeit.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:10},comment:{},data:{"id-1":"pujic","id-2":"pujic"},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"lunr"},typeit:{cursorChar:null,cursorSpeed:null,data:{"id-1":["id-1"],"id-2":["id-2"]},duration:null,speed:null}}</script><script type=text/javascript src=/js/theme.min.js></script></body></html>

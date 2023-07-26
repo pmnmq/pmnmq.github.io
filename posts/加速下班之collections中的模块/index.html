@@ -1,0 +1,916 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><meta http-equiv=x-ua-compatible content="IE=edge, chrome=1"><title>加速下班之collections模块 - pujic</title><meta name=Description content><meta property="og:title" content="加速下班之collections模块"><meta property="og:description" content="collections模块实现了特定目标的容器，这些容器能够帮助开发者快速简洁的实现想法"><meta property="og:type" content="article"><meta property="og:url" content="http://example.org/posts/%E5%8A%A0%E9%80%9F%E4%B8%8B%E7%8F%AD%E4%B9%8Bcollections%E4%B8%AD%E7%9A%84%E6%A8%A1%E5%9D%97/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2021-04-26T15:11:22+00:00"><meta property="article:modified_time" content="2021-04-26T15:11:22+00:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="加速下班之collections模块"><meta name=twitter:description content="collections模块实现了特定目标的容器，这些容器能够帮助开发者快速简洁的实现想法"><meta name=application-name content="pujic"><meta name=apple-mobile-web-app-title content="pujic"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=http://example.org/posts/%E5%8A%A0%E9%80%9F%E4%B8%8B%E7%8F%AD%E4%B9%8Bcollections%E4%B8%AD%E7%9A%84%E6%A8%A1%E5%9D%97/><link rel=prev href=http://example.org/posts/python%E4%B8%8A%E4%B8%8B%E6%96%87%E7%AE%A1%E7%90%86%E5%99%A8/><link rel=next href=http://example.org/posts/%E8%AE%B0%E4%B8%80%E6%AC%A1%E9%81%87%E5%88%B0git-push%E6%97%B6%E6%97%A0%E6%B3%95%E9%AA%8C%E8%AF%81%E7%9A%84%E9%97%AE%E9%A2%98/><link rel=stylesheet href=/lib/normalize/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=/lib/fontawesome-free/all.min.css><link rel=stylesheet href=/lib/animate/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"加速下班之collections模块","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/example.org\/posts\/%E5%8A%A0%E9%80%9F%E4%B8%8B%E7%8F%AD%E4%B9%8Bcollections%E4%B8%AD%E7%9A%84%E6%A8%A1%E5%9D%97\/"},"genre":"posts","keywords":"collections, Python, 容器","wordcount":4892,"url":"http:\/\/example.org\/posts\/%E5%8A%A0%E9%80%9F%E4%B8%8B%E7%8F%AD%E4%B9%8Bcollections%E4%B8%AD%E7%9A%84%E6%A8%A1%E5%9D%97\/","datePublished":"2021-04-26T15:11:22+00:00","dateModified":"2021-04-26T15:11:22+00:00","publisher":{"@type":"Organization","name":"普吉春"},"author":{"@type":"Person","name":"普吉春"},"description":""}</script></head><body header-desktop=fixed header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":""==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:""==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title=pujic><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-1 class=typeit></span></a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>所有文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/categories/>分类 </a><a class=menu-item href=/about/>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin"></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw"></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=pujic><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-2 class=typeit></span></a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin"></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=/posts/ title>所有文章</a><a class=menu-item href=/tags/ title>标签</a><a class=menu-item href=/categories/ title>分类</a><a class=menu-item href=/about/ title>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw"></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animated flipInX">加速下班之collections模块</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=http://pujichun.ink title=Author target=_blank rel="noopener noreffer author" class=author><i class="fas fa-user-circle fa-fw"></i>普吉春</a></span>&nbsp;<span class=post-category>收录于 <a href=/categories/python/><i class="far fa-folder fa-fw"></i>Python</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2021-04-26>2021-04-26</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 4892 字&nbsp;
+<i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 10 分钟&nbsp;</div></div><div class="details toc" id=toc-static kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right"></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#namedtuple>namedtuple</a></li><li><a href=#counter>Counter</a></li><li><a href=#deque>deque</a></li><li><a href=#chainmap>ChainMap</a></li><li><a href=#ordereddict>OrderedDict</a></li><li><a href=#defaultdict>defaultdict</a></li></ul></nav></div></div><div class=content id=content><p>collections模块实现了特定目标的容器，这些容器能够帮助开发者快速简洁的实现想法</p><h2 id=namedtuple>namedtuple</h2><p><code>namedtuple</code>又被称为具名元组，官方解释为“创建命名元组子类的工厂函数”，也就是说<code>namedtuple</code>是一个工厂函数，那么<code>namedtuple</code>是如何将传入的参数构建出一个类并返回的呢？其实这上面又回到了Python中<code>一切皆对象</code>上</p><p>namedtuple源码</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span><span class=lnt>128
+</span><span class=lnt>129
+</span><span class=lnt>130
+</span><span class=lnt>131
+</span><span class=lnt>132
+</span><span class=lnt>133
+</span><span class=lnt>134
+</span><span class=lnt>135
+</span><span class=lnt>136
+</span><span class=lnt>137
+</span><span class=lnt>138
+</span><span class=lnt>139
+</span><span class=lnt>140
+</span><span class=lnt>141
+</span><span class=lnt>142
+</span><span class=lnt>143
+</span><span class=lnt>144
+</span><span class=lnt>145
+</span><span class=lnt>146
+</span><span class=lnt>147
+</span><span class=lnt>148
+</span><span class=lnt>149
+</span><span class=lnt>150
+</span><span class=lnt>151
+</span><span class=lnt>152
+</span><span class=lnt>153
+</span><span class=lnt>154
+</span><span class=lnt>155
+</span><span class=lnt>156
+</span><span class=lnt>157
+</span><span class=lnt>158
+</span><span class=lnt>159
+</span><span class=lnt>160
+</span><span class=lnt>161
+</span><span class=lnt>162
+</span><span class=lnt>163
+</span><span class=lnt>164
+</span><span class=lnt>165
+</span><span class=lnt>166
+</span><span class=lnt>167
+</span><span class=lnt>168
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>def</span> <span class=nf>namedtuple</span><span class=p>(</span><span class=n>typename</span><span class=p>,</span> <span class=n>field_names</span><span class=p>,</span> <span class=o>*</span><span class=p>,</span> <span class=n>rename</span><span class=o>=</span><span class=kc>False</span><span class=p>,</span> <span class=n>defaults</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>module</span><span class=o>=</span><span class=kc>None</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;Returns a new subclass of tuple with named fields.
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2>    &gt;&gt;&gt; Point = namedtuple(&#39;Point&#39;, [&#39;x&#39;, &#39;y&#39;])
+</span></span></span><span class=line><span class=cl><span class=s2>    &gt;&gt;&gt; Point.__doc__                   # docstring for the new class
+</span></span></span><span class=line><span class=cl><span class=s2>    &#39;Point(x, y)&#39;
+</span></span></span><span class=line><span class=cl><span class=s2>    &gt;&gt;&gt; p = Point(11, y=22)             # instantiate with positional args or keywords
+</span></span></span><span class=line><span class=cl><span class=s2>    &gt;&gt;&gt; p[0] + p[1]                     # indexable like a plain tuple
+</span></span></span><span class=line><span class=cl><span class=s2>    33
+</span></span></span><span class=line><span class=cl><span class=s2>    &gt;&gt;&gt; x, y = p                        # unpack like a regular tuple
+</span></span></span><span class=line><span class=cl><span class=s2>    &gt;&gt;&gt; x, y
+</span></span></span><span class=line><span class=cl><span class=s2>    (11, 22)
+</span></span></span><span class=line><span class=cl><span class=s2>    &gt;&gt;&gt; p.x + p.y                       # fields also accessible by name
+</span></span></span><span class=line><span class=cl><span class=s2>    33
+</span></span></span><span class=line><span class=cl><span class=s2>    &gt;&gt;&gt; d = p._asdict()                 # convert to a dictionary
+</span></span></span><span class=line><span class=cl><span class=s2>    &gt;&gt;&gt; d[&#39;x&#39;]
+</span></span></span><span class=line><span class=cl><span class=s2>    11
+</span></span></span><span class=line><span class=cl><span class=s2>    &gt;&gt;&gt; Point(**d)                      # convert from a dictionary
+</span></span></span><span class=line><span class=cl><span class=s2>    Point(x=11, y=22)
+</span></span></span><span class=line><span class=cl><span class=s2>    &gt;&gt;&gt; p._replace(x=100)               # _replace() is like str.replace() but targets named fields
+</span></span></span><span class=line><span class=cl><span class=s2>    Point(x=100, y=22)
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2>    &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1># Validate the field names.  At the user&#39;s option, either generate an error</span>
+</span></span><span class=line><span class=cl>    <span class=c1># message or automatically replace the field name with a valid name.</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=nb>isinstance</span><span class=p>(</span><span class=n>field_names</span><span class=p>,</span> <span class=nb>str</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=n>field_names</span> <span class=o>=</span> <span class=n>field_names</span><span class=o>.</span><span class=n>replace</span><span class=p>(</span><span class=s1>&#39;,&#39;</span><span class=p>,</span> <span class=s1>&#39; &#39;</span><span class=p>)</span><span class=o>.</span><span class=n>split</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=n>field_names</span> <span class=o>=</span> <span class=nb>list</span><span class=p>(</span><span class=nb>map</span><span class=p>(</span><span class=nb>str</span><span class=p>,</span> <span class=n>field_names</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=n>typename</span> <span class=o>=</span> <span class=n>_sys</span><span class=o>.</span><span class=n>intern</span><span class=p>(</span><span class=nb>str</span><span class=p>(</span><span class=n>typename</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>rename</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>seen</span> <span class=o>=</span> <span class=nb>set</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=n>index</span><span class=p>,</span> <span class=n>name</span> <span class=ow>in</span> <span class=nb>enumerate</span><span class=p>(</span><span class=n>field_names</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(</span><span class=ow>not</span> <span class=n>name</span><span class=o>.</span><span class=n>isidentifier</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>                <span class=ow>or</span> <span class=n>_iskeyword</span><span class=p>(</span><span class=n>name</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=ow>or</span> <span class=n>name</span><span class=o>.</span><span class=n>startswith</span><span class=p>(</span><span class=s1>&#39;_&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=ow>or</span> <span class=n>name</span> <span class=ow>in</span> <span class=n>seen</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>                <span class=n>field_names</span><span class=p>[</span><span class=n>index</span><span class=p>]</span> <span class=o>=</span> <span class=sa>f</span><span class=s1>&#39;_</span><span class=si>{</span><span class=n>index</span><span class=si>}</span><span class=s1>&#39;</span>
+</span></span><span class=line><span class=cl>            <span class=n>seen</span><span class=o>.</span><span class=n>add</span><span class=p>(</span><span class=n>name</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>name</span> <span class=ow>in</span> <span class=p>[</span><span class=n>typename</span><span class=p>]</span> <span class=o>+</span> <span class=n>field_names</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=nb>type</span><span class=p>(</span><span class=n>name</span><span class=p>)</span> <span class=ow>is</span> <span class=ow>not</span> <span class=nb>str</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>raise</span> <span class=ne>TypeError</span><span class=p>(</span><span class=s1>&#39;Type names and field names must be strings&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=ow>not</span> <span class=n>name</span><span class=o>.</span><span class=n>isidentifier</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>            <span class=k>raise</span> <span class=ne>ValueError</span><span class=p>(</span><span class=s1>&#39;Type names and field names must be valid &#39;</span>
+</span></span><span class=line><span class=cl>                             <span class=sa>f</span><span class=s1>&#39;identifiers: </span><span class=si>{</span><span class=n>name</span><span class=si>!r}</span><span class=s1>&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>_iskeyword</span><span class=p>(</span><span class=n>name</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=k>raise</span> <span class=ne>ValueError</span><span class=p>(</span><span class=s1>&#39;Type names and field names cannot be a &#39;</span>
+</span></span><span class=line><span class=cl>                             <span class=sa>f</span><span class=s1>&#39;keyword: </span><span class=si>{</span><span class=n>name</span><span class=si>!r}</span><span class=s1>&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>seen</span> <span class=o>=</span> <span class=nb>set</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>name</span> <span class=ow>in</span> <span class=n>field_names</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>name</span><span class=o>.</span><span class=n>startswith</span><span class=p>(</span><span class=s1>&#39;_&#39;</span><span class=p>)</span> <span class=ow>and</span> <span class=ow>not</span> <span class=n>rename</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>raise</span> <span class=ne>ValueError</span><span class=p>(</span><span class=s1>&#39;Field names cannot start with an underscore: &#39;</span>
+</span></span><span class=line><span class=cl>                             <span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>name</span><span class=si>!r}</span><span class=s1>&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>name</span> <span class=ow>in</span> <span class=n>seen</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>raise</span> <span class=ne>ValueError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Encountered duplicate field name: </span><span class=si>{</span><span class=n>name</span><span class=si>!r}</span><span class=s1>&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>seen</span><span class=o>.</span><span class=n>add</span><span class=p>(</span><span class=n>name</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>field_defaults</span> <span class=o>=</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>defaults</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>defaults</span> <span class=o>=</span> <span class=nb>tuple</span><span class=p>(</span><span class=n>defaults</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>defaults</span><span class=p>)</span> <span class=o>&gt;</span> <span class=nb>len</span><span class=p>(</span><span class=n>field_names</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=k>raise</span> <span class=ne>TypeError</span><span class=p>(</span><span class=s1>&#39;Got more default values than field names&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>field_defaults</span> <span class=o>=</span> <span class=nb>dict</span><span class=p>(</span><span class=nb>reversed</span><span class=p>(</span><span class=nb>list</span><span class=p>(</span><span class=nb>zip</span><span class=p>(</span><span class=nb>reversed</span><span class=p>(</span><span class=n>field_names</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>                                                <span class=nb>reversed</span><span class=p>(</span><span class=n>defaults</span><span class=p>)))))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1># Variables used in the methods and docstrings</span>
+</span></span><span class=line><span class=cl>    <span class=n>field_names</span> <span class=o>=</span> <span class=nb>tuple</span><span class=p>(</span><span class=nb>map</span><span class=p>(</span><span class=n>_sys</span><span class=o>.</span><span class=n>intern</span><span class=p>,</span> <span class=n>field_names</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=n>num_fields</span> <span class=o>=</span> <span class=nb>len</span><span class=p>(</span><span class=n>field_names</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>arg_list</span> <span class=o>=</span> <span class=s1>&#39;, &#39;</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>field_names</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>num_fields</span> <span class=o>==</span> <span class=mi>1</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>arg_list</span> <span class=o>+=</span> <span class=s1>&#39;,&#39;</span>
+</span></span><span class=line><span class=cl>    <span class=n>repr_fmt</span> <span class=o>=</span> <span class=s1>&#39;(&#39;</span> <span class=o>+</span> <span class=s1>&#39;, &#39;</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>name</span><span class=si>}</span><span class=s1>=%r&#39;</span> <span class=k>for</span> <span class=n>name</span> <span class=ow>in</span> <span class=n>field_names</span><span class=p>)</span> <span class=o>+</span> <span class=s1>&#39;)&#39;</span>
+</span></span><span class=line><span class=cl>    <span class=n>tuple_new</span> <span class=o>=</span> <span class=nb>tuple</span><span class=o>.</span><span class=fm>__new__</span>
+</span></span><span class=line><span class=cl>    <span class=n>_dict</span><span class=p>,</span> <span class=n>_tuple</span><span class=p>,</span> <span class=n>_len</span><span class=p>,</span> <span class=n>_map</span><span class=p>,</span> <span class=n>_zip</span> <span class=o>=</span> <span class=nb>dict</span><span class=p>,</span> <span class=nb>tuple</span><span class=p>,</span> <span class=nb>len</span><span class=p>,</span> <span class=nb>map</span><span class=p>,</span> <span class=nb>zip</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1># Create all the named tuple methods to be added to the class namespace</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>namespace</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;_tuple_new&#39;</span><span class=p>:</span> <span class=n>tuple_new</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;__builtins__&#39;</span><span class=p>:</span> <span class=p>{},</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;__name__&#39;</span><span class=p>:</span> <span class=sa>f</span><span class=s1>&#39;namedtuple_</span><span class=si>{</span><span class=n>typename</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=n>code</span> <span class=o>=</span> <span class=sa>f</span><span class=s1>&#39;lambda _cls, </span><span class=si>{</span><span class=n>arg_list</span><span class=si>}</span><span class=s1>: _tuple_new(_cls, (</span><span class=si>{</span><span class=n>arg_list</span><span class=si>}</span><span class=s1>))&#39;</span>
+</span></span><span class=line><span class=cl>    <span class=fm>__new__</span> <span class=o>=</span> <span class=nb>eval</span><span class=p>(</span><span class=n>code</span><span class=p>,</span> <span class=n>namespace</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=fm>__new__</span><span class=o>.</span><span class=vm>__name__</span> <span class=o>=</span> <span class=s1>&#39;__new__&#39;</span>
+</span></span><span class=line><span class=cl>    <span class=fm>__new__</span><span class=o>.</span><span class=vm>__doc__</span> <span class=o>=</span> <span class=sa>f</span><span class=s1>&#39;Create new instance of </span><span class=si>{</span><span class=n>typename</span><span class=si>}</span><span class=s1>(</span><span class=si>{</span><span class=n>arg_list</span><span class=si>}</span><span class=s1>)&#39;</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>defaults</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=fm>__new__</span><span class=o>.</span><span class=vm>__defaults__</span> <span class=o>=</span> <span class=n>defaults</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nd>@classmethod</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>_make</span><span class=p>(</span><span class=bp>cls</span><span class=p>,</span> <span class=n>iterable</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=n>result</span> <span class=o>=</span> <span class=n>tuple_new</span><span class=p>(</span><span class=bp>cls</span><span class=p>,</span> <span class=n>iterable</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>_len</span><span class=p>(</span><span class=n>result</span><span class=p>)</span> <span class=o>!=</span> <span class=n>num_fields</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>raise</span> <span class=ne>TypeError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Expected </span><span class=si>{</span><span class=n>num_fields</span><span class=si>}</span><span class=s1> arguments, got </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>result</span><span class=p>)</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>result</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>_make</span><span class=o>.</span><span class=vm>__func__</span><span class=o>.</span><span class=vm>__doc__</span> <span class=o>=</span> <span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Make a new </span><span class=si>{</span><span class=n>typename</span><span class=si>}</span><span class=s1> object from a sequence &#39;</span>
+</span></span><span class=line><span class=cl>                              <span class=s1>&#39;or iterable&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>_replace</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=o>/</span><span class=p>,</span> <span class=o>**</span><span class=n>kwds</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=n>result</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_make</span><span class=p>(</span><span class=n>_map</span><span class=p>(</span><span class=n>kwds</span><span class=o>.</span><span class=n>pop</span><span class=p>,</span> <span class=n>field_names</span><span class=p>,</span> <span class=bp>self</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>kwds</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>raise</span> <span class=ne>ValueError</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Got unexpected field names: </span><span class=si>{</span><span class=nb>list</span><span class=p>(</span><span class=n>kwds</span><span class=p>)</span><span class=si>!r}</span><span class=s1>&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>result</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>_replace</span><span class=o>.</span><span class=vm>__doc__</span> <span class=o>=</span> <span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Return a new </span><span class=si>{</span><span class=n>typename</span><span class=si>}</span><span class=s1> object replacing specified &#39;</span>
+</span></span><span class=line><span class=cl>                        <span class=s1>&#39;fields with new values&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__repr__</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;Return a nicely formatted representation string&#39;</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=vm>__class__</span><span class=o>.</span><span class=vm>__name__</span> <span class=o>+</span> <span class=n>repr_fmt</span> <span class=o>%</span> <span class=bp>self</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>_asdict</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;Return a new dict which maps field names to their values.&#39;</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>_dict</span><span class=p>(</span><span class=n>_zip</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>_fields</span><span class=p>,</span> <span class=bp>self</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>__getnewargs__</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;Return self as a plain tuple.  Used by copy and pickle.&#39;</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>_tuple</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1># Modify function metadata to help with introspection and debugging</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>method</span> <span class=ow>in</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=fm>__new__</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=n>_make</span><span class=o>.</span><span class=vm>__func__</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=n>_replace</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=fm>__repr__</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=n>_asdict</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=n>__getnewargs__</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=n>method</span><span class=o>.</span><span class=vm>__qualname__</span> <span class=o>=</span> <span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>typename</span><span class=si>}</span><span class=s1>.</span><span class=si>{</span><span class=n>method</span><span class=o>.</span><span class=vm>__name__</span><span class=si>}</span><span class=s1>&#39;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1># Build-up the class namespace dictionary</span>
+</span></span><span class=line><span class=cl>    <span class=c1># and use type() to build the result class</span>
+</span></span><span class=line><span class=cl>    <span class=n>class_namespace</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;__doc__&#39;</span><span class=p>:</span> <span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=n>typename</span><span class=si>}</span><span class=s1>(</span><span class=si>{</span><span class=n>arg_list</span><span class=si>}</span><span class=s1>)&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;__slots__&#39;</span><span class=p>:</span> <span class=p>(),</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;_fields&#39;</span><span class=p>:</span> <span class=n>field_names</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;_field_defaults&#39;</span><span class=p>:</span> <span class=n>field_defaults</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;__new__&#39;</span><span class=p>:</span> <span class=fm>__new__</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;_make&#39;</span><span class=p>:</span> <span class=n>_make</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;_replace&#39;</span><span class=p>:</span> <span class=n>_replace</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;__repr__&#39;</span><span class=p>:</span> <span class=fm>__repr__</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;_asdict&#39;</span><span class=p>:</span> <span class=n>_asdict</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;__getnewargs__&#39;</span><span class=p>:</span> <span class=n>__getnewargs__</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>index</span><span class=p>,</span> <span class=n>name</span> <span class=ow>in</span> <span class=nb>enumerate</span><span class=p>(</span><span class=n>field_names</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=n>doc</span> <span class=o>=</span> <span class=n>_sys</span><span class=o>.</span><span class=n>intern</span><span class=p>(</span><span class=sa>f</span><span class=s1>&#39;Alias for field number </span><span class=si>{</span><span class=n>index</span><span class=si>}</span><span class=s1>&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>class_namespace</span><span class=p>[</span><span class=n>name</span><span class=p>]</span> <span class=o>=</span> <span class=n>_tuplegetter</span><span class=p>(</span><span class=n>index</span><span class=p>,</span> <span class=n>doc</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>result</span> <span class=o>=</span> <span class=nb>type</span><span class=p>(</span><span class=n>typename</span><span class=p>,</span> <span class=p>(</span><span class=nb>tuple</span><span class=p>,),</span> <span class=n>class_namespace</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1># For pickling to work, the __module__ variable needs to be set to the frame</span>
+</span></span><span class=line><span class=cl>    <span class=c1># where the named tuple is created.  Bypass this step in environments where</span>
+</span></span><span class=line><span class=cl>    <span class=c1># sys._getframe is not defined (Jython for example) or sys._getframe is not</span>
+</span></span><span class=line><span class=cl>    <span class=c1># defined for arguments greater than 0 (IronPython), or where the user has</span>
+</span></span><span class=line><span class=cl>    <span class=c1># specified a particular module.</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>module</span> <span class=ow>is</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>try</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>module</span> <span class=o>=</span> <span class=n>_sys</span><span class=o>.</span><span class=n>_getframe</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span><span class=o>.</span><span class=n>f_globals</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>&#39;__name__&#39;</span><span class=p>,</span> <span class=s1>&#39;__main__&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>except</span> <span class=p>(</span><span class=ne>AttributeError</span><span class=p>,</span> <span class=ne>ValueError</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=k>pass</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>module</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>result</span><span class=o>.</span><span class=vm>__module__</span> <span class=o>=</span> <span class=n>module</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>result</span>
+</span></span></code></pre></td></tr></table></div></div><p>前面的都看不懂也不要紧，在<code>namedtuple</code>源码的最后return 了一个result<code>return result</code>，往上看几行，会发现有这么一段代码<code>result = type(typename, (tuple,), class_namespace)</code></p><p>这个类是通过<code>type</code>来构建的。在Python一切皆对象中说过，<code>object</code>是<code>type</code>的实例，可以点开<code>type</code>的源码看到，<code>type</code>的<code>__init__</code>方法会初始化一个新的类型</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>cls</span><span class=p>,</span> <span class=n>what</span><span class=p>,</span> <span class=n>bases</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=nb>dict</span><span class=o>=</span><span class=kc>None</span><span class=p>):</span> <span class=c1># known special case of type.__init__</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>    type(object_or_name, bases, dict)
+</span></span></span><span class=line><span class=cl><span class=s2>    type(object) -&gt; the object&#39;s type
+</span></span></span><span class=line><span class=cl><span class=s2>    type(name, bases, dict) -&gt; a new type
+</span></span></span><span class=line><span class=cl><span class=s2>    # (copied from class doc)
+</span></span></span><span class=line><span class=cl><span class=s2>    &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>pass</span>
+</span></span></code></pre></td></tr></table></div></div><p>那么一切问题都解决了，前面的那一部分源码都是在定义按照<code>type</code>的参数签名去构建协议和方法。</p><p>知道了是怎么实现的我们只需要关心用<code>namedtuple</code>的用法就可以了，通常情况下使用<code>namedtuple</code>会用作数据模板，当然<code>namedtuple</code>也能构建出具有复杂方法的类型，但是最好别这样做</p><p>示例</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>collections</span> <span class=kn>import</span> <span class=n>namedtuple</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>Teacher</span><span class=p>(</span><span class=nb>object</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>name</span><span class=p>,</span> <span class=n>age</span><span class=p>,</span> <span class=n>sex</span><span class=p>,</span> <span class=n>course</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>name</span> <span class=o>=</span> <span class=n>name</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>age</span> <span class=o>=</span> <span class=n>age</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>sex</span> <span class=o>=</span> <span class=n>sex</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>course</span> <span class=o>=</span> <span class=n>course</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__repr__</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=sa>f</span><span class=s2>&#34;Teacher(name=</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>name</span><span class=si>}</span><span class=s2>, age=</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>age</span><span class=si>}</span><span class=s2>, sex=</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>sex</span><span class=si>}</span><span class=s2>, &#34;</span> \
+</span></span><span class=line><span class=cl>               <span class=sa>f</span><span class=s2>&#34;course=</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>course</span><span class=si>}</span><span class=s2>)&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>Person</span> <span class=o>=</span> <span class=n>namedtuple</span><span class=p>(</span><span class=s1>&#39;Person&#39;</span><span class=p>,</span> <span class=p>[</span><span class=s1>&#39;name&#39;</span><span class=p>,</span> <span class=s1>&#39;age&#39;</span><span class=p>,</span> <span class=s1>&#39;sex&#39;</span><span class=p>])</span>
+</span></span><span class=line><span class=cl><span class=n>p</span> <span class=o>=</span> <span class=n>Person</span><span class=p>(</span><span class=s2>&#34;张三&#34;</span><span class=p>,</span> <span class=s2>&#34;18&#34;</span><span class=p>,</span> <span class=s2>&#34;男&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=c1># Person(name=&#39;张三&#39;, age=&#39;18&#39;, sex=&#39;男&#39;)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>p</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>t</span> <span class=o>=</span> <span class=n>Teacher</span><span class=p>(</span><span class=s2>&#34;李四&#34;</span><span class=p>,</span> <span class=s2>&#34;20&#34;</span><span class=p>,</span> <span class=s2>&#34;女&#34;</span><span class=p>,</span> <span class=s2>&#34;美术&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>t</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=c1># Teacher(name=李四, age=20, sex=女, course=美术)</span>
+</span></span></code></pre></td></tr></table></div></div><p>千万因为<code>具名元组</code>这个名字而将<code>namedtuple</code>想成了返回一个元组了，返回的是类型</p><p>其实看到这里会发现<code>namedtuple</code>的功能和<code>dataclass</code>装饰器有一点像，后面会单独讲解<code>dataclass</code>装饰器</p><h2 id=counter>Counter</h2><p><code>Counter</code>是一种容器类型，源码很长，这里就展示了，<code>Counter</code>继承自<code>dict</code>，所以<code>Counter</code>的大部分功能和<code>dict</code>相同，但是<code>Counter</code>的主要功能就和名字一样，计数！也就是统计序列中的元素出现的次数</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>def</span> <span class=nf>update</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>iterable</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=o>/</span><span class=p>,</span> <span class=o>**</span><span class=n>kwds</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;&#39;&#39;Like dict.update() but add counts instead of replacing them.
+</span></span></span><span class=line><span class=cl><span class=s1>
+</span></span></span><span class=line><span class=cl><span class=s1>        Source can be an iterable, a dictionary, or another Counter instance.
+</span></span></span><span class=line><span class=cl><span class=s1>
+</span></span></span><span class=line><span class=cl><span class=s1>        &gt;&gt;&gt; c = Counter(&#39;which&#39;)
+</span></span></span><span class=line><span class=cl><span class=s1>        &gt;&gt;&gt; c.update(&#39;witch&#39;)           # add elements from another iterable
+</span></span></span><span class=line><span class=cl><span class=s1>        &gt;&gt;&gt; d = Counter(&#39;watch&#39;)
+</span></span></span><span class=line><span class=cl><span class=s1>        &gt;&gt;&gt; c.update(d)                 # add elements from another counter
+</span></span></span><span class=line><span class=cl><span class=s1>        &gt;&gt;&gt; c[&#39;h&#39;]                      # four &#39;h&#39; in which, witch, and watch
+</span></span></span><span class=line><span class=cl><span class=s1>        4
+</span></span></span><span class=line><span class=cl><span class=s1>
+</span></span></span><span class=line><span class=cl><span class=s1>        &#39;&#39;&#39;</span>
+</span></span><span class=line><span class=cl>    <span class=c1># The regular dict.update() operation makes no sense here because the</span>
+</span></span><span class=line><span class=cl>    <span class=c1># replace behavior results in the some of original untouched counts</span>
+</span></span><span class=line><span class=cl>    <span class=c1># being mixed-in with all of the other counts for a mismash that</span>
+</span></span><span class=line><span class=cl>    <span class=c1># doesn&#39;t have a straight-forward interpretation in most counting</span>
+</span></span><span class=line><span class=cl>    <span class=c1># contexts.  Instead, we implement straight-addition.  Both the inputs</span>
+</span></span><span class=line><span class=cl>    <span class=c1># and outputs are allowed to contain zero and negative counts.</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>iterable</span> <span class=ow>is</span> <span class=ow>not</span> <span class=kc>None</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=nb>isinstance</span><span class=p>(</span><span class=n>iterable</span><span class=p>,</span> <span class=n>_collections_abc</span><span class=o>.</span><span class=n>Mapping</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=bp>self</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>self_get</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>get</span>
+</span></span><span class=line><span class=cl>                <span class=k>for</span> <span class=n>elem</span><span class=p>,</span> <span class=n>count</span> <span class=ow>in</span> <span class=n>iterable</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>                    <span class=bp>self</span><span class=p>[</span><span class=n>elem</span><span class=p>]</span> <span class=o>=</span> <span class=n>count</span> <span class=o>+</span> <span class=n>self_get</span><span class=p>(</span><span class=n>elem</span><span class=p>,</span> <span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=c1># fast path when counter is empty</span>
+</span></span><span class=line><span class=cl>                <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=n>update</span><span class=p>(</span><span class=n>iterable</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>_count_elements</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>iterable</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>kwds</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>update</span><span class=p>(</span><span class=n>kwds</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>Counter</code>在实例化的的过程中执行<code>__init__</code>方法时会调用<code>update</code>方法，在<code>update</code>方法中如果传入的可迭代对象是映射类型，那么将会遍历添加对应的映射关系，因为<code>Counter</code>本身就继承自<code>dict</code>所以它自己就是一个字典，它内部也没有维护字典，所以for循环遍历添加键的计数时是<code>self[slem]</code>，因此这也要求如果传入的是映射类型那么需要是<code>key(Any):value(int)</code>形式的，如果不是映射类型，那么将会执行<code>_count_elements</code>函数</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>def</span> <span class=nf>_count_elements</span><span class=p>(</span><span class=n>mapping</span><span class=p>,</span> <span class=n>iterable</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;Tally elements from the iterable.&#39;</span>
+</span></span><span class=line><span class=cl>    <span class=n>mapping_get</span> <span class=o>=</span> <span class=n>mapping</span><span class=o>.</span><span class=n>get</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>elem</span> <span class=ow>in</span> <span class=n>iterable</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>mapping</span><span class=p>[</span><span class=n>elem</span><span class=p>]</span> <span class=o>=</span> <span class=n>mapping_get</span><span class=p>(</span><span class=n>elem</span><span class=p>,</span> <span class=mi>0</span><span class=p>)</span> <span class=o>+</span> <span class=mi>1</span>
+</span></span></code></pre></td></tr></table></div></div><p>这个函数很简单，就干了一件事情，遍历序列中的元素，然后将该元素的计数加一</p><p>示例</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>collections</span> <span class=kn>import</span> <span class=n>Counter</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>c</span> <span class=o>=</span> <span class=n>Counter</span><span class=p>([</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>10</span><span class=p>,</span> <span class=mi>221</span><span class=p>,</span> <span class=mi>12</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>2</span><span class=p>])</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>c</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=c1># Counter({2: 2, 4: 2, 1: 1, 3: 1, 5: 1, 10: 1, 221: 1, 12: 1})</span>
+</span></span><span class=line><span class=cl><span class=n>c</span><span class=o>.</span><span class=n>update</span><span class=p>({</span><span class=mi>7</span><span class=p>:</span> <span class=mi>10</span><span class=p>})</span>
+</span></span><span class=line><span class=cl><span class=c1># 将键值对按值排序后，返回指定数量的键值对，如果参数是2，那么将返回前2个</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>c</span><span class=o>.</span><span class=n>most_common</span><span class=p>(</span><span class=mi>1</span><span class=p>))</span>
+</span></span><span class=line><span class=cl><span class=c1># [(7, 10)]</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=deque>deque</h2><p><code>deque</code>又被称作双端队列，是一个很像<code>list</code>的数据结构，但是它并不是继承或维护的<code>list</code>，相比于<code>list</code>实现的队列，<code>deque</code>实现的队列拥有更低的时间和空间复杂度。<code>list</code>实现在出队（pop）和插入（insert）时的空间复杂度大约为O(n)，<code>deque</code>在出队（pop）和入队（append）时的时间复杂度是O(1)，并且<code>deque</code>是线程安全的，说到线程安全，Python中的<code>Queue</code>内部维护的就是<code>deque</code></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>class</span> <span class=nc>Queue</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;&#39;&#39;Create a queue object with a given maximum size.
+</span></span></span><span class=line><span class=cl><span class=s1>
+</span></span></span><span class=line><span class=cl><span class=s1>    If maxsize is &lt;= 0, the queue size is infinite.
+</span></span></span><span class=line><span class=cl><span class=s1>    &#39;&#39;&#39;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>maxsize</span><span class=o>=</span><span class=mi>0</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>maxsize</span> <span class=o>=</span> <span class=n>maxsize</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>_init</span><span class=p>(</span><span class=n>maxsize</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># mutex must be held whenever the queue is mutating.  All methods</span>
+</span></span><span class=line><span class=cl>        <span class=c1># that acquire mutex must release it before returning.  mutex</span>
+</span></span><span class=line><span class=cl>        <span class=c1># is shared between the three conditions, so acquiring and</span>
+</span></span><span class=line><span class=cl>        <span class=c1># releasing the conditions also acquires and releases mutex.</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>mutex</span> <span class=o>=</span> <span class=n>threading</span><span class=o>.</span><span class=n>Lock</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># Notify not_empty whenever an item is added to the queue; a</span>
+</span></span><span class=line><span class=cl>        <span class=c1># thread waiting to get is notified then.</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>not_empty</span> <span class=o>=</span> <span class=n>threading</span><span class=o>.</span><span class=n>Condition</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>mutex</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># Notify not_full whenever an item is removed from the queue;</span>
+</span></span><span class=line><span class=cl>        <span class=c1># a thread waiting to put is notified then.</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>not_full</span> <span class=o>=</span> <span class=n>threading</span><span class=o>.</span><span class=n>Condition</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>mutex</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1># Notify all_tasks_done whenever the number of unfinished tasks</span>
+</span></span><span class=line><span class=cl>        <span class=c1># drops to zero; thread waiting to join() is notified to resume</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>all_tasks_done</span> <span class=o>=</span> <span class=n>threading</span><span class=o>.</span><span class=n>Condition</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>mutex</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>unfinished_tasks</span> <span class=o>=</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>_init</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>maxsize</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>queue</span> <span class=o>=</span> <span class=n>deque</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>deque</code>为什么会被称作双端队列呢？因为<code>deque</code>实现了从队列两端添加和删除元素的方法。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>class</span> <span class=nc>deque</span><span class=p>(</span><span class=nb>object</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>    deque([iterable[, maxlen]]) --&gt; deque object
+</span></span></span><span class=line><span class=cl><span class=s2>    
+</span></span></span><span class=line><span class=cl><span class=s2>    A list-like sequence optimized for data accesses near its endpoints.
+</span></span></span><span class=line><span class=cl><span class=s2>    &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>append</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=o>*</span><span class=n>args</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>):</span> <span class=c1># real signature unknown</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34; Add an element to the right side of the deque. &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>pass</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>appendleft</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=o>*</span><span class=n>args</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>):</span> <span class=c1># real signature unknown</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34; Add an element to the left side of the deque. &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>pass</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>pop</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=o>*</span><span class=n>args</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>):</span> <span class=c1># real signature unknown</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34; Remove and return the rightmost element. &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>pass</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>popleft</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=o>*</span><span class=n>args</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>):</span> <span class=c1># real signature unknown</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34; Remove and return the leftmost element. &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>pass</span>
+</span></span></code></pre></td></tr></table></div></div><p>注释已经说的很详细了，<code>deque</code>的源码很容易阅读，建议读者都去阅读一下，这里介绍一个非常有意思的方法<code>rotate</code>，用<code>rotate</code>方法可以将队列进行旋转（这里指的是<code>deque</code>）</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>def</span> <span class=nf>rotate</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=o>*</span><span class=n>args</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>):</span> <span class=c1># real signature unknown</span>
+</span></span><span class=line><span class=cl>	<span class=s2>&#34;&#34;&#34; Rotate the deque n steps to the right (default n=1).  If n is negative, rotates left. &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=k>pass</span>
+</span></span></code></pre></td></tr></table></div></div><p>传入的参数n可以为正也可以为负，如果为负就是将左边的元素往右移动n个，如果为正就是将右边的元素往左移动n个，也就是将这个队列看作一个环</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>collections</span> <span class=kn>import</span> <span class=n>ChainMap</span><span class=p>,</span> <span class=n>deque</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>q</span> <span class=o>=</span> <span class=n>deque</span><span class=p>([</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>,</span> <span class=mi>4</span><span class=p>])</span>
+</span></span><span class=line><span class=cl><span class=n>q</span><span class=o>.</span><span class=n>rotate</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>q</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=c1># deque([4, 1, 2, 3])</span>
+</span></span><span class=line><span class=cl><span class=n>q</span><span class=o>.</span><span class=n>rotate</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>q</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=c1># deque([3, 4, 1, 2])</span>
+</span></span><span class=line><span class=cl><span class=n>q</span><span class=o>.</span><span class=n>rotate</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>q</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=c1># deque([2, 3, 4, 1])</span>
+</span></span><span class=line><span class=cl><span class=n>q</span><span class=o>.</span><span class=n>rotate</span><span class=p>(</span><span class=o>-</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>q</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=c1># deque([3, 4, 1, 2])</span>
+</span></span><span class=line><span class=cl><span class=n>q</span><span class=o>.</span><span class=n>rotate</span><span class=p>(</span><span class=o>-</span><span class=mi>2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>q</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=c1># deque([1, 2, 3, 4])</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=chainmap>ChainMap</h2><p>一个 <code>ChainMap</code> 将多个字典或者其他映射组合在一起，创建一个单独的可更新的视图。什么意思呢？</p><p>在Python中的字典里，因为键值是映射关系，底层是hash表，因此一个键只能映射到一个值，但是<code>ChainMap</code>通过维护一个列表来实现多个键共存，也就是他们还在原来的字典中。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>class</span> <span class=nc>ChainMap</span><span class=p>(</span><span class=n>_collections_abc</span><span class=o>.</span><span class=n>MutableMapping</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;&#39;&#39; A ChainMap groups multiple dicts (or other mappings) together
+</span></span></span><span class=line><span class=cl><span class=s1>    to create a single, updateable view.
+</span></span></span><span class=line><span class=cl><span class=s1>
+</span></span></span><span class=line><span class=cl><span class=s1>    The underlying mappings are stored in a list.  That list is public and can
+</span></span></span><span class=line><span class=cl><span class=s1>    be accessed or updated using the *maps* attribute.  There is no other
+</span></span></span><span class=line><span class=cl><span class=s1>    state.
+</span></span></span><span class=line><span class=cl><span class=s1>
+</span></span></span><span class=line><span class=cl><span class=s1>    Lookups search the underlying mappings successively until a key is found.
+</span></span></span><span class=line><span class=cl><span class=s1>    In contrast, writes, updates, and deletions only operate on the first
+</span></span></span><span class=line><span class=cl><span class=s1>    mapping.
+</span></span></span><span class=line><span class=cl><span class=s1>
+</span></span></span><span class=line><span class=cl><span class=s1>    &#39;&#39;&#39;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=o>*</span><span class=n>maps</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;&#39;&#39;Initialize a ChainMap by setting *maps* to the given mappings.
+</span></span></span><span class=line><span class=cl><span class=s1>        If no mappings are provided, a single empty dictionary is used.
+</span></span></span><span class=line><span class=cl><span class=s1>
+</span></span></span><span class=line><span class=cl><span class=s1>        &#39;&#39;&#39;</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>maps</span> <span class=o>=</span> <span class=nb>list</span><span class=p>(</span><span class=n>maps</span><span class=p>)</span> <span class=ow>or</span> <span class=p>[{}]</span>          <span class=c1># always at least one map</span>
+</span></span></code></pre></td></tr></table></div></div><p>可以看到在<code>__init__</code>方法中，接收一个参数<code>maps</code>，这个参数是不定长参数，也就是说可以传多个<code>dict</code>，如果什么参数都没有传，那么将是一个列表中包含一个空字典。</p><p>这个过程我们可以通过下面的函数简单理解</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>def</span> <span class=nf>chain</span><span class=p>(</span><span class=o>*</span><span class=n>maps</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>cha</span> <span class=o>=</span> <span class=nb>list</span><span class=p>(</span><span class=n>maps</span><span class=p>)</span> <span class=ow>or</span> <span class=p>[{}]</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>cha</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>a</span> <span class=o>=</span> <span class=p>{</span><span class=s1>&#39;x&#39;</span><span class=p>:</span> <span class=mi>1</span><span class=p>,</span> <span class=s1>&#39;z&#39;</span><span class=p>:</span> <span class=mi>3</span><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=n>b</span> <span class=o>=</span> <span class=p>{</span><span class=s1>&#39;y&#39;</span><span class=p>:</span> <span class=mi>2</span><span class=p>,</span> <span class=s1>&#39;z&#39;</span><span class=p>:</span> <span class=mi>4</span><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>chain</span><span class=p>(</span><span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>))</span>
+</span></span><span class=line><span class=cl><span class=c1># [{&#39;x&#39;: 1, &#39;z&#39;: 3}, {&#39;y&#39;: 2, &#39;z&#39;: 4}]</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>ChainMap</code>示例如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>collections</span> <span class=kn>import</span> <span class=n>ChainMap</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>a</span> <span class=o>=</span> <span class=p>{</span><span class=s1>&#39;x&#39;</span><span class=p>:</span> <span class=mi>1</span><span class=p>,</span> <span class=s1>&#39;z&#39;</span><span class=p>:</span> <span class=mi>3</span><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=n>b</span> <span class=o>=</span> <span class=p>{</span><span class=s1>&#39;y&#39;</span><span class=p>:</span> <span class=mi>2</span><span class=p>,</span> <span class=s1>&#39;z&#39;</span><span class=p>:</span> <span class=mi>4</span><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>chain1</span> <span class=o>=</span> <span class=n>ChainMap</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>chain2</span> <span class=o>=</span> <span class=n>ChainMap</span><span class=p>(</span><span class=n>a</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>chain3</span> <span class=o>=</span> <span class=n>ChainMap</span><span class=p>(</span><span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>chain1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=c1># ChainMap({})</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>chain2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=c1># ChainMap({&#39;x&#39;: 1, &#39;z&#39;: 3})</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>chain3</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=c1># ChainMap({&#39;x&#39;: 1, &#39;z&#39;: 3}, {&#39;y&#39;: 2, &#39;z&#39;: 4})</span>
+</span></span></code></pre></td></tr></table></div></div><p>至于输出不一样是因为源码中的<code>__repr__</code>方法导致的</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=nd>@_recursive_repr</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=fm>__repr__</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=sa>f</span><span class=s1>&#39;</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=vm>__class__</span><span class=o>.</span><span class=vm>__name__</span><span class=si>}</span><span class=s1>(</span><span class=si>{</span><span class=s2>&#34;, &#34;</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=nb>map</span><span class=p>(</span><span class=nb>repr</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>maps</span><span class=p>))</span><span class=si>}</span><span class=s1>)&#39;</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>ChainMap</code>在进行遍历的时候往往只会找一个键进行取值，比如上面的程序中两个<code>dict</code>都有<code>z</code>，但是在遍历的时候只会取到第一个</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>collections</span> <span class=kn>import</span> <span class=n>ChainMap</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>a</span> <span class=o>=</span> <span class=p>{</span><span class=s1>&#39;x&#39;</span><span class=p>:</span> <span class=mi>1</span><span class=p>,</span> <span class=s1>&#39;z&#39;</span><span class=p>:</span> <span class=mi>3</span><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=n>b</span> <span class=o>=</span> <span class=p>{</span><span class=s1>&#39;y&#39;</span><span class=p>:</span> <span class=mi>2</span><span class=p>,</span> <span class=s1>&#39;z&#39;</span><span class=p>:</span> <span class=mi>4</span><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=n>chain</span> <span class=o>=</span> <span class=n>ChainMap</span><span class=p>(</span><span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=k>for</span> <span class=n>k</span><span class=p>,</span> <span class=n>v</span> <span class=ow>in</span> <span class=n>chain</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=n>k</span><span class=p>,</span><span class=n>v</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=c1># y 2</span>
+</span></span><span class=line><span class=cl><span class=c1># z 3</span>
+</span></span><span class=line><span class=cl><span class=c1># x 1</span>
+</span></span></code></pre></td></tr></table></div></div><p>当对<code>ChainMap</code>修改的时候亦是如此</p><p><strong>注意：前面说过，ChainMap中list维护的是字典的引用，因此如果对ChainMap进行修改，将会使原来dict中的值改变</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>collections</span> <span class=kn>import</span> <span class=n>ChainMap</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>a</span> <span class=o>=</span> <span class=p>{</span><span class=s1>&#39;x&#39;</span><span class=p>:</span> <span class=mi>1</span><span class=p>,</span> <span class=s1>&#39;z&#39;</span><span class=p>:</span> <span class=mi>3</span><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=n>b</span> <span class=o>=</span> <span class=p>{</span><span class=s1>&#39;y&#39;</span><span class=p>:</span> <span class=mi>2</span><span class=p>,</span> <span class=s1>&#39;z&#39;</span><span class=p>:</span> <span class=mi>4</span><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=n>chain</span> <span class=o>=</span> <span class=n>ChainMap</span><span class=p>(</span><span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>chain</span><span class=o>.</span><span class=n>maps</span><span class=p>[</span><span class=mi>0</span><span class=p>][</span><span class=s1>&#39;x&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=mi>10</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>a</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=c1># {&#39;x&#39;: 10, &#39;z&#39;: 3}</span>
+</span></span></code></pre></td></tr></table></div></div><p>注意，这里的<code>maps</code>不是方法，就是内部维护的列表，所以尽量不要调用</p><h2 id=ordereddict>OrderedDict</h2><p><code>OrderedDict</code>继承了Python中的<code>dict</code>，又被称为有序字典，但是在Python3.6开始<code>dict</code>已经是有序的了，而且操作起来效率更高</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>collections</span> <span class=kn>import</span> <span class=n>OrderedDict</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>dic1</span> <span class=o>=</span> <span class=nb>dict</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>dic1</span><span class=p>[</span><span class=s2>&#34;name&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;张三&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>dic1</span><span class=p>[</span><span class=s2>&#34;age&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;18&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>dic1</span><span class=p>[</span><span class=s2>&#34;height&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;180&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>dic1</span><span class=p>[</span><span class=s2>&#34;sex&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;1&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>dic1</span><span class=p>[</span><span class=s2>&#34;glasses&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;1&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>dic1</span><span class=p>[</span><span class=s2>&#34;hair&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;长&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>dic2</span> <span class=o>=</span> <span class=n>OrderedDict</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>dic2</span><span class=p>[</span><span class=s2>&#34;name&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;张三&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>dic2</span><span class=p>[</span><span class=s2>&#34;age&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;18&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>dic2</span><span class=p>[</span><span class=s2>&#34;height&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;180&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>dic2</span><span class=p>[</span><span class=s2>&#34;sex&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;1&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>dic2</span><span class=p>[</span><span class=s2>&#34;glasses&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;1&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>dic2</span><span class=p>[</span><span class=s2>&#34;hair&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;长&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>dic1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>dic2</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>读者可以自行验证</p><p>笔者这里就介绍<code>OrderedDict</code>的原因有以下几个方法</p><ul><li>popitem(<em>last=True</em>)，last参数可以设置pop的方向</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>collections</span> <span class=kn>import</span> <span class=n>OrderedDict</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>dic2</span> <span class=o>=</span> <span class=n>OrderedDict</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>dic2</span><span class=p>[</span><span class=s2>&#34;name&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;张三&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>dic2</span><span class=p>[</span><span class=s2>&#34;age&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;18&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>dic2</span><span class=p>[</span><span class=s2>&#34;height&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;180&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>dic2</span><span class=p>[</span><span class=s2>&#34;sex&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;1&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>dic2</span><span class=p>[</span><span class=s2>&#34;glasses&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;1&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>dic2</span><span class=p>[</span><span class=s2>&#34;hair&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;长&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>while</span> <span class=n>dic2</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=n>dic2</span><span class=o>.</span><span class=n>popitem</span><span class=p>(</span><span class=n>last</span><span class=o>=</span><span class=kc>False</span><span class=p>))</span>
+</span></span></code></pre></td></tr></table></div></div><ul><li>move_to_end(<em>key</em>, <em>last=True</em>)，</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>collections</span> <span class=kn>import</span> <span class=n>OrderedDict</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>dic2</span> <span class=o>=</span> <span class=n>OrderedDict</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>dic2</span><span class=p>[</span><span class=s2>&#34;name&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;张三&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>dic2</span><span class=p>[</span><span class=s2>&#34;age&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;18&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>dic2</span><span class=p>[</span><span class=s2>&#34;height&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;180&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>dic2</span><span class=p>[</span><span class=s2>&#34;sex&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;1&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>dic2</span><span class=p>[</span><span class=s2>&#34;glasses&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;1&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>dic2</span><span class=p>[</span><span class=s2>&#34;hair&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;长&#34;</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>dic2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=c1># OrderedDict([(&#39;name&#39;, &#39;张三&#39;), (&#39;age&#39;, &#39;18&#39;), (&#39;height&#39;, &#39;180&#39;), (&#39;sex&#39;, &#39;1&#39;), (&#39;glasses&#39;, &#39;1&#39;), (&#39;hair&#39;, &#39;长&#39;)])</span>
+</span></span><span class=line><span class=cl><span class=n>dic2</span><span class=o>.</span><span class=n>move_to_end</span><span class=p>(</span><span class=s2>&#34;name&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>dic2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=c1># OrderedDict([(&#39;age&#39;, &#39;18&#39;), (&#39;height&#39;, &#39;180&#39;), (&#39;sex&#39;, &#39;1&#39;), (&#39;glasses&#39;, &#39;1&#39;), (&#39;hair&#39;, &#39;长&#39;), (&#39;name&#39;, &#39;张三&#39;)])</span>
+</span></span></code></pre></td></tr></table></div></div><ul><li>__reversed__，在<code>Python3.8</code>之前<code>dict</code>是没有__reversed__方法的，虽然现在有了，不过本文还是提一下</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>collections</span> <span class=kn>import</span> <span class=n>OrderedDict</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>dic2</span> <span class=o>=</span> <span class=n>OrderedDict</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>dic2</span><span class=p>[</span><span class=s2>&#34;name&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;张三&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>dic2</span><span class=p>[</span><span class=s2>&#34;age&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;18&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>dic2</span><span class=p>[</span><span class=s2>&#34;height&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;180&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>dic2</span><span class=p>[</span><span class=s2>&#34;sex&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;1&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>dic2</span><span class=p>[</span><span class=s2>&#34;glasses&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;1&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>dic2</span><span class=p>[</span><span class=s2>&#34;hair&#34;</span><span class=p>]</span> <span class=o>=</span> <span class=s2>&#34;长&#34;</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>dic2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=k>for</span> <span class=n>item</span> <span class=ow>in</span> <span class=nb>reversed</span><span class=p>(</span><span class=n>dic2</span><span class=o>.</span><span class=n>items</span><span class=p>()):</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=n>item</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=defaultdict>defaultdict</h2><p><code>defaultdict</code>和<code>OrderedDict</code>一样是<code>dict</code>的一个子类，就和名字一样，在初始化的时候我们可以指定键值对的<code>value</code>是什么类型的</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>collections</span> <span class=kn>import</span> <span class=n>defaultdict</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>d</span> <span class=o>=</span> <span class=n>defaultdict</span><span class=p>(</span><span class=nb>list</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>d</span><span class=p>[</span><span class=s2>&#34;person&#34;</span><span class=p>]</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=s2>&#34;张三&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>d</span><span class=p>[</span><span class=s2>&#34;person&#34;</span><span class=p>]</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=s2>&#34;李四&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>d</span><span class=p>[</span><span class=s2>&#34;class&#34;</span><span class=p>]</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=s2>&#34;1班&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>d</span><span class=p>[</span><span class=s2>&#34;class&#34;</span><span class=p>]</span><span class=o>.</span><span class=n>extend</span><span class=p>([</span><span class=s2>&#34;二班&#34;</span><span class=p>,</span> <span class=s2>&#34;三班&#34;</span><span class=p>])</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>d</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=c1># defaultdict(&lt;class &#39;list&#39;&gt;, {&#39;person&#39;: [&#39;张三&#39;, &#39;李四&#39;], &#39;class&#39;: [&#39;1班&#39;, &#39;二班&#39;, &#39;三班&#39;]})</span>
+</span></span></code></pre></td></tr></table></div></div><p>要把<code>value</code>设置为什么类型，初始化的时候指定好就行了</p></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2021-04-26</span></div><div class=post-info-license></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw"></i>&nbsp;<a href=/tags/collections/>collections</a>,&nbsp;<a href=/tags/python/>Python</a>,&nbsp;<a href=/tags/%E5%AE%B9%E5%99%A8/>容器</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/posts/python%E4%B8%8A%E4%B8%8B%E6%96%87%E7%AE%A1%E7%90%86%E5%99%A8/ class=prev rel=prev title=Python上下文管理器><i class="fas fa-angle-left fa-fw"></i>Python上下文管理器</a>
+<a href=/posts/%E8%AE%B0%E4%B8%80%E6%AC%A1%E9%81%87%E5%88%B0git-push%E6%97%B6%E6%97%A0%E6%B3%95%E9%AA%8C%E8%AF%81%E7%9A%84%E9%97%AE%E9%A2%98/ class=next rel=next title="记一次遇到git push时无法验证的问题">记一次遇到git push时无法验证的问题<i class="fas fa-angle-right fa-fw"></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2019 - 2023</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=http://pujichun.ink target=_blank>普吉春</a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw"></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw"></i></a></div><script type=text/javascript src=/lib/smooth-scroll/smooth-scroll.min.js></script><script type=text/javascript src=/lib/autocomplete/autocomplete.min.js></script><script type=text/javascript src=/lib/lunr/lunr.min.js></script><script type=text/javascript src=/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=/lib/lazysizes/lazysizes.min.js></script><script type=text/javascript src=/lib/clipboard/clipboard.min.js></script><script type=text/javascript src=/lib/typeit/typeit.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:10},comment:{},data:{"id-1":"pujic","id-2":"pujic"},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"lunr"},typeit:{cursorChar:null,cursorSpeed:null,data:{"id-1":["id-1"],"id-2":["id-2"]},duration:null,speed:null}}</script><script type=text/javascript src=/js/theme.min.js></script></body></html>

@@ -1,0 +1,394 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><meta http-equiv=x-ua-compatible content="IE=edge, chrome=1"><title>Scrapy使用笔记 - pujic</title><meta name=Description content><meta property="og:title" content="Scrapy使用笔记"><meta property="og:description" content="Scrapy的中文文档似乎也和许多文档一样，在中文翻译上、内容上以及版本上存在很多的问题"><meta property="og:type" content="article"><meta property="og:url" content="http://example.org/posts/scrapy%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2020-03-14T00:22:14+00:00"><meta property="article:modified_time" content="2020-03-14T00:22:14+00:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="Scrapy使用笔记"><meta name=twitter:description content="Scrapy的中文文档似乎也和许多文档一样，在中文翻译上、内容上以及版本上存在很多的问题"><meta name=application-name content="pujic"><meta name=apple-mobile-web-app-title content="pujic"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=http://example.org/posts/scrapy%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/><link rel=prev href=http://example.org/posts/%E4%BD%BF%E7%94%A8vscode-mingw%E9%85%8D%E7%BD%AEc%E8%AF%AD%E8%A8%80%E7%9A%84%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/><link rel=next href=http://example.org/posts/mongodb%E7%9A%84%E5%AE%89%E8%A3%85%E4%BB%A5%E5%8F%8A%E9%85%8D%E7%BD%AE/><link rel=stylesheet href=/lib/normalize/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=/lib/fontawesome-free/all.min.css><link rel=stylesheet href=/lib/animate/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Scrapy使用笔记","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/example.org\/posts\/scrapy%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0\/"},"genre":"posts","keywords":"Scrapy, Python, 网络爬虫","wordcount":5098,"url":"http:\/\/example.org\/posts\/scrapy%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0\/","datePublished":"2020-03-14T00:22:14+00:00","dateModified":"2020-03-14T00:22:14+00:00","publisher":{"@type":"Organization","name":"普吉春"},"author":{"@type":"Person","name":"普吉春"},"description":""}</script></head><body header-desktop=fixed header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":""==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:""==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title=pujic><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-1 class=typeit></span></a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>所有文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/categories/>分类 </a><a class=menu-item href=/about/>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin"></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw"></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=pujic><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-2 class=typeit></span></a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin"></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=/posts/ title>所有文章</a><a class=menu-item href=/tags/ title>标签</a><a class=menu-item href=/categories/ title>分类</a><a class=menu-item href=/about/ title>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw"></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animated flipInX">Scrapy使用笔记</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=http://pujichun.ink title=Author target=_blank rel="noopener noreffer author" class=author><i class="fas fa-user-circle fa-fw"></i>普吉春</a></span>&nbsp;<span class=post-category>收录于 <a href=/categories/%E7%BD%91%E7%BB%9C%E7%88%AC%E8%99%AB/><i class="far fa-folder fa-fw"></i>网络爬虫</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2020-03-14>2020-03-14</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 5098 字&nbsp;
+<i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 11 分钟&nbsp;</div></div><div class="details toc" id=toc-static kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right"></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#命令>命令</a><ul><li><a href=#创建项目>创建项目</a></li><li><a href=#使用命令创建一个爬虫>使用命令创建一个爬虫</a></li><li><a href=#查看模板>查看模板</a></li><li><a href=#指定模板>指定模板</a></li></ul></li><li><a href=#下载图片>下载图片</a><ul><li><a href=#限定下载图片大小>限定下载图片大小</a></li><li><a href=#获取图片路径>获取图片路径</a></li></ul></li><li><a href=#拼接url>拼接URL</a></li><li><a href=#编写爬虫的注意事项>编写爬虫的注意事项</a></li><li><a href=#文件存储>文件存储</a><ul><li><a href=#在pipeline中使用settings中的配置>在Pipeline中使用settings中的配置</a></li></ul></li><li><a href=#scrapy异步写入mysql>scrapy异步写入MySQL</a></li><li><a href=#item-loaders>item loaders</a><ul><li><a href=#自定义itemloader>自定义itemloader</a></li></ul></li><li><a href=#回调>回调</a></li><li><a href=#formrequest>FormRequest</a></li><li><a href=#scrapy-shell>scrapy shell</a></li><li><a href=#crawlspider>CrawlSpider</a><ul><li><a href=#parse方法>parse方法</a></li><li><a href=#rule>Rule</a></li><li><a href=#linkextractor>LinkExtractor</a></li><li><a href=#item>Item</a></li></ul></li></ul></nav></div></div><div class=content id=content><p>Scrapy的中文文档似乎也和许多文档一样，在中文翻译上、内容上以及版本上存在很多的问题</p><h2 id=命令>命令</h2><h3 id=创建项目>创建项目</h3><p>进入到项目存放的目录使用命令提示符创建</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>scrapy startproject 项目名称
+</span></span></code></pre></td></tr></table></div></div><h3 id=使用命令创建一个爬虫>使用命令创建一个爬虫</h3><p>进入到这个项目的目录中，使用命令提示符创建爬虫</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>scapy genspider 爬虫名字 域名
+</span></span></code></pre></td></tr></table></div></div><p>爬虫的名字不能和项目的名字相同</p><h3 id=查看模板>查看模板</h3><p>如果不指定模板就会根据<code>basic</code>模板来生成爬虫</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>scrapy genspider --list
+</span></span></code></pre></td></tr></table></div></div><h3 id=指定模板>指定模板</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>scrapy genspider -t crawl 爬虫名字 域名
+</span></span></code></pre></td></tr></table></div></div><h2 id=下载图片>下载图片</h2><p>scrapy中提供了自动下载图片的机制，只需要在settings中配置好就可以了，在项目文件的setting下的<code>ITEM_PIPELINES</code>中添加一个键</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>ITEM_PIPELINES</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>   <span class=s1>&#39;BingPicture.pipelines.BingpicturePipeline&#39;</span><span class=p>:</span> <span class=mi>300</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>   <span class=s1>&#39;scrapy.pipelines.images.ImagesPipeline&#39;</span><span class=p>:</span> <span class=mi>1</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>IMAGES_URLS_FIELD</span> <span class=o>=</span> <span class=s2>&#34;图片url字段&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>IMAGES_STORE</span> <span class=o>=</span> <span class=s2>&#34;图片存储路径&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><p>注意：</p><ul><li>需要安装<code>pillow</code>这个库</li><li>下载图片传递的url需要是一个列表（<code>item["img_url"] = [url]</code>），这个列表中可以存放很多个urls</li></ul><h3 id=限定下载图片大小>限定下载图片大小</h3><p>如果想过滤掉小图片需要在settings中配置</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>IMAGES_MIN_HEIGHT</span> <span class=o>=</span> <span class=n>高度</span>
+</span></span><span class=line><span class=cl><span class=n>IMAGES_MIN_WIDTH</span> <span class=o>=</span> <span class=n>宽度</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=获取图片路径>获取图片路径</h3><p>想要知道图片的路径和名称需要在Pipelines中重写ImagesPipeline中的item_completed方法
+自定义的这个Pipeline类需要在settings中添加，这时候就不需要写原生的ImagesPipeline了，因为这个Pipeline只重写了item_completed方法，其他的方法会去下载图片。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>class</span> <span class=nc>SpiderPipeline</span><span class=p>(</span><span class=n>ImagesPipeline</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1># 重载item_completed方法</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>item_completed</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>results</span><span class=p>,</span> <span class=n>item</span><span class=p>,</span> <span class=n>info</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>item</span>
+</span></span></code></pre></td></tr></table></div></div><p>results:是一个list每一个元素都是一个tuple，tuple中第一个值是true，表示成功；第二个值是一个字典，字典中的path是文件保存路径，字典中的url是下载的url。
+这时候就可以直接使用item将图片的地址保存下来，然后需要将item返回</p><h2 id=拼接url>拼接URL</h2><p>response对象有<code>urljoin</code>方法，可以将域名与超链接进行拼接</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>url</span> <span class=o>=</span> <span class=n>response</span><span class=o>.</span><span class=n>urljoin</span><span class=p>(</span><span class=n>other_url</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=编写爬虫的注意事项>编写爬虫的注意事项</h2><ul><li>可以在这个项目中创建一个开始执行的程序</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>scrapy</span> <span class=kn>import</span> <span class=n>cmdline</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>cmdline</span><span class=o>.</span><span class=n>execute</span><span class=p>(</span><span class=s1>&#39;scrapy crawl 爬虫名称&#39;</span><span class=o>.</span><span class=n>split</span><span class=p>())</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=文件存储>文件存储</h2><p>文件存储需要在Pipelines中进行，可以直接操作模板生成的Pipeline，也可以自定义Pipline，如果自定义需要将自定义Pipeline的优先级设置得比模板高，也就settings中Pipeline对应的键值更小
+scrapy的exporters中提供了很多种文件存储机制</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>__all__</span> <span class=o>=</span> <span class=p>[</span><span class=s1>&#39;BaseItemExporter&#39;</span><span class=p>,</span> <span class=s1>&#39;PprintItemExporter&#39;</span><span class=p>,</span> <span class=s1>&#39;PickleItemExporter&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>           <span class=s1>&#39;CsvItemExporter&#39;</span><span class=p>,</span> <span class=s1>&#39;XmlItemExporter&#39;</span><span class=p>,</span> <span class=s1>&#39;JsonLinesItemExporter&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>           <span class=s1>&#39;JsonItemExporter&#39;</span><span class=p>,</span> <span class=s1>&#39;MarshalItemExporter&#39;</span><span class=p>]</span>
+</span></span></code></pre></td></tr></table></div></div><p>可以直接调用这些类然后方便的写入文件，下面以<code>JsonLinesItemExporter</code>为例</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>class</span> <span class=nc>JsonExporterPipeline</span><span class=p>(</span><span class=nb>object</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>file</span> <span class=o>=</span> <span class=nb>open</span><span class=p>(</span><span class=s2>&#34;images_message.json&#34;</span><span class=p>,</span> <span class=s2>&#34;wb&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=c1># 将ensure_ascii设置为false，否则会存储为Unicode编码</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>exporter</span> <span class=o>=</span> <span class=n>JsonLinesItemExporter</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>file</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=s2>&#34;utf8&#34;</span><span class=p>,</span> <span class=n>ensure_ascii</span><span class=o>=</span><span class=kc>False</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>process_item</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>item</span><span class=p>,</span> <span class=n>spider</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>exporter</span><span class=o>.</span><span class=n>export_item</span><span class=p>(</span><span class=n>item</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>item</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>close_spider</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>spider</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>file</span><span class=o>.</span><span class=n>close</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><p>Pipline类中有两个信号量方法，一个是<code>open_spider</code>方法，open_spider方法爬虫开始会执行；另一个时<code>close_spider</code>方法，close_spider方法爬虫结束时会执行，他们都需要传递一个spider参数，他们的执行是通过scrapy中的信号量来控制的</p><h3 id=在pipeline中使用settings中的配置>在Pipeline中使用settings中的配置</h3><p>在Pipeline中使用settings中的配置可以不需要导入settings中的配置，定义一个<code>from_settings(cls, settings)</code>类方法，这个方法会将settings中的所有配置以字典的形式传递过来，只需要按照settings中的配置取键</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=nd>@classmethod</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>from_settings</span><span class=p>(</span><span class=bp>cls</span><span class=p>,</span> <span class=n>settings</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>host</span> <span class=o>=</span> <span class=n>settings</span><span class=p>[</span><span class=s2>&#34;MONGO_HOST&#34;</span><span class=p>]</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=scrapy异步写入mysql>scrapy异步写入MySQL</h2><p>在scrapy中异步写入MySQL</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>twisted.enterprise</span> <span class=kn>import</span> <span class=n>adbapi</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>MySQLtwistedPipeline</span><span class=p>(</span><span class=nb>object</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>dbpool</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>dbpool</span> <span class=o>=</span> <span class=n>dbpool</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nd>@classmethod</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>from_settings</span><span class=p>(</span><span class=bp>cls</span><span class=p>,</span> <span class=n>settings</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=n>dbparms</span> <span class=o>=</span> <span class=nb>dict</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=n>host</span> <span class=o>=</span> <span class=n>settings</span><span class=p>[</span><span class=s2>&#34;MYSQL_HOST&#34;</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>            <span class=n>port</span> <span class=o>=</span> <span class=n>settings</span><span class=p>[</span><span class=s2>&#34;MYSQL_PORT&#34;</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>            <span class=n>user</span> <span class=o>=</span> <span class=n>settings</span><span class=p>[</span><span class=s2>&#34;MYSQL_USER&#34;</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>            <span class=n>password</span> <span class=o>=</span> <span class=n>settings</span><span class=p>[</span><span class=s2>&#34;MYSQL_PASSWORD&#34;</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>            <span class=n>database</span> <span class=o>=</span> <span class=n>settings</span><span class=p>[</span><span class=s2>&#34;MYSQL_DATABASE&#34;</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>            <span class=n>charset</span> <span class=o>=</span> <span class=s2>&#34;utf8&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=n>cursorclass</span> <span class=o>=</span> <span class=n>pymysql</span><span class=o>.</span><span class=n>cursors</span><span class=o>.</span><span class=n>DictCursor</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=n>use_unicode</span> <span class=o>=</span> <span class=kc>True</span>
+</span></span><span class=line><span class=cl>        <span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>dbpool</span> <span class=o>=</span> <span class=n>adbapi</span><span class=o>.</span><span class=n>ConnectionPool</span><span class=p>(</span><span class=s2>&#34;pymysql&#34;</span><span class=p>,</span> <span class=o>**</span><span class=n>dbparms</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=c1># 使用这个类来实例化连接池</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>cls</span><span class=p>(</span><span class=n>dbpool</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>process_item</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>item</span><span class=p>,</span> <span class=n>spider</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=c1># 建立连接池，将插入变成异步的</span>
+</span></span><span class=line><span class=cl>        <span class=n>qurey</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>dbpool</span><span class=o>.</span><span class=n>runInteraction</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>insert</span><span class=p>,</span> <span class=n>item</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>qurey</span><span class=o>.</span><span class=n>addErrback</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>handler_error</span><span class=p>,</span> <span class=n>item</span><span class=p>,</span> <span class=n>spider</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>handler_error</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>failure</span><span class=p>,</span> <span class=n>item</span><span class=p>,</span> <span class=n>spider</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=c1># 处理异步插入的异常</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=n>failure</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>insert</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>cursor</span><span class=p>,</span> <span class=n>item</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=c1># 连接池会自动帮助提交</span>
+</span></span><span class=line><span class=cl>        <span class=n>insert_sql</span> <span class=o>=</span> <span class=s2>&#34;&#34;&#34;insert into bing_picture(img_url, img_id, img_file_path) values (</span><span class=si>%s</span><span class=s2>, </span><span class=si>%s</span><span class=s2>, </span><span class=si>%s</span><span class=s2>)&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=n>cursor</span><span class=o>.</span><span class=n>execute</span><span class=p>(</span><span class=n>insert_sql</span><span class=p>,</span> <span class=p>(</span><span class=n>item</span><span class=p>[</span><span class=s2>&#34;img_url&#34;</span><span class=p>][</span><span class=mi>0</span><span class=p>],</span> <span class=n>item</span><span class=p>[</span><span class=s2>&#34;img_id&#34;</span><span class=p>],</span> <span class=n>item</span><span class=p>[</span><span class=s2>&#34;img_file_path&#34;</span><span class=p>]))</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>from_settings</code>方法中定义的是链接信息，在<code>process_item</code>方法中定义的是当item传递过来后运行这个连接池，然后这个连接池调用<code>insert</code>方法来插入数据。</p><p>因为整个插入过程是异步的，所以难免会发生异常，运行连接池执行方法后会返回一个对象，用一个变量来保存这个对象，这个对象有一个错误回调方法<code>addErrback</code>，这个方法中的item参数和spider参数可以不用传递（不传递那么回调方法中的item和spider就不用写），整个错误处理逻辑放到回调方法中来处理
+注意：</p><ul><li>需要单独导入cursors对象，即<code>import pymysql.cursors</code></li></ul><h2 id=item-loaders>item loaders</h2><p>scrapy中的item使用起来和简单，他就是一个数据容器，可以存储任意类型的数据，提供了类似字典的API，操作起来很方便，但是在<code>parser</code>方法中解析的数据想要存储到item中还需要赋值，这时候代码写起来就比较混乱</p><p><code>Item Loaders</code>使用起来就很方便，集解析赋值于一身</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>scrapy.loader</span> <span class=kn>import</span> <span class=n>ItemLoader</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>myproject.items</span> <span class=kn>import</span> <span class=n>ProductItem</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>parse</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>response</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>item_loader</span> <span class=o>=</span> <span class=n>ItemLoader</span><span class=p>(</span><span class=n>item</span><span class=o>=</span><span class=n>ProductItem</span><span class=p>(),</span> <span class=n>response</span><span class=o>=</span><span class=n>response</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>item_loader</span><span class=o>.</span><span class=n>add_xpath</span><span class=p>(</span><span class=s1>&#39;name&#39;</span><span class=p>,</span> <span class=s1>&#39;//div[@class=&#34;product_name&#34;]&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>item_loader</span><span class=o>.</span><span class=n>add_xpath</span><span class=p>(</span><span class=s1>&#39;title&#39;</span><span class=p>,</span> <span class=s1>&#39;//div[@class=&#34;product_title&#34;]&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>item_loader</span><span class=o>.</span><span class=n>add_xpath</span><span class=p>(</span><span class=s1>&#39;price&#39;</span><span class=p>,</span> <span class=s1>&#39;//p[@id=&#34;price&#34;]&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>item_loader</span><span class=o>.</span><span class=n>add_css</span><span class=p>(</span><span class=s1>&#39;stock&#39;</span><span class=p>,</span> <span class=s1>&#39;p#stock&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>item_loader</span><span class=o>.</span><span class=n>add_value</span><span class=p>(</span><span class=s1>&#39;last_updated&#39;</span><span class=p>,</span> <span class=s1>&#39;today&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>item_loader</span><span class=o>.</span><span class=n>load_item</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>add_value</code>这个方法需要两个参数，第一个参数就是字段名，第二个参数就是字段的值，使用这个方法能直接设定字段值。add_css和add_xpath就是按照规则解析response。</p><p>最后需要调用<code>load_item()</code>方法才会去执行上面的解析规则。</p><p>这样得到的每个字段值都是一个列表，而且有一些字段我们可能并没有解析完，还想在上面加一些处理逻辑，这时候我们就需要到items中去设置<code>Field()</code>的<code>input_processor</code>参数，使用<code>MapCompose</code>来传递方法，当数据传递到这里的时候我们就可以通过方法对<code>value</code>进行处理，可以传递任意多的方法，<code>input_processor</code>参数是对value进行操作，但是现在这value还是一个list，那么就需要导入<code>TakeFirst</code>，然后传递给第二个参数<code>output_processor</code>，这时候就会取第一个值。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>scrapy.loader.processors</span> <span class=kn>import</span> <span class=n>MapCompose</span><span class=p>,</span> <span class=n>TakeFirst</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>add_name</span><span class=p>(</span><span class=n>value</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>value</span> <span class=o>+</span> <span class=s2>&#34;-product&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>ProductItem</span><span class=p>(</span><span class=n>scrapy</span><span class=o>.</span><span class=n>Item</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>name</span> <span class=o>=</span> <span class=n>scrapy</span><span class=o>.</span><span class=n>Field</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    	<span class=n>input_processor</span> <span class=o>=</span> <span class=n>MapCompose</span><span class=p>(</span><span class=n>add_name</span><span class=p>,</span> <span class=n>lambad</span> <span class=n>x</span><span class=p>:</span> <span class=n>x</span><span class=o>+</span><span class=s2>&#34;-hello&#34;</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>        <span class=n>output_processor</span> <span class=o>=</span> <span class=n>TakeFirst</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>title</span> <span class=o>=</span> <span class=n>scrapy</span><span class=o>.</span><span class=n>Field</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=n>price</span> <span class=o>=</span> <span class=n>scrapy</span><span class=o>.</span><span class=n>Field</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=n>stock</span> <span class=o>=</span> <span class=n>scrapy</span><span class=o>.</span><span class=n>Field</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=n>last_updated</span> <span class=o>=</span> <span class=n>scrapy</span><span class=o>.</span><span class=n>Field</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>value</code>参数不需要我们去传递，<code>MapCompose</code>甚至可以传递lambda表达式，方法传递多个程序会按照顺序自动去执行这些方法。</p><h3 id=自定义itemloader>自定义itemloader</h3><p>如果我们爬取的字段很多，有上百个，那么在原来的item中我们就需要给每个字段都传递<code>output_processor</code>参数，这样程序就会显得很乱。</p><p>我们可以自己定义一个itemloader类，让自定义的itemloader继承自scrapy中的ItemLoader，ItemLoader中有一个类属性<code>default_output_processor</code>，重写这个类属性</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>scrapy.loader</span> <span class=kn>import</span> <span class=n>ItemLoader</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>scrapy.loader.processors</span> <span class=kn>import</span> <span class=n>MapCompose</span><span class=p>,</span> <span class=n>TakeFirst</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>add_name</span><span class=p>(</span><span class=n>value</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>value</span> <span class=o>+</span> <span class=s2>&#34;-product&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>ProductItem</span><span class=p>(</span><span class=n>scrapy</span><span class=o>.</span><span class=n>Item</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>name</span> <span class=o>=</span> <span class=n>scrapy</span><span class=o>.</span><span class=n>Field</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    	<span class=n>input_processor</span> <span class=o>=</span> <span class=n>MapCompose</span><span class=p>(</span><span class=n>add_name</span><span class=p>,</span> <span class=n>lambad</span> <span class=n>x</span><span class=p>:</span> <span class=n>x</span><span class=o>+</span><span class=s2>&#34;-hello&#34;</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>title</span> <span class=o>=</span> <span class=n>scrapy</span><span class=o>.</span><span class=n>Field</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=n>price</span> <span class=o>=</span> <span class=n>scrapy</span><span class=o>.</span><span class=n>Field</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=n>stock</span> <span class=o>=</span> <span class=n>scrapy</span><span class=o>.</span><span class=n>Field</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=n>last_updated</span> <span class=o>=</span> <span class=n>scrapy</span><span class=o>.</span><span class=n>Field</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>ProductItemLoader</span><span class=p>(</span><span class=n>ItemLoader</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>default_output_processor</span> <span class=o>=</span> <span class=n>TakeFirst</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><p>然后在解析方法中实例化<code>item_loader</code>的时候就需要使用这里重写的这个<code>ProductItemLoader</code>。</p><p>实际上在<code>ItemLoader</code>有四个类属性，分别是：</p><ul><li>default_item_class = Item</li><li>default_input_processor = Identity()</li><li>default_output_processor = Identity()</li><li>default_selector_class = Selector</li></ul><p>因此我们可以更改其中的参数可以使解析变得更加高效。</p><p>如果出现列表中的多个内容都是我们想要的，而且我们想将它们连接成一个字符串，这个逻辑其实不需要通过定义方法来处理value，只需要在地段的定义中重新传递<code>output_processor</code>参数就可以了</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>scrapy.loader</span> <span class=kn>import</span> <span class=n>ItemLoader</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>scrapy.loader.processors</span> <span class=kn>import</span> <span class=n>MapCompose</span><span class=p>,</span> <span class=n>TakeFirst</span><span class=p>,</span> <span class=n>Join</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>ProductItem</span><span class=p>(</span><span class=n>scrapy</span><span class=o>.</span><span class=n>Item</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>title</span> <span class=o>=</span> <span class=n>scrapy</span><span class=o>.</span><span class=n>Field</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=n>tags</span> <span class=o>=</span> <span class=n>scrapy</span><span class=o>.</span><span class=n>Field</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    	<span class=n>output_processor</span> <span class=o>=</span> <span class=n>Join</span><span class=p>(</span><span class=s2>&#34;,&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>last_updated</span> <span class=o>=</span> <span class=n>scrapy</span><span class=o>.</span><span class=n>Field</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>ProductItemLoader</span><span class=p>(</span><span class=n>ItemLoader</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>default_output_processor</span> <span class=o>=</span> <span class=n>TakeFirst</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><p>如果我们已经重写了ItemLoader，但是我们想要的字段任然是列表，那么我们就需要在字段中覆盖output_processor</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>def</span> <span class=nf>return_value</span><span class=p>(</span><span class=n>value</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>value</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>ProductItem</span><span class=p>(</span><span class=n>scrapy</span><span class=o>.</span><span class=n>Item</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>tags</span> <span class=o>=</span> <span class=n>scrapy</span><span class=o>.</span><span class=n>Field</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=n>output_processor</span> <span class=o>=</span> <span class=n>MapCompose</span><span class=p>(</span><span class=n>return_value</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=回调>回调</h2><p>在scrapy的爬虫中，如果不写回调函数，那么通过请求返回的页面默认是调用<code>parse</code>方法</p><h2 id=formrequest>FormRequest</h2><p>如果在爬虫最开始的时通过post登录到某一个页面，那么可以重写<code>start_requests</code>方法。如果需要提交表单，那么可以不使用<code>scrapy.Request</code>方法，可以使用<code>scrapy.FormRequest</code>，这个方法，然后可以设置回调函数为一个验证是否登录成功的方法。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>def</span> <span class=nf>start_requests</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=p>[</span><span class=n>scrapy</span><span class=o>.</span><span class=n>FormRequest</span><span class=p>(</span><span class=s2>&#34;http://www.example.com/login&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                               <span class=n>formdata</span><span class=o>=</span><span class=p>{</span><span class=s1>&#39;user&#39;</span><span class=p>:</span> <span class=s1>&#39;john&#39;</span><span class=p>,</span> <span class=s1>&#39;pass&#39;</span><span class=p>:</span> <span class=s1>&#39;secret&#39;</span><span class=p>},</span>
+</span></span><span class=line><span class=cl>                               <span class=n>headers</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>headers</span>
+</span></span><span class=line><span class=cl>                               <span class=n>callback</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>logged_in</span><span class=p>)]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>logged_in</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>response</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>pass</span>
+</span></span></code></pre></td></tr></table></div></div><p>那么登录成功之后呢？如果验证了已经登录成功，想要按照<code>start_urls</code>中的url进行爬取，那么可以将原来的<code>start_requests</code>中的逻辑放置在<code>logged_in</code>中，原来的<code>start_requests</code>逻辑如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>def</span> <span class=nf>start_requests</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>url</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>start_urls</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>yield</span> <span class=bp>self</span><span class=o>.</span><span class=n>make_requests_from_url</span><span class=p>(</span><span class=n>url</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>将这里面的逻辑放入到<code>logged_in</code>，那么就可以实现接下来的爬取任务。</p><h2 id=scrapy-shell>scrapy shell</h2><p>使用scrapy shell 命令可以进入scrapy进入scrapy交互环境，可以在后面加上url，也可以不加</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>scrapy</span> <span class=n>shell</span> <span class=p>[</span><span class=n>url</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=c1># 添加User-agent</span>
+</span></span><span class=line><span class=cl><span class=n>scrapy</span> <span class=n>shell</span> <span class=o>-</span><span class=n>s</span> <span class=n>USER_AGENT</span><span class=o>=</span><span class=s2>&#34;u-a&#34;</span> <span class=n>url</span>
+</span></span></code></pre></td></tr></table></div></div><p>进入scrapy shell后可以使用交互式命令，可以在里面调试爬虫</p><p>使用<code>shelp()</code>命令可以查看scrapy自带的一些命令</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>[s]   crawler    &lt;scrapy.crawler.Crawler object at 0x000002392B95D588&gt;
+</span></span><span class=line><span class=cl>[s]   item       {}
+</span></span><span class=line><span class=cl>[s]   settings   &lt;scrapy.settings.Settings object at 0x000002392C3F4EC8&gt;
+</span></span><span class=line><span class=cl>[s] Useful shortcuts:
+</span></span><span class=line><span class=cl>[s]   fetch(url[, redirect=True]) Fetch URL and update local objects (by default, redirects are followed)
+</span></span><span class=line><span class=cl>[s]   fetch(req)                  Fetch a scrapy.Request and update local objects
+</span></span><span class=line><span class=cl>[s]   shelp()           Shell help (print this help)
+</span></span><span class=line><span class=cl>[s]   view(response)    View response in a browser
+</span></span></code></pre></td></tr></table></div></div><p>注意：如果是在scrapy项目中使用scrapy shell，那么项目配置将会是当前scrapy sehll的配置</p><table><thead><tr><th>函数</th><th>功能</th></tr></thead><tbody><tr><td>fetch()</td><td>传入一个url或者scrapy.Request对象，那么就能请求该url，请求成功后会对当前作用域内的request和response对象重新赋值</td></tr><tr><td>view</td><td>用浏览器打开response对象内的网页</td></tr><tr><td>settings</td><td>保存所有设置信息的Settings对象</td></tr><tr><td></td><td></td></tr></tbody></table><p>在scrapy shell中可以直接对Response对象使用xpath或者css选择器</p><h2 id=crawlspider>CrawlSpider</h2><p>CrawlSpider继承自Spider</p><p>要使用<code>CrawlSpider</code>就需要在生成爬虫的时候指定模板。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>scrapy</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>scrapy.spiders</span> <span class=kn>import</span> <span class=n>CrawlSpider</span><span class=p>,</span> <span class=n>Rule</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>scrapy.linkextractors</span> <span class=kn>import</span> <span class=n>LinkExtractor</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>MySpider</span><span class=p>(</span><span class=n>CrawlSpider</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>name</span> <span class=o>=</span> <span class=s1>&#39;example.com&#39;</span>
+</span></span><span class=line><span class=cl>    <span class=n>allowed_domains</span> <span class=o>=</span> <span class=p>[</span><span class=s1>&#39;example.com&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    <span class=n>start_urls</span> <span class=o>=</span> <span class=p>[</span><span class=s1>&#39;http://www.example.com&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>rules</span> <span class=o>=</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=n>Rule</span><span class=p>(</span><span class=n>LinkExtractor</span><span class=p>(</span><span class=n>allow</span><span class=o>=</span><span class=p>(</span><span class=s1>&#39;category\.php&#39;</span><span class=p>,</span> <span class=p>),</span> <span class=n>deny</span><span class=o>=</span><span class=p>(</span><span class=s1>&#39;subsection\.php&#39;</span><span class=p>,</span> <span class=p>))),</span>
+</span></span><span class=line><span class=cl>        <span class=n>Rule</span><span class=p>(</span><span class=n>LinkExtractor</span><span class=p>(</span><span class=n>allow</span><span class=o>=</span><span class=p>(</span><span class=s1>&#39;item\.php&#39;</span><span class=p>,</span> <span class=p>)),</span> <span class=n>callback</span><span class=o>=</span><span class=s1>&#39;parse_item&#39;</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>parse_item</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>response</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=n>item</span> <span class=o>=</span> <span class=n>scrapy</span><span class=o>.</span><span class=n>Item</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=n>item</span><span class=p>[</span><span class=s1>&#39;id&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>response</span><span class=o>.</span><span class=n>xpath</span><span class=p>(</span><span class=s1>&#39;//td[@id=&#34;item_id&#34;]/text()&#39;</span><span class=p>)</span><span class=o>.</span><span class=n>re</span><span class=p>(</span><span class=sa>r</span><span class=s1>&#39;ID: (\d+)&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>item</span><span class=p>[</span><span class=s1>&#39;name&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>response</span><span class=o>.</span><span class=n>xpath</span><span class=p>(</span><span class=s1>&#39;//td[@id=&#34;item_name&#34;]/text()&#39;</span><span class=p>)</span><span class=o>.</span><span class=n>get</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=n>item</span><span class=p>[</span><span class=s1>&#39;description&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>response</span><span class=o>.</span><span class=n>xpath</span><span class=p>(</span><span class=s1>&#39;//td[@id=&#34;item_description&#34;]/text()&#39;</span><span class=p>)</span><span class=o>.</span><span class=n>get</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=n>item</span><span class=p>[</span><span class=s1>&#39;link_text&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>response</span><span class=o>.</span><span class=n>meta</span><span class=p>[</span><span class=s1>&#39;link_text&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>item</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>CrawlSpider</code>也会先爬取<code>start_urls</code>中的链接，然后解析请求到的页面中的url，这时候就需要我们去指定规则，<code>只要满足规则的url</code>，就会进行请求，然后执行回调方法。</p><p><code>rules</code>中的<code>callback</code>的方法必须是字符串，因为这个是一个实例化的过程，Rule自身是没有方法的，使用函数的方式是不能完成传递的，所以只能通过字符串传递这个方法的名称</p><h3 id=parse方法>parse方法</h3><p>Crawl生成的模板中我们不能去重载<code>parse</code>方法，因为<strong>parse</strong>方法是继承自Spider中的，<code>在CrawlSpider中已经重载了parse方法</code>，如果改了parse方法整个程序就会报错。</p><p><code>CrawlSpider</code>中的parse方法回调函数是<code>parse_start_url</code>，<code>parse_start_url</code>的值返回之后会传递给<code>process_results</code>，<code>CrawlSpider</code>中这两个方法默认都是返回空列表，因此我们可以对这两个方法进行重载。</p><h3 id=rule>Rule</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>class</span> <span class=nc>Rule</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>	<span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=n>link_extractor</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>callback</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>cb_kwargs</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>follow</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>process_links</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>process_request</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>errback</span><span class=o>=</span><span class=kc>None</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        
+</span></span></code></pre></td></tr></table></div></div><ul><li><code>link_extractor</code> 就是一个具体的<code>Link Extractor</code>对象，它定义了如何从爬取到的页面中提取url</li><li><code>callback</code>，如果有规则满足这个url就会执行回调函数</li><li><code>cb_kwargs</code>为传递给<code>link_extractor</code>的参数</li><li><code>follow</code>的值为True或False，表示是否对满足条件的url进行跟进，也就是向下爬取</li><li><code>process_links</code> ， 从<code>link_extractor</code>中获取到链接列表时将会调用该函数。该方法主要用来过滤url</li><li><code>process_request</code>，该规则提取到每个request时都会调用该函数。该函数必须返回一个request或者None。</li></ul><h3 id=linkextractor>LinkExtractor</h3><p>LinkExtractor实际上是<strong>LxmlLinkExtractor</strong></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>.lxmlhtml</span> <span class=kn>import</span> <span class=n>LxmlLinkExtractor</span> <span class=k>as</span> <span class=n>LinkExtractor</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>class</span> <span class=nc>LxmlLinkExtractor</span><span class=p>(</span><span class=n>FilteringLinkExtractor</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=n>allow</span><span class=o>=</span><span class=p>(),</span> <span class=n>deny</span><span class=o>=</span><span class=p>(),</span> <span class=n>allow_domains</span><span class=o>=</span><span class=p>(),</span> <span class=n>deny_domains</span><span class=o>=</span><span class=p>(),</span> <span class=n>deny_extensions</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>restrict_xpaths</span><span class=o>=</span><span class=p>(),</span> <span class=n>restrict_css</span><span class=o>=</span><span class=p>(),</span> <span class=n>tags</span><span class=o>=</span><span class=p>(</span><span class=s1>&#39;a&#39;</span><span class=p>,</span> <span class=s1>&#39;area&#39;</span><span class=p>),</span> <span class=n>attrs</span><span class=o>=</span><span class=p>(</span><span class=s1>&#39;href&#39;</span><span class=p>,</span> <span class=p>),</span> <span class=n>canonicalize</span><span class=o>=</span><span class=kc>False</span><span class=p>,</span> <span class=n>unique</span><span class=o>=</span><span class=kc>True</span><span class=p>,</span> <span class=n>process_value</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>strip</span><span class=o>=</span><span class=kc>True</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        
+</span></span></code></pre></td></tr></table></div></div><ul><li><code>allow</code>中是一个正则表达式，只要url满足正则表达式的格式就进行提取</li><li><code>deny</code>中也是正则表达式，但是满足条件的url就会被丢弃掉</li><li><code>allow_domains</code>，满足条件的域名就不做处理</li><li><code>restrict_xpaths</code>进一步去限定url，只会从xpath中提取到的内容去提取url</li></ul><h3 id=item>Item</h3><p>scrapy中的Item是我们用来保存字段的类，需要保存的字段我们需要提前定义，<code>scrapy.Item</code>继承自scrapy中的<code>DictItem</code>，<code>DictItem</code>继承于<code>MutableMapping, BaseItem</code>，<code>scrapy</code>中的<code>Field</code>继承自<code>dict</code>，scrapy中关于<code>Field</code>的描述是<code>Container of field metadata</code></p></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2020-03-14</span></div><div class=post-info-license></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw"></i>&nbsp;<a href=/tags/scrapy/>Scrapy</a>,&nbsp;<a href=/tags/python/>Python</a>,&nbsp;<a href=/tags/%E7%BD%91%E7%BB%9C%E7%88%AC%E8%99%AB/>网络爬虫</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/posts/%E4%BD%BF%E7%94%A8vscode-mingw%E9%85%8D%E7%BD%AEc%E8%AF%AD%E8%A8%80%E7%9A%84%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/ class=prev rel=prev title=使用VScode+MinGW配置C语言的开发环境><i class="fas fa-angle-left fa-fw"></i>使用VScode+MinGW配置C语言的开发环境</a>
+<a href=/posts/mongodb%E7%9A%84%E5%AE%89%E8%A3%85%E4%BB%A5%E5%8F%8A%E9%85%8D%E7%BD%AE/ class=next rel=next title=MongoDB的安装以及配置>MongoDB的安装以及配置<i class="fas fa-angle-right fa-fw"></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2019 - 2023</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=http://pujichun.ink target=_blank>普吉春</a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw"></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw"></i></a></div><script type=text/javascript src=/lib/smooth-scroll/smooth-scroll.min.js></script><script type=text/javascript src=/lib/autocomplete/autocomplete.min.js></script><script type=text/javascript src=/lib/lunr/lunr.min.js></script><script type=text/javascript src=/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=/lib/lazysizes/lazysizes.min.js></script><script type=text/javascript src=/lib/clipboard/clipboard.min.js></script><script type=text/javascript src=/lib/typeit/typeit.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:10},comment:{},data:{"id-1":"pujic","id-2":"pujic"},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"lunr"},typeit:{cursorChar:null,cursorSpeed:null,data:{"id-1":["id-1"],"id-2":["id-2"]},duration:null,speed:null}}</script><script type=text/javascript src=/js/theme.min.js></script></body></html>

@@ -1,0 +1,673 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><meta http-equiv=x-ua-compatible content="IE=edge, chrome=1"><title>C#10与.Net6.0 - pujic</title><meta name=Description content><meta property="og:title" content="C#10与.Net6.0"><meta property="og:description" content="C# 代码是怎么运行的 dotnet的编译工具会将C#源代码转换成IL（Intermediate Language）代码，并将IL代码存储在DLL或"><meta property="og:type" content="article"><meta property="og:url" content="http://example.org/posts/csharp10%E4%B8%8Edotnet6/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2023-01-01T17:09:28+08:00"><meta property="article:modified_time" content="2023-01-01T17:09:28+08:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="C#10与.Net6.0"><meta name=twitter:description content="C# 代码是怎么运行的 dotnet的编译工具会将C#源代码转换成IL（Intermediate Language）代码，并将IL代码存储在DLL或"><meta name=application-name content="pujic"><meta name=apple-mobile-web-app-title content="pujic"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=http://example.org/posts/csharp10%E4%B8%8Edotnet6/><link rel=prev href=http://example.org/posts/%E5%BC%80%E6%BA%90%E5%B7%A5%E5%85%B7/><link rel=next href=http://example.org/posts/dotnetcore6-web-api%E4%B8%AD%E9%97%B4%E4%BB%B6/><link rel=stylesheet href=/lib/normalize/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=/lib/fontawesome-free/all.min.css><link rel=stylesheet href=/lib/animate/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"C#10与.Net6.0","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/example.org\/posts\/csharp10%E4%B8%8Edotnet6\/"},"genre":"posts","keywords":"CSharp, DotNetCore","wordcount":2433,"url":"http:\/\/example.org\/posts\/csharp10%E4%B8%8Edotnet6\/","datePublished":"2023-01-01T17:09:28+08:00","dateModified":"2023-01-01T17:09:28+08:00","publisher":{"@type":"Organization","name":"普吉春"},"author":{"@type":"Person","name":"普吉春"},"description":""}</script></head><body header-desktop=fixed header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":""==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:""==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title=pujic><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-1 class=typeit></span></a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>所有文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/categories/>分类 </a><a class=menu-item href=/about/>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin"></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw"></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=pujic><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-2 class=typeit></span></a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin"></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=/posts/ title>所有文章</a><a class=menu-item href=/tags/ title>标签</a><a class=menu-item href=/categories/ title>分类</a><a class=menu-item href=/about/ title>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw"></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animated flipInX">C#10与.Net6.0</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=http://pujichun.ink title=Author target=_blank rel="noopener noreffer author" class=author><i class="fas fa-user-circle fa-fw"></i>普吉春</a></span>&nbsp;<span class=post-category>收录于 <a href=/categories/csharp/><i class="far fa-folder fa-fw"></i>CSharp</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2023-01-01>2023-01-01</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 2433 字&nbsp;
+<i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 5 分钟&nbsp;</div></div><div class="details toc" id=toc-static kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right"></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#c-代码是怎么运行的>C# 代码是怎么运行的</a><ul><li><a href=#dotnet常用命令>dotnet常用命令</a></li></ul></li><li><a href=#类型>类型</a><ul><li><a href=#类型推断>类型推断</a></li><li><a href=#字符串>字符串</a></li></ul></li><li><a href=#多线程>多线程</a><ul><li><a href=#api>API</a></li></ul></li><li><a href=#异步编程模型>异步编程模型</a><ul><li><a href=#基于事件的异步模式>基于事件的异步模式</a></li><li><a href=#基于任务的异步模式tap>基于任务的异步模式（TAP）</a></li></ul></li><li><a href=#异步编程>异步编程</a></li></ul></nav></div></div><div class=content id=content><h2 id=c-代码是怎么运行的>C# 代码是怎么运行的</h2><ul><li>dotnet的编译工具会将C#源代码转换成IL（Intermediate Language）代码，并将IL代码存储在DLL或EXE文件中（程序集an Assembly）</li><li>IL代码就像汇编语言指令一样，由dotnet的虚拟机CoreCLR执行</li><li>在运行时CLR就从Assembly中加载IL，再由即时编译器（JIT）将IL编程机器码运行</li></ul><h3 id=dotnet常用命令>dotnet常用命令</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>dotnet -h
+</span></span><span class=line><span class=cl>dotnet --info
+</span></span><span class=line><span class=cl>dotnet --list-sdks
+</span></span><span class=line><span class=cl>dotnet --list-runtimes
+</span></span><span class=line><span class=cl>dotnet --version
+</span></span><span class=line><span class=cl>dotnet <span class=nb>help</span> new
+</span></span><span class=line><span class=cl>dotnet new console -n project_name
+</span></span><span class=line><span class=cl>dotnet build
+</span></span><span class=line><span class=cl>dotnet run
+</span></span></code></pre></td></tr></table></div></div><h2 id=类型>类型</h2><h3 id=类型推断>类型推断</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 指定具体类型</span>
+</span></span><span class=line><span class=cl><span class=kt>string</span> <span class=n>str</span> <span class=p>=</span> <span class=s>&#34;Hello, World&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=n>Console</span><span class=p>.</span><span class=n>WriteLine</span><span class=p>(</span><span class=n>str</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=n>num</span> <span class=p>=</span> <span class=m>10</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=n>Console</span><span class=p>.</span><span class=n>WriteLine</span><span class=p>(</span><span class=n>num</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 使用var关键词进行类型推断</span>
+</span></span><span class=line><span class=cl><span class=kt>var</span> <span class=n>bar</span> <span class=p>=</span> <span class=s>&#34;推断类型&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=n>Console</span><span class=p>.</span><span class=n>WriteLine</span><span class=p>(</span><span class=n>bar</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// </span>
+</span></span><span class=line><span class=cl><span class=n>VeryLongClassName</span> <span class=n>_test1</span> <span class=p>=</span> <span class=k>new</span> <span class=n>VeryLongClassName</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 类型推断</span>
+</span></span><span class=line><span class=cl><span class=n>VeryLongClassName</span> <span class=n>_test2</span> <span class=p>=</span> <span class=k>new</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>VeryLongClassName</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=kt>int</span> <span class=n>Id</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=kt>string</span> <span class=n>Name</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=字符串>字符串</h3><p>格式化字符串</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=kt>string</span> <span class=n>name</span> <span class=p>=</span> <span class=s>&#34;张三&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=n>age</span> <span class=p>=</span> <span class=m>18</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kt>string</span> <span class=n>formatStr</span> <span class=p>=</span> <span class=kt>string</span><span class=p>.</span><span class=n>Format</span><span class=p>(</span><span class=s>&#34;姓名: {0}, 年龄: {1}&#34;</span><span class=p>,</span> <span class=n>name</span><span class=p>,</span> <span class=n>age</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=n>Console</span><span class=p>.</span><span class=n>WriteLine</span><span class=p>(</span><span class=n>formatStr</span><span class=p>);</span>
+</span></span></code></pre></td></tr></table></div></div><p>插值字符串</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=kt>string</span> <span class=n>name</span> <span class=p>=</span> <span class=s>&#34;张三&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=n>age</span> <span class=p>=</span> <span class=m>18</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kt>string</span> <span class=n>formatStr</span> <span class=p>=</span> <span class=s>$&#34;姓名: {name}, 年龄: {age}&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=n>Console</span><span class=p>.</span><span class=n>WriteLine</span><span class=p>(</span><span class=n>formatStr</span><span class=p>);</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=多线程>多线程</h2><h3 id=api>API</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span><span class=lnt>128
+</span><span class=lnt>129
+</span><span class=lnt>130
+</span><span class=lnt>131
+</span><span class=lnt>132
+</span><span class=lnt>133
+</span><span class=lnt>134
+</span><span class=lnt>135
+</span><span class=lnt>136
+</span><span class=lnt>137
+</span><span class=lnt>138
+</span><span class=lnt>139
+</span><span class=lnt>140
+</span><span class=lnt>141
+</span><span class=lnt>142
+</span><span class=lnt>143
+</span><span class=lnt>144
+</span><span class=lnt>145
+</span><span class=lnt>146
+</span><span class=lnt>147
+</span><span class=lnt>148
+</span><span class=lnt>149
+</span><span class=lnt>150
+</span><span class=lnt>151
+</span><span class=lnt>152
+</span><span class=lnt>153
+</span><span class=lnt>154
+</span><span class=lnt>155
+</span><span class=lnt>156
+</span><span class=lnt>157
+</span><span class=lnt>158
+</span><span class=lnt>159
+</span><span class=lnt>160
+</span><span class=lnt>161
+</span><span class=lnt>162
+</span><span class=lnt>163
+</span><span class=lnt>164
+</span><span class=lnt>165
+</span><span class=lnt>166
+</span><span class=lnt>167
+</span><span class=lnt>168
+</span><span class=lnt>169
+</span><span class=lnt>170
+</span><span class=lnt>171
+</span><span class=lnt>172
+</span><span class=lnt>173
+</span><span class=lnt>174
+</span><span class=lnt>175
+</span><span class=lnt>176
+</span><span class=lnt>177
+</span><span class=lnt>178
+</span><span class=lnt>179
+</span><span class=lnt>180
+</span><span class=lnt>181
+</span><span class=lnt>182
+</span><span class=lnt>183
+</span><span class=lnt>184
+</span><span class=lnt>185
+</span><span class=lnt>186
+</span><span class=lnt>187
+</span><span class=lnt>188
+</span><span class=lnt>189
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=k>namespace</span> <span class=nn>System.Threading</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=k>sealed</span> <span class=k>class</span> <span class=nc>Thread</span> <span class=p>:</span> <span class=n>CriticalFinalizerObject</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=n>Thread</span><span class=p>(</span><span class=n>ParameterizedThreadStart</span> <span class=n>start</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=n>Thread</span><span class=p>(</span><span class=n>ThreadStart</span> <span class=n>start</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=n>Thread</span><span class=p>(</span><span class=n>ParameterizedThreadStart</span> <span class=n>start</span><span class=p>,</span> <span class=kt>int</span> <span class=n>maxStackSize</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=n>Thread</span><span class=p>(</span><span class=n>ThreadStart</span> <span class=n>start</span><span class=p>,</span> <span class=kt>int</span> <span class=n>maxStackSize</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>~</span><span class=n>Thread</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=n>IPrincipal</span><span class=p>?</span> <span class=n>CurrentPrincipal</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=n>Thread</span> <span class=n>CurrentThread</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=n>CultureInfo</span> <span class=n>CurrentCulture</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=n>CultureInfo</span> <span class=n>CurrentUICulture</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=kt>bool</span> <span class=n>IsAlive</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=na>        
+</span></span></span><span class=line><span class=cl><span class=na>        [Obsolete(&#34;The ApartmentState property has been deprecated. Use GetApartmentState, SetApartmentState or TrySetApartmentState instead.&#34;)]</span>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=n>ApartmentState</span> <span class=n>ApartmentState</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=kt>bool</span> <span class=n>IsBackground</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=kt>bool</span> <span class=n>IsThreadPoolThread</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=kt>int</span> <span class=n>ManagedThreadId</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=kt>string?</span> <span class=n>Name</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=n>ExecutionContext</span><span class=p>?</span> <span class=n>ExecutionContext</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=n>ThreadPriority</span> <span class=n>Priority</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=n>ThreadState</span> <span class=n>ThreadState</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=n>LocalDataStoreSlot</span> <span class=n>AllocateDataSlot</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=n>LocalDataStoreSlot</span> <span class=n>AllocateNamedDataSlot</span><span class=p>(</span><span class=kt>string</span> <span class=n>name</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=k>void</span> <span class=n>BeginCriticalRegion</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=k>void</span> <span class=n>BeginThreadAffinity</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=k>void</span> <span class=n>EndCriticalRegion</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=k>void</span> <span class=n>EndThreadAffinity</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=k>void</span> <span class=n>FreeNamedDataSlot</span><span class=p>(</span><span class=kt>string</span> <span class=n>name</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=kt>int</span> <span class=n>GetCurrentProcessorId</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=kt>object?</span> <span class=n>GetData</span><span class=p>(</span><span class=n>LocalDataStoreSlot</span> <span class=n>slot</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=n>AppDomain</span> <span class=n>GetDomain</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=kt>int</span> <span class=n>GetDomainID</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=n>LocalDataStoreSlot</span> <span class=n>GetNamedDataSlot</span><span class=p>(</span><span class=kt>string</span> <span class=n>name</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=k>void</span> <span class=n>MemoryBarrier</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>        [Obsolete(&#34;Thread.ResetAbort is not supported and throws PlatformNotSupportedException.&#34;, DiagnosticId = &#34;SYSLIB0006&#34;, UrlFormat = &#34;https://aka.ms/dotnet-warnings/{0}&#34;)]</span>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=k>void</span> <span class=n>ResetAbort</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=k>void</span> <span class=n>SetData</span><span class=p>(</span><span class=n>LocalDataStoreSlot</span> <span class=n>slot</span><span class=p>,</span> <span class=kt>object?</span> <span class=n>data</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=k>void</span> <span class=n>Sleep</span><span class=p>(</span><span class=kt>int</span> <span class=n>millisecondsTimeout</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=k>void</span> <span class=n>Sleep</span><span class=p>(</span><span class=n>TimeSpan</span> <span class=n>timeout</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=k>void</span> <span class=n>SpinWait</span><span class=p>(</span><span class=kt>int</span> <span class=n>iterations</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>        [return: NotNullIfNotNull(&#34;address&#34;)]</span>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=kt>object?</span> <span class=n>VolatileRead</span><span class=p>([</span><span class=n>NotNullIfNotNull</span><span class=p>(</span><span class=s>&#34;address&#34;</span><span class=p>)]</span> <span class=k>ref</span> <span class=kt>object?</span> <span class=n>address</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=n>IntPtr</span> <span class=n>VolatileRead</span><span class=p>(</span><span class=k>ref</span> <span class=n>IntPtr</span> <span class=n>address</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=kt>float</span> <span class=n>VolatileRead</span><span class=p>(</span><span class=k>ref</span> <span class=kt>float</span> <span class=n>address</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>        [CLSCompliant(false)]</span>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=n>UIntPtr</span> <span class=n>VolatileRead</span><span class=p>(</span><span class=k>ref</span> <span class=n>UIntPtr</span> <span class=n>address</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>        [CLSCompliant(false)]</span>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=kt>uint</span> <span class=n>VolatileRead</span><span class=p>(</span><span class=k>ref</span> <span class=kt>uint</span> <span class=n>address</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>        [CLSCompliant(false)]</span>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=kt>ulong</span> <span class=n>VolatileRead</span><span class=p>(</span><span class=k>ref</span> <span class=kt>ulong</span> <span class=n>address</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=kt>long</span> <span class=n>VolatileRead</span><span class=p>(</span><span class=k>ref</span> <span class=kt>long</span> <span class=n>address</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>        [CLSCompliant(false)]</span>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=kt>ushort</span> <span class=n>VolatileRead</span><span class=p>(</span><span class=k>ref</span> <span class=kt>ushort</span> <span class=n>address</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=kt>int</span> <span class=n>VolatileRead</span><span class=p>(</span><span class=k>ref</span> <span class=kt>int</span> <span class=n>address</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>        [CLSCompliant(false)]</span>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=kt>sbyte</span> <span class=n>VolatileRead</span><span class=p>(</span><span class=k>ref</span> <span class=kt>sbyte</span> <span class=n>address</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=kt>double</span> <span class=n>VolatileRead</span><span class=p>(</span><span class=k>ref</span> <span class=kt>double</span> <span class=n>address</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=kt>byte</span> <span class=n>VolatileRead</span><span class=p>(</span><span class=k>ref</span> <span class=kt>byte</span> <span class=n>address</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=kt>short</span> <span class=n>VolatileRead</span><span class=p>(</span><span class=k>ref</span> <span class=kt>short</span> <span class=n>address</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>        [CLSCompliant(false)]</span>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=k>void</span> <span class=n>VolatileWrite</span><span class=p>(</span><span class=k>ref</span> <span class=n>UIntPtr</span> <span class=n>address</span><span class=p>,</span> <span class=n>UIntPtr</span> <span class=k>value</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>        [CLSCompliant(false)]</span>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=k>void</span> <span class=n>VolatileWrite</span><span class=p>(</span><span class=k>ref</span> <span class=kt>ulong</span> <span class=n>address</span><span class=p>,</span> <span class=kt>ulong</span> <span class=k>value</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>        [CLSCompliant(false)]</span>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=k>void</span> <span class=n>VolatileWrite</span><span class=p>(</span><span class=k>ref</span> <span class=kt>uint</span> <span class=n>address</span><span class=p>,</span> <span class=kt>uint</span> <span class=k>value</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>        [CLSCompliant(false)]</span>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=k>void</span> <span class=n>VolatileWrite</span><span class=p>(</span><span class=k>ref</span> <span class=kt>ushort</span> <span class=n>address</span><span class=p>,</span> <span class=kt>ushort</span> <span class=k>value</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>        [CLSCompliant(false)]</span>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=k>void</span> <span class=n>VolatileWrite</span><span class=p>(</span><span class=k>ref</span> <span class=kt>sbyte</span> <span class=n>address</span><span class=p>,</span> <span class=kt>sbyte</span> <span class=k>value</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=k>void</span> <span class=n>VolatileWrite</span><span class=p>([</span><span class=n>NotNullIfNotNull</span><span class=p>(</span><span class=s>&#34;value&#34;</span><span class=p>)]</span> <span class=k>ref</span> <span class=kt>object?</span> <span class=n>address</span><span class=p>,</span> <span class=kt>object?</span> <span class=k>value</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=k>void</span> <span class=n>VolatileWrite</span><span class=p>(</span><span class=k>ref</span> <span class=n>IntPtr</span> <span class=n>address</span><span class=p>,</span> <span class=n>IntPtr</span> <span class=k>value</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=k>void</span> <span class=n>VolatileWrite</span><span class=p>(</span><span class=k>ref</span> <span class=kt>long</span> <span class=n>address</span><span class=p>,</span> <span class=kt>long</span> <span class=k>value</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=k>void</span> <span class=n>VolatileWrite</span><span class=p>(</span><span class=k>ref</span> <span class=kt>int</span> <span class=n>address</span><span class=p>,</span> <span class=kt>int</span> <span class=k>value</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=k>void</span> <span class=n>VolatileWrite</span><span class=p>(</span><span class=k>ref</span> <span class=kt>float</span> <span class=n>address</span><span class=p>,</span> <span class=kt>float</span> <span class=k>value</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=k>void</span> <span class=n>VolatileWrite</span><span class=p>(</span><span class=k>ref</span> <span class=kt>double</span> <span class=n>address</span><span class=p>,</span> <span class=kt>double</span> <span class=k>value</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=k>void</span> <span class=n>VolatileWrite</span><span class=p>(</span><span class=k>ref</span> <span class=kt>byte</span> <span class=n>address</span><span class=p>,</span> <span class=kt>byte</span> <span class=k>value</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=k>void</span> <span class=n>VolatileWrite</span><span class=p>(</span><span class=k>ref</span> <span class=kt>short</span> <span class=n>address</span><span class=p>,</span> <span class=kt>short</span> <span class=k>value</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>static</span> <span class=kt>bool</span> <span class=n>Yield</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>        [Obsolete(&#34;Thread.Abort is not supported and throws PlatformNotSupportedException.&#34;, DiagnosticId = &#34;SYSLIB0006&#34;, UrlFormat = &#34;https://aka.ms/dotnet-warnings/{0}&#34;)]</span>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>void</span> <span class=n>Abort</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>        [Obsolete(&#34;Thread.Abort is not supported and throws PlatformNotSupportedException.&#34;, DiagnosticId = &#34;SYSLIB0006&#34;, UrlFormat = &#34;https://aka.ms/dotnet-warnings/{0}&#34;)]</span>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>void</span> <span class=n>Abort</span><span class=p>(</span><span class=kt>object?</span> <span class=n>stateInfo</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>void</span> <span class=n>DisableComObjectEagerCleanup</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=n>ApartmentState</span> <span class=n>GetApartmentState</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>        [Obsolete(&#34;Code Access Security is not supported or honored by the runtime.&#34;, DiagnosticId = &#34;SYSLIB0003&#34;, UrlFormat = &#34;https://aka.ms/dotnet-warnings/{0}&#34;)]</span>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=n>CompressedStack</span> <span class=n>GetCompressedStack</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>override</span> <span class=kt>int</span> <span class=n>GetHashCode</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>void</span> <span class=n>Interrupt</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>void</span> <span class=n>Join</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=kt>bool</span> <span class=n>Join</span><span class=p>(</span><span class=kt>int</span> <span class=n>millisecondsTimeout</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=kt>bool</span> <span class=n>Join</span><span class=p>(</span><span class=n>TimeSpan</span> <span class=n>timeout</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>        [Obsolete(&#34;Thread.Resume has been deprecated. Use other classes in System.Threading, such as Monitor, Mutex, Event, and Semaphore, to synchronize Threads or protect resources.&#34;)]</span>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>void</span> <span class=n>Resume</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>        [SupportedOSPlatform(&#34;windows&#34;)]</span>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>void</span> <span class=n>SetApartmentState</span><span class=p>(</span><span class=n>ApartmentState</span> <span class=n>state</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>        [Obsolete(&#34;Code Access Security is not supported or honored by the runtime.&#34;, DiagnosticId = &#34;SYSLIB0003&#34;, UrlFormat = &#34;https://aka.ms/dotnet-warnings/{0}&#34;)]</span>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>void</span> <span class=n>SetCompressedStack</span><span class=p>(</span><span class=n>CompressedStack</span> <span class=n>stack</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>        [UnsupportedOSPlatform(&#34;browser&#34;)]</span>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>void</span> <span class=n>Start</span><span class=p>(</span><span class=kt>object?</span> <span class=n>parameter</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>        [UnsupportedOSPlatform(&#34;browser&#34;)]</span>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>void</span> <span class=n>Start</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>        [Obsolete(&#34;Thread.Suspend has been deprecated. Use other classes in System.Threading, such as Monitor, Mutex, Event, and Semaphore, to synchronize Threads or protect resources.&#34;)]</span>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>void</span> <span class=n>Suspend</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=kt>bool</span> <span class=n>TrySetApartmentState</span><span class=p>(</span><span class=n>ApartmentState</span> <span class=n>state</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>        [UnsupportedOSPlatform(&#34;browser&#34;)]</span>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>void</span> <span class=n>UnsafeStart</span><span class=p>(</span><span class=kt>object?</span> <span class=n>parameter</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>        [UnsupportedOSPlatform(&#34;browser&#34;)]</span>
+</span></span><span class=line><span class=cl>        <span class=k>public</span> <span class=k>void</span> <span class=n>UnsafeStart</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>构造函数有四个，一种参数类型是<code>ThreadStart</code>，也就是一个没有参数和返回值的函数；另一种参数类型是<code>ParameterizedThreadStart</code>，也就是一个可以接收参数但是没有返回值的函数，maxStackSize，是线程栈的最大值，线程创建时<code>CLR</code>为每个线程分配各自独立的栈空间，因此局部变量时线程独立的。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=k>namespace</span> <span class=nn>System.Threading</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=k>delegate</span> <span class=k>void</span> <span class=n>ThreadStart</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>namespace</span> <span class=nn>System.Threading</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=k>delegate</span> <span class=k>void</span> <span class=n>ParameterizedThreadStart</span><span class=p>(</span><span class=kt>object?</span> <span class=n>obj</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>如果想要在运行时拿到线程的信息可以使用<code>Thread.CurrentThread</code></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>var</span> <span class=n>thread</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Thread</span><span class=p>(</span><span class=n>ThreadTask</span><span class=p>.</span><span class=n>TargetTask</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=n>thread</span><span class=p>.</span><span class=n>Name</span> <span class=p>=</span> <span class=s>&#34;Worker&#34;</span>
+</span></span><span class=line><span class=cl><span class=n>thread</span><span class=p>.</span><span class=n>Start</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>ThreadTask</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=k>static</span> <span class=k>void</span> <span class=n>TargetTask</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>Console</span><span class=p>.</span><span class=n>WriteLine</span><span class=p>(</span><span class=s>&#34;Hello, Thread &#34;</span> <span class=p>+</span> <span class=n>Thread</span><span class=p>.</span><span class=n>CurrentThread</span><span class=p>.</span><span class=n>Name</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>如果想要在执行的时候传递参数可以使用<code>Start(object? parameter)</code>方法，参数是一个object对象</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>var</span> <span class=n>thread</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Thread</span><span class=p>(</span><span class=n>ThreadTask</span><span class=p>.</span><span class=n>TargetTask</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=n>thread</span><span class=p>.</span><span class=n>Name</span> <span class=p>=</span> <span class=s>&#34;Worker&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=n>thread</span><span class=p>.</span><span class=n>Start</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>var</span> <span class=n>paramsThread</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Thread</span><span class=p>(</span><span class=n>ThreadTask</span><span class=p>.</span><span class=n>ParamsThread</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=n>paramsThread</span><span class=p>.</span><span class=n>Start</span><span class=p>(</span><span class=m>5000</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>VeryLongClassName</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=kt>int</span> <span class=n>Id</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=kt>string</span> <span class=n>Name</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>ThreadTask</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=k>static</span> <span class=k>void</span> <span class=n>TargetTask</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>Console</span><span class=p>.</span><span class=n>WriteLine</span><span class=p>(</span><span class=s>&#34;Hello, Thread &#34;</span> <span class=p>+</span> <span class=n>Thread</span><span class=p>.</span><span class=n>CurrentThread</span><span class=p>.</span><span class=n>Name</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=k>static</span> <span class=k>void</span> <span class=n>ParamsThread</span><span class=p>(</span><span class=n>Object</span> <span class=n>obj</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>interval</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>try</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>interval</span> <span class=p>=</span> <span class=p>(</span><span class=kt>int</span><span class=p>)</span><span class=n>obj</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=k>catch</span> <span class=p>(</span><span class=n>InvalidCastException</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>interval</span> <span class=p>=</span> <span class=m>5000</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=n>Thread</span><span class=p>.</span><span class=n>Sleep</span><span class=p>(</span><span class=n>interval</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>Console</span><span class=p>.</span><span class=n>WriteLine</span><span class=p>(</span><span class=s>&#34;Sleep Complete&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p><strong>dotnet的公用语言运行时（Common Language Runtime，CLR）能区分两种不同类型的线程：前台线程和后台线程。这两者的区别就是：应用程序必须运行完所有的前台线程才可以退出；而对于后台线程，应用程序则可以不考虑其是否已经运行完毕而直接退出，所有的后台线程在应用程序退出时都会自动结束。</strong></p><p>将Thread的<code>IsBackground</code>属性设置为true后线程将以后台线程启动。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>var</span> <span class=n>thread</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Thread</span><span class=p>(</span><span class=n>ThreadTask</span><span class=p>.</span><span class=n>TargetTask</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=n>thread</span><span class=p>.</span><span class=n>Name</span> <span class=p>=</span> <span class=s>&#34;Worker&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=n>thread</span><span class=p>.</span><span class=n>Start</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>var</span> <span class=n>paramsThread</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Thread</span><span class=p>(</span><span class=n>ThreadTask</span><span class=p>.</span><span class=n>ParamsThread</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=n>paramsThread</span><span class=p>.</span><span class=n>Start</span><span class=p>(</span><span class=m>5000</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=n>paramsThread</span><span class=p>.</span><span class=n>IsBackground</span> <span class=p>=</span> <span class=k>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>VeryLongClassName</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=kt>int</span> <span class=n>Id</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=kt>string</span> <span class=n>Name</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>ThreadTask</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=k>static</span> <span class=k>void</span> <span class=n>TargetTask</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>Console</span><span class=p>.</span><span class=n>WriteLine</span><span class=p>(</span><span class=s>&#34;Hello, Thread &#34;</span> <span class=p>+</span> <span class=n>Thread</span><span class=p>.</span><span class=n>CurrentThread</span><span class=p>.</span><span class=n>Name</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=k>static</span> <span class=k>void</span> <span class=n>ParamsThread</span><span class=p>(</span><span class=n>Object</span> <span class=n>obj</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>interval</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>try</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>interval</span> <span class=p>=</span> <span class=p>(</span><span class=kt>int</span><span class=p>)</span><span class=n>obj</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=k>catch</span> <span class=p>(</span><span class=n>InvalidCastException</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>interval</span> <span class=p>=</span> <span class=m>5000</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=n>Thread</span><span class=p>.</span><span class=n>Sleep</span><span class=p>(</span><span class=n>interval</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>Console</span><span class=p>.</span><span class=n>WriteLine</span><span class=p>(</span><span class=s>&#34;Sleep Complete&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>如果后台线程使用finally或者using来执行清理工作就会产生问题</p><h2 id=异步编程模型>异步编程模型</h2><p>异步编程模型（Asynchronous Programming Model），提出于.Net Framework 1.x时代，基于<code>IAsyncResult</code>接口实现类似BeginXXX和EndXXX的方法。</p><p>APM是建立在委托之上的，.Net Core中委托不支持异步调用，也就是BeginInvoke和EndInvoke方法。
+EndInvoke会做三件事:</p><ol><li>如果异步委托还没有结束，它会等待异步委托执行完成。</li><li>它会接收返回值，也包括ref和out方式的参数。</li><li>它会向调用线程抛出未处理的异常。</li></ol><h3 id=基于事件的异步模式>基于事件的异步模式</h3><p>基于事件的异步模式（Event-Based Asynchronous Pattern），EAP是在 .Net Framework2.0中提出的，让类可以提供多线程的能力，而不需要使用者显示启动和管理线程，这种模式具有以下能力：</p><ul><li>协作取消模型（cooperative cancellation model）</li><li>线程亲和性（thread affinity）</li><li>将异常转发到完成事件（forwarding exception）</li></ul><h3 id=基于任务的异步模式tap>基于任务的异步模式（TAP）</h3><p>从 .Net Framework4开始引入</p><h2 id=异步编程>异步编程</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2023-01-01</span></div><div class=post-info-license></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw"></i>&nbsp;<a href=/tags/csharp/>CSharp</a>,&nbsp;<a href=/tags/dotnetcore/>DotNetCore</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/posts/%E5%BC%80%E6%BA%90%E5%B7%A5%E5%85%B7/ class=prev rel=prev title=开源工具><i class="fas fa-angle-left fa-fw"></i>开源工具</a>
+<a href=/posts/dotnetcore6-web-api%E4%B8%AD%E9%97%B4%E4%BB%B6/ class=next rel=next title="DotNetCore6 Web Api中间件">DotNetCore6 Web Api中间件<i class="fas fa-angle-right fa-fw"></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2019 - 2023</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=http://pujichun.ink target=_blank>普吉春</a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw"></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw"></i></a></div><script type=text/javascript src=/lib/smooth-scroll/smooth-scroll.min.js></script><script type=text/javascript src=/lib/autocomplete/autocomplete.min.js></script><script type=text/javascript src=/lib/lunr/lunr.min.js></script><script type=text/javascript src=/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=/lib/lazysizes/lazysizes.min.js></script><script type=text/javascript src=/lib/clipboard/clipboard.min.js></script><script type=text/javascript src=/lib/typeit/typeit.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:10},comment:{},data:{"id-1":"pujic","id-2":"pujic"},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"lunr"},typeit:{cursorChar:null,cursorSpeed:null,data:{"id-1":["id-1"],"id-2":["id-2"]},duration:null,speed:null}}</script><script type=text/javascript src=/js/theme.min.js></script></body></html>

@@ -1,0 +1,292 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><meta http-equiv=x-ua-compatible content="IE=edge, chrome=1"><title>Kafka安装与使用 - pujic</title><meta name=Description content><meta property="og:title" content="Kafka安装与使用"><meta property="og:description" content="Kafka是一个高吞吐率的分布式订阅消息队列，传统的关系存储型数据库，如MySQL、MongoDB都有一个痛点，那就是性能较差，在高并发访问的情况下很可能会奔溃掉。其实redis中有一个用于消息订阅的数据结构queue，但是redis中的数据是放到内存当中的，如果消息量过大很可能会造成内存奔溃，而且如果机器发生故障，内存中的数据很可能会清空。"><meta property="og:type" content="article"><meta property="og:url" content="http://example.org/posts/kafka%E4%BD%BF%E7%94%A8/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2021-04-09T13:54:56+00:00"><meta property="article:modified_time" content="2021-04-09T13:54:56+00:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="Kafka安装与使用"><meta name=twitter:description content="Kafka是一个高吞吐率的分布式订阅消息队列，传统的关系存储型数据库，如MySQL、MongoDB都有一个痛点，那就是性能较差，在高并发访问的情况下很可能会奔溃掉。其实redis中有一个用于消息订阅的数据结构queue，但是redis中的数据是放到内存当中的，如果消息量过大很可能会造成内存奔溃，而且如果机器发生故障，内存中的数据很可能会清空。"><meta name=application-name content="pujic"><meta name=apple-mobile-web-app-title content="pujic"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=http://example.org/posts/kafka%E4%BD%BF%E7%94%A8/><link rel=prev href=http://example.org/posts/python-mysql%E8%BF%9E%E6%8E%A5%E6%B1%A0/><link rel=next href=http://example.org/posts/pandas%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E5%B0%8F%E6%8A%80%E5%B7%A7%E4%B8%80/><link rel=stylesheet href=/lib/normalize/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=/lib/fontawesome-free/all.min.css><link rel=stylesheet href=/lib/animate/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Kafka安装与使用","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/example.org\/posts\/kafka%E4%BD%BF%E7%94%A8\/"},"genre":"posts","keywords":"Kafka, Python, Go, 并发","wordcount":2427,"url":"http:\/\/example.org\/posts\/kafka%E4%BD%BF%E7%94%A8\/","datePublished":"2021-04-09T13:54:56+00:00","dateModified":"2021-04-09T13:54:56+00:00","publisher":{"@type":"Organization","name":"普吉春"},"author":{"@type":"Person","name":"普吉春"},"description":""}</script></head><body header-desktop=fixed header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":""==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:""==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title=pujic><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-1 class=typeit></span></a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>所有文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/categories/>分类 </a><a class=menu-item href=/about/>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin"></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw"></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=pujic><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-2 class=typeit></span></a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin"></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=/posts/ title>所有文章</a><a class=menu-item href=/tags/ title>标签</a><a class=menu-item href=/categories/ title>分类</a><a class=menu-item href=/about/ title>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw"></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animated flipInX">Kafka安装与使用</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=http://pujichun.ink title=Author target=_blank rel="noopener noreffer author" class=author><i class="fas fa-user-circle fa-fw"></i>普吉春</a></span>&nbsp;<span class=post-category>收录于 <a href=/categories/%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/><i class="far fa-folder fa-fw"></i>环境配置</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2021-04-09>2021-04-09</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 2427 字&nbsp;
+<i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 5 分钟&nbsp;</div></div><div class="details toc" id=toc-static kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right"></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#kafka介绍>Kafka介绍</a></li><li><a href=#windows平台>Windows平台</a><ul><li><a href=#下载>下载</a></li><li><a href=#启动kafka>启动Kafka</a></li><li><a href=#python实现生产与消费>Python实现生产与消费</a><ul><li><a href=#生产者>生产者</a></li><li><a href=#消费者>消费者</a></li></ul></li><li><a href=#go实现生产与消费>Go实现生产与消费</a></li></ul></li><li><a href=#使用docker搭建kafka集群>使用Docker搭建Kafka集群</a></li></ul></nav></div></div><div class=content id=content><p>Kafka是一个高吞吐率的分布式订阅消息队列，传统的关系存储型数据库，如MySQL、MongoDB都有一个痛点，那就是性能较差，在高并发访问的情况下很可能会奔溃掉。其实redis中有一个用于消息订阅的数据结构<code>queue</code>，但是redis中的数据是放到内存当中的，如果消息量过大很可能会造成内存奔溃，而且如果机器发生故障，内存中的数据很可能会清空。</p><p>对比于redis，Kafka中发布消息和消费消息的速度都相对较慢，但是Kafka也足以支撑住并发，而且Kafka收到消息后是存储到硬盘当中的，因此就算是服务器宕机也不会造成数据的丢失。</p><h2 id=kafka介绍>Kafka介绍</h2><p>在Kafka中消息的存储与读取被称作生产与消费，Kafka存储的消息都是有时效性的（这个时间可以由开发者自己设置），Kafka就像一个消息的库存市场，消息被分类生产之后发送到Kafka，然后开始分类消费，如果没有消息就会一直轮询</p><p><img class=lazyload src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203119.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203119.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203119.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203119.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203119.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203119.png></p><p>在Kafka集群中，每个Broker就是一个服务器节点，每个Topic都有一个Leader，当生产数据的时候会生产到Leader的服务器，然后Leader会将数据发送给Follower会做一个备份，消费的时候也是从Leader所在服务器中取。</p><p>Partition是分区，当并发往Kafka中生产数据的时候如果有多个Partition会将数据分布发送给指定的Partition，也就是一个Topic中的数据将被存储在不同的Partition中。</p><h2 id=windows平台>Windows平台</h2><h3 id=下载>下载</h3><p>Kafka在所有平台的安装都是同一个安装包，到官网下载编译好的即可：http://kafka.apache.org/</p><p>Kafka的启动依赖于ZooKeeper组件，在较新的Kafka安装包中已经带了ZooKeeper，只要配置好启动就行。</p><p>下载完成之后解压</p><p><img class=lazyload src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203136.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203136.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203136.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203136.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203136.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203136.png></p><p>然后需要建立一个存放数据的文件夹，因为是在Windows平台下实验使用，所以文件夹就建在安装目录即可</p><p><img class=lazyload src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203149.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203149.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203149.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203149.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203149.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203149.png></p><p>然后再创建两个文件夹分布给Zookeeper和Kafka使用</p><p><img class=lazyload src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203214.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203214.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203214.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203214.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203214.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203214.png></p><p>接着进入<code>config</code>目录修改配置文件</p><p>首先修改Zookeeper的配置文件<code>zookeeper.properties</code>，将<code>dataDir</code>修改为刚刚创建的<code>zk_data</code>文件夹</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>dataDir=D:/soft/kafka_2.12/data/zk_data
+</span></span></code></pre></td></tr></table></div></div><p>然后修改Kafka的配置文件<code>server.properties</code>，将<code>log.dirs</code>修改为刚刚创建的<code>kafka_log</code>文件夹</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>log.dirs=D:/soft/kafka_2.12/data/kafka_log
+</span></span></code></pre></td></tr></table></div></div><h3 id=启动kafka>启动Kafka</h3><p>在启动Kafka前需要先启动Zookeeper，在此就不配置环境变量了，通过命令在安装路径启动即可，需要注意的是在Windows下启动脚本都在bin目录下的windows目录下，Linux的是在bin路径下</p><p>启动Zookeeper和Kafka都需要指定配置文件</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>.<span class=se>\b</span>in<span class=se>\w</span>indows<span class=se>\z</span>ookeeper-server-start.bat .<span class=se>\c</span>onfig<span class=se>\z</span>ookeeper.properties
+</span></span></code></pre></td></tr></table></div></div><p><img class=lazyload src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203234.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203234.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203234.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203234.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203234.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203234.png></p><p>然后启动Kafka</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>.<span class=se>\b</span>in<span class=se>\w</span>indows<span class=se>\k</span>afka-server-start.bat .<span class=se>\c</span>onfig<span class=se>\s</span>erver.properties
+</span></span></code></pre></td></tr></table></div></div><p><img class=lazyload src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203252.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203252.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203252.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203252.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203252.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405203252.png></p><h3 id=python实现生产与消费>Python实现生产与消费</h3><p>因为<a href=https://github.com/Parsely/pykafka target=_blank rel="noopener noreffer">pykafka</a>已经很久没更新了，所以这里使用<a href=https://github.com/dpkp/kafka-python target=_blank rel="noopener noreffer">kafka-python</a>操作Kafka</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>pip install kafka-python
+</span></span></code></pre></td></tr></table></div></div><h4 id=生产者>生产者</h4><p>producer_demo.py</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>kafka</span> <span class=kn>import</span> <span class=n>KafkaProducer</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>time</span> <span class=kn>import</span> <span class=n>sleep</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>start_producer</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=n>producer</span> <span class=o>=</span> <span class=n>KafkaProducer</span><span class=p>(</span><span class=n>bootstrap_servers</span><span class=o>=</span><span class=s1>&#39;127.0.0.1:9092&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=mi>100000</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=n>msg</span> <span class=o>=</span> <span class=sa>f</span><span class=s1>&#39;msg is </span><span class=si>{</span><span class=n>i</span><span class=si>}</span><span class=s1>&#39;</span>
+</span></span><span class=line><span class=cl>        <span class=n>producer</span><span class=o>.</span><span class=n>send</span><span class=p>(</span><span class=n>topic</span><span class=o>=</span><span class=s1>&#39;FreedomAndDiscipline&#39;</span><span class=p>,</span> <span class=n>value</span><span class=o>=</span><span class=n>msg</span><span class=o>.</span><span class=n>encode</span><span class=p>(</span><span class=s1>&#39;utf-8&#39;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>        <span class=n>sleep</span><span class=p>(</span><span class=mi>3</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=vm>__name__</span> <span class=o>==</span> <span class=s1>&#39;__main__&#39;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>start_producer</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=消费者>消费者</h4><p>consumer_demo.py</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>kafka</span> <span class=kn>import</span> <span class=n>KafkaConsumer</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>start_consumer</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=n>consumer</span> <span class=o>=</span> <span class=n>KafkaConsumer</span><span class=p>(</span><span class=s1>&#39;FreedomAndDiscipline&#39;</span><span class=p>,</span> <span class=n>bootstrap_servers</span><span class=o>=</span><span class=s1>&#39;127.0.0.1:9092&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>msg</span> <span class=ow>in</span> <span class=n>consumer</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=n>msg</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=vm>__name__</span> <span class=o>==</span> <span class=s1>&#39;__main__&#39;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>start_consumer</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><p>因为这里并没有设置从Topic开始的位置开始读，所以当<code>consumer_demo.py</code>启动之后只能接收到<code>producer_demo.py</code>后面发送来的数据，可以看到下面的输出内容中第一条消息是<code>msg is 47</code></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>ConsumerRecord(topic=&#39;FreedomAndDiscipline&#39;, partition=0, offset=2, timestamp=1618372466839, timestamp_type=0, key=None, value=b&#39;msg is 47&#39;, headers=[], checksum=None, serialized_key_size=-1, serialized_value_size=9, serialized_header_size=-1)
+</span></span><span class=line><span class=cl>ConsumerRecord(topic=&#39;FreedomAndDiscipline&#39;, partition=0, offset=3, timestamp=1618372469851, timestamp_type=0, key=None, value=b&#39;msg is 48&#39;, headers=[], checksum=None, serialized_key_size=-1, serialized_value_size=9, serialized_header_size=-1)
+</span></span><span class=line><span class=cl>ConsumerRecord(topic=&#39;FreedomAndDiscipline&#39;, partition=0, offset=4, timestamp=1618372472865, timestamp_type=0, key=None, value=b&#39;msg is 49&#39;, headers=[], checksum=None, serialized_key_size=-1, serialized_value_size=9, serialized_header_size=-1)
+</span></span><span class=line><span class=cl>ConsumerRecord(topic=&#39;FreedomAndDiscipline&#39;, partition=0, offset=5, timestamp=1618372475876, timestamp_type=0, key=None, value=b&#39;msg is 50&#39;, headers=[], checksum=None, serialized_key_size=-1, serialized_value_size=9, serialized_header_size=-1)
+</span></span><span class=line><span class=cl>ConsumerRecord(topic=&#39;FreedomAndDiscipline&#39;, partition=0, offset=6, timestamp=1618372478879, timestamp_type=0, key=None, value=b&#39;msg is 51&#39;, headers=[], checksum=None, serialized_key_size=-1, serialized_value_size=9, serialized_header_size=-1)
+</span></span><span class=line><span class=cl>ConsumerRecord(topic=&#39;FreedomAndDiscipline&#39;, partition=0, offset=7, timestamp=1618372481886, timestamp_type=0, key=None, value=b&#39;msg is 52&#39;, headers=[], checksum=None, serialized_key_size=-1, serialized_value_size=9, serialized_header_size=-1)
+</span></span><span class=line><span class=cl>ConsumerRecord(topic=&#39;FreedomAndDiscipline&#39;, partition=0, offset=8, timestamp=1618372484894, timestamp_type=0, key=None, value=b&#39;msg is 53&#39;, headers=[], checksum=None, serialized_key_size=-1, serialized_value_size=9, serialized_header_size=-1)
+</span></span><span class=line><span class=cl>ConsumerRecord(topic=&#39;FreedomAndDiscipline&#39;, partition=0, offset=9, timestamp=1618372487894, timestamp_type=0, key=None, value=b&#39;msg is 54&#39;, headers=[], checksum=None, serialized_key_size=-1, serialized_value_size=9, serialized_header_size=-1)
+</span></span></code></pre></td></tr></table></div></div><p>如果需要从该Topic最开始的位置读，需要设置Partition的位置，然后告诉连接对象offset从哪开始</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>kafka</span> <span class=kn>import</span> <span class=n>KafkaConsumer</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>start_consumer</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=n>consumer</span> <span class=o>=</span> <span class=n>KafkaConsumer</span><span class=p>(</span><span class=n>bootstrap_servers</span><span class=o>=</span><span class=s1>&#39;127.0.0.1:9092&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=c1># 创建Partition对象</span>
+</span></span><span class=line><span class=cl>    <span class=n>tp</span> <span class=o>=</span> <span class=n>TopicPartition</span><span class=p>(</span><span class=s1>&#39;FreedomAndDiscipline&#39;</span><span class=p>,</span> <span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=c1># 给连接对象指定Partition对象</span>
+</span></span><span class=line><span class=cl>    <span class=n>consumer</span><span class=o>.</span><span class=n>assign</span><span class=p>([</span><span class=n>tp</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>    <span class=c1># 告诉Kafka消费对象要从指定Partition对象的指定offset开始消费</span>
+</span></span><span class=line><span class=cl>    <span class=n>consumer</span><span class=o>.</span><span class=n>seek</span><span class=p>(</span><span class=n>tp</span><span class=p>,</span> <span class=n>offset</span><span class=o>=</span><span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>msg</span> <span class=ow>in</span> <span class=n>consumer</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=n>msg</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=vm>__name__</span> <span class=o>==</span> <span class=s1>&#39;__main__&#39;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>start_consumer</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><p>现在得到的就是topic为FreedomAndDiscipline，partition为0，offset为0的结果</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>ConsumerRecord(topic=&#39;FreedomAndDiscipline&#39;, partition=0, offset=0, timestamp=1618372897061, timestamp_type=0, key=None, value=b&#39;msg is 0&#39;, headers=[], checksum=None, serialized_key_size=-1, serialized_value_size=8, serialized_header_size=-1)
+</span></span><span class=line><span class=cl>ConsumerRecord(topic=&#39;FreedomAndDiscipline&#39;, partition=0, offset=1, timestamp=1618372900064, timestamp_type=0, key=None, value=b&#39;msg is 1&#39;, headers=[], checksum=None, serialized_key_size=-1, serialized_value_size=8, serialized_header_size=-1)
+</span></span><span class=line><span class=cl>ConsumerRecord(topic=&#39;FreedomAndDiscipline&#39;, partition=0, offset=2, timestamp=1618372903074, timestamp_type=0, key=None, value=b&#39;msg is 2&#39;, headers=[], checksum=None, serialized_key_size=-1, serialized_value_size=8, serialized_header_size=-1)
+</span></span><span class=line><span class=cl>ConsumerRecord(topic=&#39;FreedomAndDiscipline&#39;, partition=0, offset=3, timestamp=1618372906089, timestamp_type=0, key=None, value=b&#39;msg is 3&#39;, headers=[], checksum=None, serialized_key_size=-1, serialized_value_size=8, serialized_header_size=-1)
+</span></span><span class=line><span class=cl>ConsumerRecord(topic=&#39;FreedomAndDiscipline&#39;, partition=0, offset=4, timestamp=1618372909096, timestamp_type=0, key=None, value=b&#39;msg is 4&#39;, headers=[], checksum=None, serialized_key_size=-1, serialized_value_size=8, serialized_header_size=-1)
+</span></span></code></pre></td></tr></table></div></div><h3 id=go实现生产与消费>Go实现生产与消费</h3><p>生产者程序</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;github.com/Shopify/sarama&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;log&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;time&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=c1>// Kafka配置对象
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nx>config</span> <span class=o>:=</span> <span class=nx>sarama</span><span class=p>.</span><span class=nf>NewConfig</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>	<span class=c1>// 消息发送成功将消息发送成功的信息发送到Successes channel
+</span></span></span><span class=line><span class=cl><span class=c1></span>		<span class=nx>config</span><span class=p>.</span><span class=nx>Producer</span><span class=p>.</span><span class=nx>Return</span><span class=p>.</span><span class=nx>Successes</span> <span class=p>=</span> <span class=kc>true</span>
+</span></span><span class=line><span class=cl>	<span class=c1>// 配置partition分区位置为指定分区
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nx>config</span><span class=p>.</span><span class=nx>Producer</span><span class=p>.</span><span class=nx>Partitioner</span> <span class=p>=</span> <span class=nx>sarama</span><span class=p>.</span><span class=nx>NewManualPartitioner</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 初始化Producer对象
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nx>producer</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>sarama</span><span class=p>.</span><span class=nf>NewSyncProducer</span><span class=p>([]</span><span class=kt>string</span><span class=p>{</span><span class=s>&#34;localhost:9092&#34;</span><span class=p>},</span> <span class=nx>config</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nb>panic</span><span class=p>(</span><span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>defer</span> <span class=kd>func</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>producer</span><span class=p>.</span><span class=nf>Close</span><span class=p>();</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=nx>log</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=s>&#34;Failed to close producer:&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=p>}()</span>
+</span></span><span class=line><span class=cl>	<span class=k>for</span> <span class=nx>i</span> <span class=o>:=</span> <span class=mi>1</span><span class=p>;</span> <span class=nx>i</span> <span class=p>&lt;</span> <span class=mi>1000</span><span class=p>;</span> <span class=nx>i</span><span class=o>++</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 消息设置
+</span></span></span><span class=line><span class=cl><span class=c1></span>		<span class=nx>msg</span> <span class=o>:=</span> <span class=o>&amp;</span><span class=nx>sarama</span><span class=p>.</span><span class=nx>ProducerMessage</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=nx>Topic</span><span class=p>:</span>     <span class=s>&#34;HelloKafka&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>			<span class=nx>Partition</span><span class=p>:</span> <span class=mi>0</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>			<span class=nx>Value</span><span class=p>:</span>     <span class=nx>sarama</span><span class=p>.</span><span class=nf>StringEncoder</span><span class=p>(</span><span class=nx>fmt</span><span class=p>.</span><span class=nf>Sprintf</span><span class=p>(</span><span class=s>&#34;msg is %d&#34;</span><span class=p>,</span> <span class=nx>i</span><span class=p>)),</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 发送消息
+</span></span></span><span class=line><span class=cl><span class=c1></span>		<span class=nx>partition</span><span class=p>,</span> <span class=nx>offset</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>producer</span><span class=p>.</span><span class=nf>SendMessage</span><span class=p>(</span><span class=nx>msg</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=nb>panic</span><span class=p>(</span><span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nx>partition</span> <span class=o>!=</span> <span class=mi>0</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=nx>log</span><span class=p>.</span><span class=nf>Fatalf</span><span class=p>(</span><span class=s>&#34;message should have been produced to partition 0! but hane been produced to partition %d&#34;</span><span class=p>,</span> <span class=nx>partition</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Produced message to partition %d with offset %d&#34;</span><span class=p>,</span> <span class=nx>partition</span><span class=p>,</span> <span class=nx>offset</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=nx>time</span><span class=p>.</span><span class=nf>Sleep</span><span class=p>(</span><span class=nx>time</span><span class=p>.</span><span class=nx>Second</span><span class=o>*</span><span class=mi>10</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>消费者程序</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;github.com/Shopify/sarama&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;log&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=c1>// 初始化消费对象
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nx>consumer</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>sarama</span><span class=p>.</span><span class=nf>NewConsumer</span><span class=p>([]</span><span class=kt>string</span><span class=p>{</span><span class=s>&#34;127.0.0.1:9092&#34;</span><span class=p>},</span> <span class=kc>nil</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nb>panic</span><span class=p>(</span><span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 获取指定主题下的partition列表
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nx>partitionList</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>consumer</span><span class=p>.</span><span class=nf>Partitions</span><span class=p>(</span><span class=s>&#34;HelloKafka&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nb>panic</span><span class=p>(</span><span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 遍历partition列表，从partition中消费消息
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=k>for</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>partition</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>partitionList</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>topic</span> <span class=o>:=</span> <span class=s>&#34;HelloKafka&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 初始化PartitionConsumer对象
+</span></span></span><span class=line><span class=cl><span class=c1></span>		<span class=nx>partitionConsumer</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>consumer</span><span class=p>.</span><span class=nf>ConsumePartition</span><span class=p>(</span><span class=nx>topic</span><span class=p>,</span> <span class=nx>partition</span><span class=p>,</span> <span class=nx>sarama</span><span class=p>.</span><span class=nx>OffsetOldest</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=nb>panic</span><span class=p>(</span><span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=k>defer</span> <span class=nx>partitionConsumer</span><span class=p>.</span><span class=nf>AsyncClose</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>		<span class=k>for</span> <span class=nx>msg</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>partitionConsumer</span><span class=p>.</span><span class=nf>Messages</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=nx>log</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Partition:%d Offset:%d Key:%v Value:%v&#34;</span><span class=p>,</span> <span class=nx>msg</span><span class=p>.</span><span class=nx>Partition</span><span class=p>,</span> <span class=nx>msg</span><span class=p>.</span><span class=nx>Offset</span><span class=p>,</span> <span class=nx>msg</span><span class=p>.</span><span class=nx>Key</span><span class=p>,</span> <span class=nx>msg</span><span class=p>.</span><span class=nx>Value</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>在消费者中，如果不想要获取以前的消息，只获取新的消息只需要在ConsumePartition方法中设置<code>offset</code>为sarama.OffsetNewest即可</p><h2 id=使用docker搭建kafka集群>使用Docker搭建Kafka集群</h2><p>在上面的程序中我们都是在单机环境下进行的，在实际的生产环境中几乎都是在集群中进行的，但是使用虚拟机耗费的内存太大，因此使用docker来搭建Kafka集群进行实验</p><p><del>待更新</del></p></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2021-04-09</span></div><div class=post-info-license></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw"></i>&nbsp;<a href=/tags/kafka/>Kafka</a>,&nbsp;<a href=/tags/python/>Python</a>,&nbsp;<a href=/tags/go/>Go</a>,&nbsp;<a href=/tags/%E5%B9%B6%E5%8F%91/>并发</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/posts/python-mysql%E8%BF%9E%E6%8E%A5%E6%B1%A0/ class=prev rel=prev title="Python MySQL连接池"><i class="fas fa-angle-left fa-fw"></i>Python MySQL连接池</a>
+<a href=/posts/pandas%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86%E5%B0%8F%E6%8A%80%E5%B7%A7%E4%B8%80/ class=next rel=next title=pandas数据处理小技巧1>pandas数据处理小技巧1<i class="fas fa-angle-right fa-fw"></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2019 - 2023</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=http://pujichun.ink target=_blank>普吉春</a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw"></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw"></i></a></div><script type=text/javascript src=/lib/smooth-scroll/smooth-scroll.min.js></script><script type=text/javascript src=/lib/autocomplete/autocomplete.min.js></script><script type=text/javascript src=/lib/lunr/lunr.min.js></script><script type=text/javascript src=/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=/lib/lazysizes/lazysizes.min.js></script><script type=text/javascript src=/lib/clipboard/clipboard.min.js></script><script type=text/javascript src=/lib/typeit/typeit.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:10},comment:{},data:{"id-1":"pujic","id-2":"pujic"},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"lunr"},typeit:{cursorChar:null,cursorSpeed:null,data:{"id-1":["id-1"],"id-2":["id-2"]},duration:null,speed:null}}</script><script type=text/javascript src=/js/theme.min.js></script></body></html>

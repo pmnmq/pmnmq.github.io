@@ -1,0 +1,226 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><meta http-equiv=x-ua-compatible content="IE=edge, chrome=1"><title>Go原生Web-Handler请求 - pujic</title><meta name=Description content><meta property="og:title" content="Go原生Web-Handler请求"><meta property="og:description" content="Go原生Web学习"><meta property="og:type" content="article"><meta property="og:url" content="http://example.org/posts/go%E5%8E%9F%E7%94%9Fweb-handler%E8%AF%B7%E6%B1%82/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2020-10-31T23:32:34+00:00"><meta property="article:modified_time" content="2020-10-31T23:32:34+00:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="Go原生Web-Handler请求"><meta name=twitter:description content="Go原生Web学习"><meta name=application-name content="pujic"><meta name=apple-mobile-web-app-title content="pujic"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=http://example.org/posts/go%E5%8E%9F%E7%94%9Fweb-handler%E8%AF%B7%E6%B1%82/><link rel=prev href=http://example.org/posts/%E5%BC%82%E6%AD%A5%E7%88%AC%E5%8F%96%E5%BF%85%E5%BA%94%E5%A3%81%E7%BA%B8/><link rel=next href=http://example.org/posts/%E5%AD%A6%E4%B9%A0goroutine-1/><link rel=stylesheet href=/lib/normalize/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=/lib/fontawesome-free/all.min.css><link rel=stylesheet href=/lib/animate/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Go原生Web-Handler请求","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/example.org\/posts\/go%E5%8E%9F%E7%94%9Fweb-handler%E8%AF%B7%E6%B1%82\/"},"genre":"posts","keywords":"http, Go, Web","wordcount":2112,"url":"http:\/\/example.org\/posts\/go%E5%8E%9F%E7%94%9Fweb-handler%E8%AF%B7%E6%B1%82\/","datePublished":"2020-10-31T23:32:34+00:00","dateModified":"2020-10-31T23:32:34+00:00","publisher":{"@type":"Organization","name":"普吉春"},"author":{"@type":"Person","name":"普吉春"},"description":""}</script></head><body header-desktop=fixed header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":""==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:""==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title=pujic><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-1 class=typeit></span></a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>所有文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/categories/>分类 </a><a class=menu-item href=/about/>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin"></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw"></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=pujic><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-2 class=typeit></span></a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin"></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=/posts/ title>所有文章</a><a class=menu-item href=/tags/ title>标签</a><a class=menu-item href=/categories/ title>分类</a><a class=menu-item href=/about/ title>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw"></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animated flipInX">Go原生Web-Handler请求</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=http://pujichun.ink title=Author target=_blank rel="noopener noreffer author" class=author><i class="fas fa-user-circle fa-fw"></i>普吉春</a></span>&nbsp;<span class=post-category>收录于 <a href=/categories/go/><i class="far fa-folder fa-fw"></i>Go</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2020-10-31>2020-10-31</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 2112 字&nbsp;
+<i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 5 分钟&nbsp;</div></div><div class="details toc" id=toc-static kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right"></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#httphandle>http.Handle</a><ul><li><a href=#创建web-server>创建Web Server</a></li><li><a href=#defaultservemax>DefaultServeMax</a></li><li><a href=#handler>Handler</a></li></ul></li><li><a href=#httphandlefunc>http.HandleFunc</a></li></ul></nav></div></div><div class=content id=content><p>Go原生Web学习</p><h1 id=handler请求>Handler请求</h1><p>Go语言的Web Server在接收到http请求的时候时候会创建一个goroutine去处理请求，而处理http请求是个很复杂的工作，而Go语言的http.DefaultServeMax会将对应的请求交给我们指定的handler，我们只需要关心如何创建Web Server以及编写对应的handler</p><p><img class=lazyload src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405224824.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405224824.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405224824.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405224824.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405224824.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405224824.png></p><h2 id=httphandle>http.Handle</h2><h3 id=创建web-server>创建Web Server</h3><ul><li>http.ListenAndServer()<ul><li>第一个参数是网络地址<ul><li>如果为""，那么就是所有网络接口的80端口</li></ul></li><li>第二个参数是handler<ul><li>如果为nil，那么就是DefaultServeMax</li></ul></li></ul></li><li>DefaultServerMax是一个multiplexer</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>http</span><span class=p>.</span><span class=nf>ListenAndServe</span><span class=p>(</span><span class=s>&#34;localhost:8080&#34;</span><span class=p>,</span> <span class=kc>nil</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>这样就创建了一个简单的Web Server</p><p>ListenAndServer源码如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>ListenAndServe</span><span class=p>(</span><span class=nx>addr</span> <span class=kt>string</span><span class=p>,</span> <span class=nx>handler</span> <span class=nx>Handler</span><span class=p>)</span> <span class=kt>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>server</span> <span class=o>:=</span> <span class=o>&amp;</span><span class=nx>Server</span><span class=p>{</span><span class=nx>Addr</span><span class=p>:</span> <span class=nx>addr</span><span class=p>,</span> <span class=nx>Handler</span><span class=p>:</span> <span class=nx>handler</span><span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=nx>server</span><span class=p>.</span><span class=nf>ListenAndServe</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>可以看到它其实是调用的Server这个结构体中的ListenAndServe()方法</p><p>因此我们可以通过调用Server这个结构体中的ListenAndServe()方法创建http服务</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>srv</span> <span class=o>*</span><span class=nx>Server</span><span class=p>)</span> <span class=nf>ListenAndServe</span><span class=p>()</span> <span class=kt>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>srv</span><span class=p>.</span><span class=nf>shuttingDown</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=nx>ErrServerClosed</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=nx>addr</span> <span class=o>:=</span> <span class=nx>srv</span><span class=p>.</span><span class=nx>Addr</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>addr</span> <span class=o>==</span> <span class=s>&#34;&#34;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>addr</span> <span class=p>=</span> <span class=s>&#34;:http&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=nx>ln</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>net</span><span class=p>.</span><span class=nf>Listen</span><span class=p>(</span><span class=s>&#34;tcp&#34;</span><span class=p>,</span> <span class=nx>addr</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=nx>srv</span><span class=p>.</span><span class=nf>Serve</span><span class=p>(</span><span class=nx>ln</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><ul><li>http.Server是一个struct<ul><li>Addr字段表示网络地址<ul><li>如果为""，那么就是所有网络接口的80端口</li></ul></li><li>handler字段<ul><li>如果为nil，那么就是DefaultServeMax</li></ul></li></ul></li></ul><p>那么刚才的写法就可以更改</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>server</span> <span class=o>:=</span> <span class=nx>http</span><span class=p>.</span><span class=nx>Server</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>Addr</span><span class=p>:</span> <span class=s>&#34;localhost:8080&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>		<span class=nx>Handler</span><span class=p>:</span> <span class=kc>nil</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=nx>server</span><span class=p>.</span><span class=nf>ListenAndServe</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=defaultservemax>DefaultServeMax</h3><ul><li>它是一个multiplexer（多路复用器）</li><li>它也是一个handler</li></ul><p><img class=lazyload src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405224846.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405224846.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405224846.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405224846.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405224846.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405224846.png></p><p>在DefaultServeMax是ServerMax这个struct的指针变量，ServerMax中也是实现了ServeHTTP方法，所以它也是一个handler</p><h3 id=handler>Handler</h3><ul><li>Handler是一个接口</li><li>Handler定义了一个方法ServeHTTP()<ul><li>ResponseWriter</li><li>指向Request这个struct的指针</li></ul></li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>type</span> <span class=nx>Handler</span> <span class=kd>interface</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nf>ServeHTTP</span><span class=p>(</span><span class=nx>ResponseWriter</span><span class=p>,</span> <span class=o>*</span><span class=nx>Request</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>所以只要任何一个类型有ServeHTTP这个方法那么就是一个Handler</p><p>自定义一个Handler</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>type</span> <span class=nx>myHandler</span> <span class=kd>struct</span><span class=p>{}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>m</span> <span class=o>*</span><span class=nx>myHandler</span><span class=p>)</span> <span class=nf>ServeHTTP</span><span class=p>(</span><span class=nx>w</span> <span class=nx>http</span><span class=p>.</span><span class=nx>ResponseWriter</span><span class=p>,</span> <span class=nx>r</span> <span class=o>*</span><span class=nx>http</span><span class=p>.</span><span class=nx>Request</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>w</span><span class=p>.</span><span class=nf>Write</span><span class=p>([]</span><span class=nb>byte</span><span class=p>(</span><span class=s>&#34;Freedom And Discipline&#34;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>mh</span> <span class=o>:=</span> <span class=nx>myHandler</span><span class=p>{}</span>
+</span></span><span class=line><span class=cl>	<span class=nx>server</span> <span class=o>:=</span> <span class=nx>http</span><span class=p>.</span><span class=nx>Server</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>Addr</span><span class=p>:</span>    <span class=s>&#34;localhost:8080&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>		<span class=nx>Handler</span><span class=p>:</span> <span class=o>&amp;</span><span class=nx>mh</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=nx>server</span><span class=p>.</span><span class=nf>ListenAndServe</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>但是运行程序后所有请求都被myHandler处理了，所以请求哪个路径都是返回的Freedom And Discipline</p><p>有没有办法能让某个路由或者指定的路由是由myHandler处理的，我们可以将myHandler注册到DefaultServeMax上</p><p>我们可以使用http.Handle将某个Handler注册到DefaultServeMax上，ServerMux struct也有一个Handle方法，其实我们在调用http.Handle方法时就是在调用ServeMax的Handle方法</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>Handle</span><span class=p>(</span><span class=nx>pattern</span> <span class=kt>string</span><span class=p>,</span> <span class=nx>handler</span> <span class=nx>Handler</span><span class=p>)</span> <span class=p>{</span> <span class=nx>DefaultServeMux</span><span class=p>.</span><span class=nf>Handle</span><span class=p>(</span><span class=nx>pattern</span><span class=p>,</span> <span class=nx>handler</span><span class=p>)</span> <span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>至于Handle方法是怎么样将对应路由交给对应Handler的不需要知道，只需要知道使用Handle方法后DefaultServeMux会将对应路由与对应Handler绑定</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>type</span> <span class=nx>myHandler</span> <span class=kd>struct</span><span class=p>{}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>m</span> <span class=o>*</span><span class=nx>myHandler</span><span class=p>)</span> <span class=nf>ServeHTTP</span><span class=p>(</span><span class=nx>w</span> <span class=nx>http</span><span class=p>.</span><span class=nx>ResponseWriter</span><span class=p>,</span> <span class=nx>r</span> <span class=o>*</span><span class=nx>http</span><span class=p>.</span><span class=nx>Request</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>w</span><span class=p>.</span><span class=nf>Write</span><span class=p>([]</span><span class=nb>byte</span><span class=p>(</span><span class=s>&#34;Freedom And Discipline&#34;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>mh</span> <span class=o>:=</span> <span class=nx>myHandler</span><span class=p>{}</span>
+</span></span><span class=line><span class=cl>	<span class=nx>server</span> <span class=o>:=</span> <span class=nx>http</span><span class=p>.</span><span class=nx>Server</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>Addr</span><span class=p>:</span>    <span class=s>&#34;localhost:8080&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>		<span class=nx>Handler</span><span class=p>:</span> <span class=kc>nil</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=nx>http</span><span class=p>.</span><span class=nf>Handle</span><span class=p>(</span><span class=s>&#34;/hello&#34;</span><span class=p>,</span> <span class=o>&amp;</span><span class=nx>mh</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nx>server</span><span class=p>.</span><span class=nf>ListenAndServe</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>因此就可以通过<code>http.Handle</code>进行路由绑定，将对应路由交给对应的Handler处理</p><h2 id=httphandlefunc>http.HandleFunc</h2><p>在前面创建的服务都是通过Handler来处理的，但是如果每次都要定义struct和它的方法就会很麻烦，并不是所有场景都需要去定义struct，因此我们可以使用Handler函数，Handler函数的行为与Handler的行为类似，签名也是一样的，接收两个参数，一个是http.ResponseWriter，一个是http.Request的指针。</p><p>HandlerFunc是一个函数类型，它有ServeHTTP方法所以它也是一个Handler类型</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>type</span> <span class=nx>HandlerFunc</span> <span class=kd>func</span><span class=p>(</span><span class=nx>ResponseWriter</span><span class=p>,</span> <span class=o>*</span><span class=nx>Request</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// ServeHTTP calls f(w, r).
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>f</span> <span class=nx>HandlerFunc</span><span class=p>)</span> <span class=nf>ServeHTTP</span><span class=p>(</span><span class=nx>w</span> <span class=nx>ResponseWriter</span><span class=p>,</span> <span class=nx>r</span> <span class=o>*</span><span class=nx>Request</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nf>f</span><span class=p>(</span><span class=nx>w</span><span class=p>,</span> <span class=nx>r</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>通过HandleFunc可以更快的的编写处理逻辑，HandleFunc它调用的是DefaultServeMux上的HandleFunc方法</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>HandleFunc</span><span class=p>(</span><span class=nx>pattern</span> <span class=kt>string</span><span class=p>,</span> <span class=nx>handler</span> <span class=kd>func</span><span class=p>(</span><span class=nx>ResponseWriter</span><span class=p>,</span> <span class=o>*</span><span class=nx>Request</span><span class=p>))</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>DefaultServeMux</span><span class=p>.</span><span class=nf>HandleFunc</span><span class=p>(</span><span class=nx>pattern</span><span class=p>,</span> <span class=nx>handler</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>mux</span> <span class=o>*</span><span class=nx>ServeMux</span><span class=p>)</span> <span class=nf>HandleFunc</span><span class=p>(</span><span class=nx>pattern</span> <span class=kt>string</span><span class=p>,</span> <span class=nx>handler</span> <span class=kd>func</span><span class=p>(</span><span class=nx>ResponseWriter</span><span class=p>,</span> <span class=o>*</span><span class=nx>Request</span><span class=p>))</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>handler</span> <span class=o>==</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nb>panic</span><span class=p>(</span><span class=s>&#34;http: nil handler&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=nx>mux</span><span class=p>.</span><span class=nf>Handle</span><span class=p>(</span><span class=nx>pattern</span><span class=p>,</span> <span class=nf>HandlerFunc</span><span class=p>(</span><span class=nx>handler</span><span class=p>))</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>可以看到DefaultServeMux上的HandleFunc方法其实还是调用的自身的Handle方法，但是调用Handle方法之前先将handler参数传递给了HandlerFunc，所以HandlerFunc相当于一个适配器，将具有<code>ResponseWriter</code>、<code> *Request</code>两个参数的函数转换为HandlerFunc，然后在ServeHTTP方法中中实现相应的逻辑，这里就相当于类型转换，因为函数传递进来之前这个函数并不是一个Handler类型，它只是一个函数，它没有ServeHTTP方法。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>List</span><span class=p>(</span><span class=nx>w</span> <span class=nx>http</span><span class=p>.</span><span class=nx>ResponseWriter</span><span class=p>,</span> <span class=nx>r</span> <span class=o>*</span><span class=nx>http</span><span class=p>.</span><span class=nx>Request</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>w</span><span class=p>.</span><span class=nf>Write</span><span class=p>([]</span><span class=nb>byte</span><span class=p>(</span><span class=s>&#34;list&#34;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>server</span> <span class=o>:=</span> <span class=nx>http</span><span class=p>.</span><span class=nx>Server</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>Addr</span><span class=p>:</span>    <span class=s>&#34;localhost:8080&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>		<span class=nx>Handler</span><span class=p>:</span> <span class=kc>nil</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=nx>http</span><span class=p>.</span><span class=nf>HandleFunc</span><span class=p>(</span><span class=s>&#34;/home&#34;</span><span class=p>,</span> <span class=kd>func</span><span class=p>(</span><span class=nx>w</span> <span class=nx>http</span><span class=p>.</span><span class=nx>ResponseWriter</span><span class=p>,</span> <span class=nx>r</span> <span class=o>*</span><span class=nx>http</span><span class=p>.</span><span class=nx>Request</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>w</span><span class=p>.</span><span class=nf>Write</span><span class=p>([]</span><span class=nb>byte</span><span class=p>(</span><span class=s>&#34;home&#34;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>	<span class=p>})</span>
+</span></span><span class=line><span class=cl>	<span class=nx>http</span><span class=p>.</span><span class=nf>HandleFunc</span><span class=p>(</span><span class=s>&#34;/list&#34;</span><span class=p>,</span> <span class=nx>List</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nx>server</span><span class=p>.</span><span class=nf>ListenAndServe</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>那么之前定义的Handler类型就可以简化，将这个函数交给HandlerFunc即可，将会极大的简化http.Handle函数的写法，通过http.HandlerFunc将函数转换为Handler类型</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>Map</span><span class=p>(</span><span class=nx>w</span> <span class=nx>http</span><span class=p>.</span><span class=nx>ResponseWriter</span><span class=p>,</span> <span class=nx>r</span> <span class=o>*</span><span class=nx>http</span><span class=p>.</span><span class=nx>Request</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>w</span><span class=p>.</span><span class=nf>Write</span><span class=p>([]</span><span class=nb>byte</span><span class=p>(</span><span class=s>&#34;map&#34;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>server</span> <span class=o>:=</span> <span class=nx>http</span><span class=p>.</span><span class=nx>Server</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>Addr</span><span class=p>:</span>    <span class=s>&#34;localhost:8080&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>		<span class=nx>Handler</span><span class=p>:</span> <span class=kc>nil</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=nx>http</span><span class=p>.</span><span class=nf>Handle</span><span class=p>(</span><span class=s>&#34;/map&#34;</span><span class=p>,</span> <span class=nx>http</span><span class=p>.</span><span class=nf>HandlerFunc</span><span class=p>(</span><span class=nx>Map</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>	<span class=nx>server</span><span class=p>.</span><span class=nf>ListenAndServe</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2020-10-31</span></div><div class=post-info-license></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw"></i>&nbsp;<a href=/tags/http/>http</a>,&nbsp;<a href=/tags/go/>Go</a>,&nbsp;<a href=/tags/web/>Web</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/posts/%E5%BC%82%E6%AD%A5%E7%88%AC%E5%8F%96%E5%BF%85%E5%BA%94%E5%A3%81%E7%BA%B8/ class=prev rel=prev title=异步爬取必应壁纸><i class="fas fa-angle-left fa-fw"></i>异步爬取必应壁纸</a>
+<a href=/posts/%E5%AD%A6%E4%B9%A0goroutine-1/ class=next rel=next title="goroutine 01">goroutine 01<i class="fas fa-angle-right fa-fw"></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2019 - 2023</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=http://pujichun.ink target=_blank>普吉春</a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw"></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw"></i></a></div><script type=text/javascript src=/lib/smooth-scroll/smooth-scroll.min.js></script><script type=text/javascript src=/lib/autocomplete/autocomplete.min.js></script><script type=text/javascript src=/lib/lunr/lunr.min.js></script><script type=text/javascript src=/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=/lib/lazysizes/lazysizes.min.js></script><script type=text/javascript src=/lib/clipboard/clipboard.min.js></script><script type=text/javascript src=/lib/typeit/typeit.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:10},comment:{},data:{"id-1":"pujic","id-2":"pujic"},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"lunr"},typeit:{cursorChar:null,cursorSpeed:null,data:{"id-1":["id-1"],"id-2":["id-2"]},duration:null,speed:null}}</script><script type=text/javascript src=/js/theme.min.js></script></body></html>

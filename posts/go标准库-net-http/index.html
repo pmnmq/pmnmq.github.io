@@ -1,0 +1,244 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><meta http-equiv=x-ua-compatible content="IE=edge, chrome=1"><title>Go标准库-net/http - pujic</title><meta name=Description content><meta property="og:title" content="Go标准库-net/http"><meta property="og:description" content="在使用Go语言实现客服端和服务端的时候基本不需要第三方库来完成，使用标准库中的net/http就能够胜任绝大多数的需求，基本不需要自己造轮子"><meta property="og:type" content="article"><meta property="og:url" content="http://example.org/posts/go%E6%A0%87%E5%87%86%E5%BA%93-net-http/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2020-06-11T23:34:43+00:00"><meta property="article:modified_time" content="2020-06-11T23:34:43+00:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="Go标准库-net/http"><meta name=twitter:description content="在使用Go语言实现客服端和服务端的时候基本不需要第三方库来完成，使用标准库中的net/http就能够胜任绝大多数的需求，基本不需要自己造轮子"><meta name=application-name content="pujic"><meta name=apple-mobile-web-app-title content="pujic"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=http://example.org/posts/go%E6%A0%87%E5%87%86%E5%BA%93-net-http/><link rel=prev href=http://example.org/posts/xpath%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/><link rel=next href=http://example.org/posts/%E5%88%9D%E8%AF%86gin%E6%A1%86%E6%9E%B6/><link rel=stylesheet href=/lib/normalize/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=/lib/fontawesome-free/all.min.css><link rel=stylesheet href=/lib/animate/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Go标准库-net/http","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/example.org\/posts\/go%E6%A0%87%E5%87%86%E5%BA%93-net-http\/"},"genre":"posts","keywords":"http, Go","wordcount":1671,"url":"http:\/\/example.org\/posts\/go%E6%A0%87%E5%87%86%E5%BA%93-net-http\/","datePublished":"2020-06-11T23:34:43+00:00","dateModified":"2020-06-11T23:34:43+00:00","publisher":{"@type":"Organization","name":"普吉春"},"author":{"@type":"Person","name":"普吉春"},"description":""}</script></head><body header-desktop=fixed header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":""==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:""==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title=pujic><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-1 class=typeit></span></a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>所有文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/categories/>分类 </a><a class=menu-item href=/about/>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin"></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw"></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=pujic><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-2 class=typeit></span></a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin"></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=/posts/ title>所有文章</a><a class=menu-item href=/tags/ title>标签</a><a class=menu-item href=/categories/ title>分类</a><a class=menu-item href=/about/ title>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw"></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animated flipInX">Go标准库-net/http</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=http://pujichun.ink title=Author target=_blank rel="noopener noreffer author" class=author><i class="fas fa-user-circle fa-fw"></i>普吉春</a></span>&nbsp;<span class=post-category>收录于 <a href=/categories/go/><i class="far fa-folder fa-fw"></i>Go</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2020-06-11>2020-06-11</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 1671 字&nbsp;
+<i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 4 分钟&nbsp;</div></div><div class="details toc" id=toc-static kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right"></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#默认server>默认Server</a></li><li><a href=#自定义server>自定义Server</a></li><li><a href=#客户端>客户端</a><ul><li><a href=#get请求>GET请求</a></li><li><a href=#post请求>POST请求</a></li><li><a href=#使用httpnewrequest发起请求>使用http.NewRequest发起请求</a></li><li><a href=#使用httpclient来请求>使用http.Client来请求</a></li></ul></li></ul></nav></div></div><div class=content id=content><p>在使用Go语言实现客服端和服务端的时候基本不需要第三方库来完成，使用标准库中的<code>net/http</code>就能够胜任绝大多数的需求，基本不需要自己造轮子，Go语言的标准库够强大，且够灵活。</p><h2 id=默认server>默认Server</h2><p>使用Go语言的标准库<code>net/http</code>进行服务端的开发</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;net/http&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>sayHello</span><span class=p>(</span><span class=nx>w</span> <span class=nx>http</span><span class=p>.</span><span class=nx>ResponseWriter</span><span class=p>,</span> <span class=nx>r</span> <span class=o>*</span><span class=nx>http</span><span class=p>.</span><span class=nx>Request</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>w</span><span class=p>.</span><span class=nf>Write</span><span class=p>([]</span><span class=nb>byte</span><span class=p>(</span><span class=s>&#34;Hello&#34;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>http</span><span class=p>.</span><span class=nf>HandleFunc</span><span class=p>(</span><span class=s>&#34;/hello&#34;</span><span class=p>,</span> <span class=nx>sayHello</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nx>err</span> <span class=o>:=</span> <span class=nx>http</span><span class=p>.</span><span class=nf>ListenAndServe</span><span class=p>(</span><span class=s>&#34;:9090&#34;</span><span class=p>,</span> <span class=kc>nil</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=s>&#34;http serve failed, error:&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>首先调用<code>http.HandleFunc</code>，按顺序做了几件事：</p><ul><li>调用了DefaultServerMux的HandleFunc</li><li>调用了DefaultServerMux的Handle</li><li>往DefaultServeMux的map[string]muxEntry中增加对应的handler和路由规则</li></ul><p>其次调用<code>http.ListenAndServe(“:9090”, nil)</code>，按顺序做了几件事情：</p><ul><li><p>实例化Server</p></li><li><p>调用Server的ListenAndServe()</p></li><li><p>调用net.Listen(“tcp”, addr)监听端口</p></li><li><p>启动一个for循环，在循环体中Accept请求</p></li><li><p>对每个请求实例化一个Conn，并且开启一个goroutine为这个请求进行服务go c.serve()</p></li><li><p>读取每个请求的内容w, err := c.readRequest()</p></li><li><p>判断header是否为空，如果没有设置handler（这个例子就没有设置handler），handler就设置为DefaultServeMux</p></li><li><p>调用handler的ServeHttp</p></li><li><p>在这个例子中，下面就进入到DefaultServerMux.ServeHttp</p></li><li><p>根据request选择handler，并且进入到这个handler的ServeHTTP</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=nx>mux</span><span class=p>.</span><span class=nf>handler</span><span class=p>(</span><span class=nx>r</span><span class=p>).</span><span class=nf>ServeHTTP</span><span class=p>(</span><span class=nx>w</span><span class=p>,</span> <span class=nx>r</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div></li><li><p>选择handler：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>A 判断是否有路由能满足这个request（循环遍历ServerMux的muxEntry）
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>B 如果有路由满足，调用这个路由handler的ServeHttp
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>C 如果没有路由满足，调用NotFoundHandler的ServeHttp
+</span></span></code></pre></td></tr></table></div></div></li></ul><p>指定路由执行的方法中需要传递两个参数，w和r，w是<code>http.ResponseWriter</code>类型，需要传递回去的数据需要使用往w中写入。r是<code>http.Request</code>类型的指针，从前端传递过来的数据需要通过r来读取。</p><h2 id=自定义server>自定义Server</h2><p>要管理服务端的行为，可以创建一个自定义的Server：、</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=nx>s</span> <span class=o>:=</span> <span class=o>&amp;</span><span class=nx>http</span><span class=p>.</span><span class=nx>Server</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>Addr</span><span class=p>:</span>           <span class=s>&#34;:9090&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>	<span class=nx>Handler</span><span class=p>:</span>        <span class=nx>myHandler</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>	<span class=nx>ReadTimeout</span><span class=p>:</span>    <span class=mi>10</span> <span class=o>*</span> <span class=nx>time</span><span class=p>.</span><span class=nx>Second</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>	<span class=nx>WriteTimeout</span><span class=p>:</span>   <span class=mi>10</span> <span class=o>*</span> <span class=nx>time</span><span class=p>.</span><span class=nx>Second</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>	<span class=nx>MaxHeaderBytes</span><span class=p>:</span> <span class=mi>1</span> <span class=o>&lt;&lt;</span> <span class=mi>20</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=nx>log</span><span class=p>.</span><span class=nf>Fatal</span><span class=p>(</span><span class=nx>s</span><span class=p>.</span><span class=nf>ListenAndServe</span><span class=p>())</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=客户端>客户端</h2><p>客户端也就是http请求</p><h3 id=get请求>GET请求</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=s>&#34;io/ioutil&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=s>&#34;net/http&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>response</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>http</span><span class=p>.</span><span class=nf>Get</span><span class=p>(</span><span class=s>&#34;http://www.baidu.com&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>defer</span> <span class=nx>response</span><span class=p>.</span><span class=nx>Body</span><span class=p>.</span><span class=nf>Close</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=nx>body</span><span class=p>,</span> <span class=nx>_</span> <span class=o>:=</span> <span class=nx>ioutil</span><span class=p>.</span><span class=nf>ReadAll</span><span class=p>(</span><span class=nx>response</span><span class=p>.</span><span class=nx>Body</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=nb>string</span><span class=p>(</span><span class=nx>body</span><span class=p>))</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>response是一个<code>http.Response</code>对象，使用<code>Body</code>方法可以将响应内容读取出来，但是读取出来的数据是byte类型，需要转换。</p><h3 id=post请求>POST请求</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;bytes&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;encoding/json&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;io/ioutil&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;net/http&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>formData</span> <span class=o>:=</span> <span class=nb>make</span><span class=p>(</span><span class=kd>map</span><span class=p>[</span><span class=kt>string</span><span class=p>]</span><span class=kt>string</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nx>formData</span><span class=p>[</span><span class=s>&#34;username&#34;</span><span class=p>]</span> <span class=p>=</span> <span class=s>&#34;pujic&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=nx>formData</span><span class=p>[</span><span class=s>&#34;password&#34;</span><span class=p>]</span> <span class=p>=</span> <span class=s>&#34;123456&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=nx>bytesData</span><span class=p>,</span> <span class=nx>_</span> <span class=o>:=</span> <span class=nx>json</span><span class=p>.</span><span class=nf>Marshal</span><span class=p>(</span><span class=nx>formData</span><span class=p>)</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>	<span class=nx>response</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>http</span><span class=p>.</span><span class=nf>Post</span><span class=p>(</span><span class=s>&#34;http://xxxxxx.com&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>		<span class=s>&#34;application/json;charset=utf-8&#34;</span><span class=p>,</span> <span class=nx>bytes</span><span class=p>.</span><span class=nf>NewBuffer</span><span class=p>([]</span><span class=nb>byte</span><span class=p>(</span><span class=nx>bytesData</span><span class=p>)))</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=s>&#34;http error &#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>	<span class=k>defer</span> <span class=nx>response</span><span class=p>.</span><span class=nx>Body</span><span class=p>.</span><span class=nf>Close</span><span class=p>()</span>
+</span></span><span class=line><span class=cl> 
+</span></span><span class=line><span class=cl>	<span class=nx>content</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>ioutil</span><span class=p>.</span><span class=nf>ReadAll</span><span class=p>(</span><span class=nx>response</span><span class=p>.</span><span class=nx>Body</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=s>&#34;read response error &#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=nx>str</span> <span class=o>:=</span> <span class=p>(</span><span class=o>*</span><span class=kt>string</span><span class=p>)(</span><span class=nx>unsafe</span><span class=p>.</span><span class=nf>Pointer</span><span class=p>(</span><span class=o>&amp;</span><span class=nx>content</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>	<span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=o>*</span><span class=nx>str</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>上面的请求中添加了请求头，是为了告诉服务端我们传过去的数据是什么数据，这个是必须要设置的，这样POST请求的参数才能正常的提交。</p><h3 id=使用httpnewrequest发起请求>使用http.NewRequest发起请求</h3><p>使用NewRequest发送请求需要先实例化一个请求对象</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;net/http&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>request</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>http</span><span class=p>.</span><span class=nf>NewRequest</span><span class=p>(</span><span class=s>&#34;GET&#34;</span><span class=p>,</span> <span class=s>&#34;http://www.baidu.com&#34;</span><span class=p>,</span> <span class=kc>nil</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nx>request</span><span class=p>.</span><span class=nx>Header</span><span class=p>.</span><span class=nf>Set</span><span class=p>(</span><span class=s>&#34;User-agent&#34;</span><span class=p>,</span> <span class=s>&#34;Mozilla/5.0&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nx>response</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>http</span><span class=p>.</span><span class=nx>DefaultClient</span><span class=p>.</span><span class=nf>Do</span><span class=p>(</span><span class=nx>request</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>使用NewRequest实例化得到的是一个Request结构体对象，可以给这个Request对象添加请求头等信息，要发送这个请求需要使用<code>http.DefaultClient.Do</code>去完成，也可以使用<code>http.client.Do</code>完成</p><p>如果是POST请求那么要提交的表单可以在构造请求对象的时候传递，或者使用请求对象的<code>Body</code>字段来添加（详细方法看源码）</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>req</span> <span class=o>:=</span> <span class=o>&amp;</span><span class=nx>Request</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>ctx</span><span class=p>:</span>        <span class=nx>ctx</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>		<span class=nx>Method</span><span class=p>:</span>     <span class=nx>method</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>		<span class=nx>URL</span><span class=p>:</span>        <span class=nx>u</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>		<span class=nx>Proto</span><span class=p>:</span>      <span class=s>&#34;HTTP/1.1&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>		<span class=nx>ProtoMajor</span><span class=p>:</span> <span class=mi>1</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>		<span class=nx>ProtoMinor</span><span class=p>:</span> <span class=mi>1</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>		<span class=nx>Header</span><span class=p>:</span>     <span class=nb>make</span><span class=p>(</span><span class=nx>Header</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>		<span class=nx>Body</span><span class=p>:</span>       <span class=nx>rc</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>		<span class=nx>Host</span><span class=p>:</span>       <span class=nx>u</span><span class=p>.</span><span class=nx>Host</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=使用httpclient来请求>使用http.Client来请求</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>import</span> <span class=s>&#34;net/http&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>(){</span>
+</span></span><span class=line><span class=cl>    <span class=nx>client</span> <span class=o>:=</span> <span class=nx>http</span><span class=p>.</span><span class=nx>Client</span><span class=p>{}</span>
+</span></span><span class=line><span class=cl>    <span class=nx>response</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>client</span><span class=p>.</span><span class=nf>Get</span><span class=p>(</span><span class=s>&#34;http://wwww.baidu.com&#34;</span><span class=p>)</span>    
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>http.Client</code>其实也就是在<code>http.NewRequest</code>上进行封装</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>c</span> <span class=o>*</span><span class=nx>Client</span><span class=p>)</span> <span class=nf>Get</span><span class=p>(</span><span class=nx>url</span> <span class=kt>string</span><span class=p>)</span> <span class=p>(</span><span class=nx>resp</span> <span class=o>*</span><span class=nx>Response</span><span class=p>,</span> <span class=nx>err</span> <span class=kt>error</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>req</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nf>NewRequest</span><span class=p>(</span><span class=s>&#34;GET&#34;</span><span class=p>,</span> <span class=nx>url</span><span class=p>,</span> <span class=kc>nil</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=kc>nil</span><span class=p>,</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=nx>c</span><span class=p>.</span><span class=nf>Do</span><span class=p>(</span><span class=nx>req</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2020-06-11</span></div><div class=post-info-license></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw"></i>&nbsp;<a href=/tags/http/>http</a>,&nbsp;<a href=/tags/go/>Go</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/posts/xpath%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/ class=prev rel=prev title=xpath基本语法><i class="fas fa-angle-left fa-fw"></i>xpath基本语法</a>
+<a href=/posts/%E5%88%9D%E8%AF%86gin%E6%A1%86%E6%9E%B6/ class=next rel=next title=初识Gin框架>初识Gin框架<i class="fas fa-angle-right fa-fw"></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2019 - 2023</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=http://pujichun.ink target=_blank>普吉春</a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw"></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw"></i></a></div><script type=text/javascript src=/lib/smooth-scroll/smooth-scroll.min.js></script><script type=text/javascript src=/lib/autocomplete/autocomplete.min.js></script><script type=text/javascript src=/lib/lunr/lunr.min.js></script><script type=text/javascript src=/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=/lib/lazysizes/lazysizes.min.js></script><script type=text/javascript src=/lib/clipboard/clipboard.min.js></script><script type=text/javascript src=/lib/typeit/typeit.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:10},comment:{},data:{"id-1":"pujic","id-2":"pujic"},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"lunr"},typeit:{cursorChar:null,cursorSpeed:null,data:{"id-1":["id-1"],"id-2":["id-2"]},duration:null,speed:null}}</script><script type=text/javascript src=/js/theme.min.js></script></body></html>

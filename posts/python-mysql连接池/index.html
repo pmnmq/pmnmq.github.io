@@ -1,0 +1,500 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><meta http-equiv=x-ua-compatible content="IE=edge, chrome=1"><title>Python MySQL连接池 - pujic</title><meta name=Description content><meta property="og:title" content="Python MySQL连接池"><meta property="og:description" content="在并发的场景下，不可避免的就是MySQL的访问问题，由于MySQL的性能并不强，因此在进行并发访问的时候往往会使用连接池。"><meta property="og:type" content="article"><meta property="og:url" content="http://example.org/posts/python-mysql%E8%BF%9E%E6%8E%A5%E6%B1%A0/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2021-04-08T14:36:46+00:00"><meta property="article:modified_time" content="2021-04-08T14:36:46+00:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="Python MySQL连接池"><meta name=twitter:description content="在并发的场景下，不可避免的就是MySQL的访问问题，由于MySQL的性能并不强，因此在进行并发访问的时候往往会使用连接池。"><meta name=application-name content="pujic"><meta name=apple-mobile-web-app-title content="pujic"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=http://example.org/posts/python-mysql%E8%BF%9E%E6%8E%A5%E6%B1%A0/><link rel=prev href=http://example.org/posts/pandas%E6%95%B0%E6%8D%AE%E6%8F%8F%E8%BF%B0%E6%80%A7%E5%88%86%E6%9E%90/><link rel=next href=http://example.org/posts/kafka%E4%BD%BF%E7%94%A8/><link rel=stylesheet href=/lib/normalize/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=/lib/fontawesome-free/all.min.css><link rel=stylesheet href=/lib/animate/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Python MySQL连接池","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/example.org\/posts\/python-mysql%E8%BF%9E%E6%8E%A5%E6%B1%A0\/"},"genre":"posts","keywords":"Python, MySQL","wordcount":2205,"url":"http:\/\/example.org\/posts\/python-mysql%E8%BF%9E%E6%8E%A5%E6%B1%A0\/","datePublished":"2021-04-08T14:36:46+00:00","dateModified":"2021-04-08T14:36:46+00:00","publisher":{"@type":"Organization","name":"普吉春"},"author":{"@type":"Person","name":"普吉春"},"description":""}</script></head><body header-desktop=fixed header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":""==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:""==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title=pujic><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-1 class=typeit></span></a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>所有文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/categories/>分类 </a><a class=menu-item href=/about/>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin"></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw"></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=pujic><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-2 class=typeit></span></a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin"></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=/posts/ title>所有文章</a><a class=menu-item href=/tags/ title>标签</a><a class=menu-item href=/categories/ title>分类</a><a class=menu-item href=/about/ title>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw"></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animated flipInX">Python MySQL连接池</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=http://pujichun.ink title=Author target=_blank rel="noopener noreffer author" class=author><i class="fas fa-user-circle fa-fw"></i>普吉春</a></span>&nbsp;<span class=post-category>收录于 <a href=/categories/python/><i class="far fa-folder fa-fw"></i>Python</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2021-04-08>2021-04-08</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 2205 字&nbsp;
+<i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 5 分钟&nbsp;</div></div><div class="details toc" id=toc-static kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right"></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#多线程版>多线程版</a><ul><li><ul><li><a href=#dbutils>dbutils</a></li></ul></li></ul></li><li><a href=#异步协程版>异步协程版</a></li><li><a href=#结语>结语</a></li></ul></nav></div></div><div class=content id=content><p>在并发的场景下，不可避免的就是MySQL的访问问题，由于MySQL的性能并不强，因此在进行并发访问的时候往往会使用连接池。</p><p>在Python中异步操作的时候性能还算是比较强的，因此建立一个连接池是必须的。数据库连接池就是在程序启动的时候就去创建一定数量的数据库连接对象，然后在向连接池申请连接的时候返回一个连接对象，数据库操作完成之后并不会立刻释放这个连接对象，而是将这个连接对象放回连接池中。</p><p>在多线程中和协程中建立的连接池是不同的，多线程下可以使用<a href=https://github.com/WebwareForPython/DBUtils target=_blank rel="noopener noreffer">dbutils</a>或者<code>twisted</code>这两个第三方库建立连接池，在协程中可以使用<a href=https://github.com/aio-libs/aiomysql target=_blank rel="noopener noreffer">aiomysql</a>这个第三方库建立异步连接池</p><h2 id=多线程版>多线程版</h2><h4 id=dbutils>dbutils</h4><p>本文使用的<code>dbutils</code>版本为2.0，在写本文时为最新版本</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>pip</span> <span class=n>install</span> <span class=n>dbutils</span> <span class=n>pymysql</span>
+</span></span></code></pre></td></tr></table></div></div><p>初始化线程池</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>pymysql</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>dbutils.pooled_db</span> <span class=kn>import</span> <span class=n>PooledDB</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>config</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;creator&#34;</span><span class=p>:</span> <span class=n>pymysql</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;host&#34;</span><span class=p>:</span> <span class=s2>&#34;127.0.0.1&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;port&#34;</span><span class=p>:</span> <span class=mi>3306</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;user&#34;</span><span class=p>:</span> <span class=s2>&#34;username&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;password&#34;</span><span class=p>:</span> <span class=s2>&#34;pw&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;db&#34;</span><span class=p>:</span> <span class=s2>&#34;database&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;charset&#34;</span><span class=p>:</span> <span class=s2>&#34;utf8&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;mincached&#34;</span><span class=p>:</span> <span class=mi>5</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;maxcached&#34;</span><span class=p>:</span> <span class=mi>8</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;maxconnections&#34;</span><span class=p>:</span> <span class=mi>50</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;cursorclass&#39;</span><span class=p>:</span> <span class=n>pymysql</span><span class=o>.</span><span class=n>cursors</span><span class=o>.</span><span class=n>DictCursor</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=n>pool</span> <span class=o>=</span> <span class=n>PooledDB</span><span class=p>(</span><span class=o>**</span><span class=n>config</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>获取连接对象和游标对象</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>conn</span> <span class=o>=</span> <span class=n>pool</span><span class=o>.</span><span class=n>connection</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>cursor</span> <span class=o>=</span> <span class=n>conn</span><span class=o>.</span><span class=n>cursor</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><p>查询数据库版本</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>cursor</span><span class=o>.</span><span class=n>execute</span><span class=p>(</span><span class=s2>&#34;SELECT VERSION()&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>conn</span><span class=o>.</span><span class=n>commit</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>cursor</span><span class=o>.</span><span class=n>fetchone</span><span class=p>())</span>
+</span></span></code></pre></td></tr></table></div></div><p>当我们使用完之后需要关闭游标然后释放连接对象</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>cursor</span><span class=o>.</span><span class=n>close</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>conn</span><span class=o>.</span><span class=n>close</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><p>这里<code>conn.close()</code>并不是将连接池关闭了，只是将这个连接对象退回到连接池中。</p><p>上面的连接池建立的写法在单个线程中还能使用，当进入了多线程的并发情况下就会有问题</p><p>示例db.py</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>dbutils.pooled_db</span> <span class=kn>import</span> <span class=n>PooledDB</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>pymysql</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>contextlib</span> <span class=kn>import</span> <span class=n>contextmanager</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>MysqlPool</span><span class=p>(</span><span class=nb>object</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>pool</span><span class=p>:</span> <span class=n>PooledDB</span>
+</span></span><span class=line><span class=cl>    <span class=n>_instance</span> <span class=o>=</span> <span class=kc>None</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__new__</span><span class=p>(</span><span class=bp>cls</span><span class=p>,</span> <span class=o>*</span><span class=n>args</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=ow>not</span> <span class=bp>cls</span><span class=o>.</span><span class=n>_instance</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>config</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=s2>&#34;creator&#34;</span><span class=p>:</span> <span class=n>pymysql</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s2>&#34;host&#34;</span><span class=p>:</span> <span class=s2>&#34;127.0.0.1&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s2>&#34;port&#34;</span><span class=p>:</span> <span class=mi>3306</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s2>&#34;user&#34;</span><span class=p>:</span> <span class=s2>&#34;username&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s2>&#34;password&#34;</span><span class=p>:</span> <span class=s2>&#34;passwd&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s2>&#34;db&#34;</span><span class=p>:</span> <span class=s2>&#34;database&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s2>&#34;charset&#34;</span><span class=p>:</span> <span class=s2>&#34;utf8&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s2>&#34;mincached&#34;</span><span class=p>:</span> <span class=mi>5</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s2>&#34;maxcached&#34;</span><span class=p>:</span> <span class=mi>8</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s2>&#34;maxconnections&#34;</span><span class=p>:</span> <span class=mi>50</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;cursorclass&#39;</span><span class=p>:</span> <span class=n>pymysql</span><span class=o>.</span><span class=n>cursors</span><span class=o>.</span><span class=n>DictCursor</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=bp>cls</span><span class=o>.</span><span class=n>pool</span> <span class=o>=</span> <span class=n>PooledDB</span><span class=p>(</span><span class=o>**</span><span class=n>config</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=bp>cls</span><span class=o>.</span><span class=n>_instance</span> <span class=o>=</span> <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__new__</span><span class=p>(</span><span class=bp>cls</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>cls</span><span class=o>.</span><span class=n>_instance</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nd>@classmethod</span>
+</span></span><span class=line><span class=cl>    <span class=nd>@contextmanager</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>conn</span><span class=p>(</span><span class=bp>cls</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=n>_conn</span> <span class=o>=</span> <span class=bp>cls</span><span class=o>.</span><span class=n>pool</span><span class=o>.</span><span class=n>connection</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=k>yield</span> <span class=n>_conn</span>
+</span></span><span class=line><span class=cl>        <span class=n>_conn</span><span class=o>.</span><span class=n>commit</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=n>_conn</span><span class=o>.</span><span class=n>close</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>p</span> <span class=o>=</span> <span class=n>MysqlPool</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=k>with</span> <span class=n>p</span><span class=o>.</span><span class=n>conn</span><span class=p>()</span> <span class=k>as</span> <span class=n>conn</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>cursor</span> <span class=o>=</span> <span class=n>conn</span><span class=o>.</span><span class=n>cursor</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=n>cursor</span><span class=o>.</span><span class=n>execute</span><span class=p>(</span><span class=s2>&#34;SELECT VERSION()&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=n>cursor</span><span class=o>.</span><span class=n>fetchone</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>    <span class=n>cursor</span><span class=o>.</span><span class=n>close</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><p>虽然在上面的程序中将调用方法加工为了可以通过上下文管理器打开的程序，但是每次使用的时候都要用with方法打开，而且还需要关闭cursor，比较繁琐</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>dbutils.pooled_db</span> <span class=kn>import</span> <span class=n>PooledDB</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>pymysql</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>contextlib</span> <span class=kn>import</span> <span class=n>contextmanager</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>functools</span> <span class=kn>import</span> <span class=n>wraps</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>MysqlPool</span><span class=p>(</span><span class=nb>object</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>pool</span><span class=p>:</span> <span class=n>PooledDB</span>
+</span></span><span class=line><span class=cl>    <span class=n>_instance</span> <span class=o>=</span> <span class=kc>None</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__new__</span><span class=p>(</span><span class=bp>cls</span><span class=p>,</span> <span class=o>*</span><span class=n>args</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=ow>not</span> <span class=bp>cls</span><span class=o>.</span><span class=n>_instance</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>config</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=s2>&#34;creator&#34;</span><span class=p>:</span> <span class=n>pymysql</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s2>&#34;host&#34;</span><span class=p>:</span> <span class=s2>&#34;127.0.0.1&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s2>&#34;port&#34;</span><span class=p>:</span> <span class=mi>3306</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s2>&#34;user&#34;</span><span class=p>:</span> <span class=s2>&#34;pujic&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s2>&#34;password&#34;</span><span class=p>:</span> <span class=s2>&#34;a&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s2>&#34;db&#34;</span><span class=p>:</span> <span class=s2>&#34;demo&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s2>&#34;charset&#34;</span><span class=p>:</span> <span class=s2>&#34;utf8&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s2>&#34;mincached&#34;</span><span class=p>:</span> <span class=mi>5</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s2>&#34;maxcached&#34;</span><span class=p>:</span> <span class=mi>8</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s2>&#34;maxconnections&#34;</span><span class=p>:</span> <span class=mi>50</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;cursorclass&#39;</span><span class=p>:</span> <span class=n>pymysql</span><span class=o>.</span><span class=n>cursors</span><span class=o>.</span><span class=n>DictCursor</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=bp>cls</span><span class=o>.</span><span class=n>pool</span> <span class=o>=</span> <span class=n>PooledDB</span><span class=p>(</span><span class=o>**</span><span class=n>config</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=bp>cls</span><span class=o>.</span><span class=n>_instance</span> <span class=o>=</span> <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__new__</span><span class=p>(</span><span class=bp>cls</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>cls</span><span class=o>.</span><span class=n>_instance</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1># 使用classmethod装饰器让该方法成为类方法，从而可以访问到pool</span>
+</span></span><span class=line><span class=cl>    <span class=nd>@classmethod</span>
+</span></span><span class=line><span class=cl>    <span class=c1># 使用contextmanager装饰器让conn成为上下文管理器对象</span>
+</span></span><span class=line><span class=cl>    <span class=nd>@contextmanager</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>conn</span><span class=p>(</span><span class=bp>cls</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=n>_conn</span> <span class=o>=</span> <span class=bp>cls</span><span class=o>.</span><span class=n>pool</span><span class=o>.</span><span class=n>connection</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=k>yield</span> <span class=n>_conn</span>
+</span></span><span class=line><span class=cl>        <span class=n>_conn</span><span class=o>.</span><span class=n>commit</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=n>_conn</span><span class=o>.</span><span class=n>close</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>p</span> <span class=o>=</span> <span class=n>MysqlPool</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>db_connection</span><span class=p>(</span><span class=n>func</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=nd>@wraps</span><span class=p>(</span><span class=n>func</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>wrapper</span><span class=p>(</span><span class=o>*</span><span class=n>args</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=k>with</span> <span class=n>p</span><span class=o>.</span><span class=n>conn</span><span class=p>()</span> <span class=k>as</span> <span class=n>conn</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>try</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>cursor</span> <span class=o>=</span> <span class=n>conn</span><span class=o>.</span><span class=n>cursor</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>                <span class=n>result</span> <span class=o>=</span> <span class=n>func</span><span class=p>(</span><span class=o>*</span><span class=n>args</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>,</span> <span class=n>cursor</span><span class=o>=</span><span class=n>cursor</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=k>return</span> <span class=n>result</span>
+</span></span><span class=line><span class=cl>            <span class=k>except</span> <span class=ne>Exception</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=nb>print</span><span class=p>(</span><span class=n>e</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=c1># 如果发生异常就回滚</span>
+</span></span><span class=line><span class=cl>                <span class=n>conn</span><span class=o>.</span><span class=n>rollback</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>            <span class=k>finally</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>cursor</span><span class=o>.</span><span class=n>close</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>wrapper</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nd>@db_connection</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>test</span><span class=p>(</span><span class=n>cursor</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>cursor</span><span class=o>.</span><span class=n>execute</span><span class=p>(</span><span class=s2>&#34;SELECT VERSION()&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=n>cursor</span><span class=o>.</span><span class=n>fetchone</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>test</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><p>上面的程序还存在一个小问题，当程序最开始并发访问的时候肯定会导致单例模式失效，所以在实例化的过程中最好加上锁，这里就不在演示了</p><p>为什么上面的程序中不在<code>MysqlPool</code>类中实现<code>__enter__</code>和<code>__exit__</code>方法，而是使用<code>contextmanager</code>装饰器将<code>conn</code>方法变为上下文管理器对象，那是因为如果在类中实现上下文管理器协议，那么拿到的<code>connection</code>或者<code>cursor</code>都将全局唯一，那么在并发下就造成全局只有一个<code>connection</code>的问题，具体细节可以看单例模式和上下文管理器协议，</p><h2 id=异步协程版>异步协程版</h2><p><a href=https://github.com/aio-libs/aiomysql target=_blank rel="noopener noreffer">aiomysql</a>本身提供了线程池可供使用者进行操作，因为是异步创建的连接池，所以需要把整个创建过程封装到协程中，官方推荐使用<code>create_pool</code>这个工厂函数来创建连接池，并且连接池也支持异步上下文管理器，<code>cursor</code>也支持异步上下文管理器，但是连接池并不是单例的，所以我们只需要确保连接池在整个事件循环执行的过程中是单例的即可</p><p>本文使用的<code>aiomysql</code>版本为0.0.21，在写本文时为最新版本</p><p>实例aiodb.py</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>aiomysql</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>asyncio</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>MysqlPool</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>pool</span> <span class=o>=</span> <span class=kc>None</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nd>@classmethod</span>
+</span></span><span class=line><span class=cl>    <span class=k>async</span> <span class=k>def</span> <span class=nf>init_pool</span><span class=p>(</span><span class=bp>cls</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=k>try</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=ow>not</span> <span class=bp>cls</span><span class=o>.</span><span class=n>pool</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>_pool</span> <span class=o>=</span> <span class=k>await</span> <span class=n>aiomysql</span><span class=o>.</span><span class=n>create_pool</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                    <span class=n>minsize</span><span class=o>=</span><span class=mi>5</span><span class=p>,</span>  <span class=c1># 连接池最小值</span>
+</span></span><span class=line><span class=cl>                    <span class=n>maxsize</span><span class=o>=</span><span class=mi>20</span><span class=p>,</span>  <span class=c1># 连接池最大值</span>
+</span></span><span class=line><span class=cl>                    <span class=n>host</span><span class=o>=</span><span class=s1>&#39;127.0.0.1&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=n>port</span><span class=o>=</span><span class=mi>3306</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=n>user</span><span class=o>=</span><span class=s1>&#39;username&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=n>password</span><span class=o>=</span><span class=s1>&#39;passwd&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=n>db</span><span class=o>=</span><span class=s1>&#39;database&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=n>autocommit</span><span class=o>=</span><span class=kc>True</span><span class=p>,</span>  <span class=c1># 自动提交模式</span>
+</span></span><span class=line><span class=cl>                <span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=bp>cls</span><span class=o>.</span><span class=n>pool</span> <span class=o>=</span> <span class=n>_pool</span>
+</span></span><span class=line><span class=cl>        <span class=k>except</span> <span class=ne>Exception</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=nb>print</span><span class=p>(</span><span class=n>e</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>async</span> <span class=k>def</span> <span class=nf>test</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=n>p1</span> <span class=o>=</span> <span class=n>MysqlPool</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=k>await</span> <span class=n>p1</span><span class=o>.</span><span class=n>init_pool</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=n>p2</span> <span class=o>=</span> <span class=n>MysqlPool</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=nb>id</span><span class=p>(</span><span class=n>p1</span><span class=o>.</span><span class=n>pool</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=nb>id</span><span class=p>(</span><span class=n>p2</span><span class=o>.</span><span class=n>pool</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=k>async</span> <span class=k>with</span> <span class=n>p1</span><span class=o>.</span><span class=n>pool</span><span class=o>.</span><span class=n>acquire</span><span class=p>()</span> <span class=k>as</span> <span class=n>conn</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>async</span> <span class=k>with</span> <span class=n>conn</span><span class=o>.</span><span class=n>cursor</span><span class=p>()</span> <span class=k>as</span> <span class=n>cur</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>await</span> <span class=n>cur</span><span class=o>.</span><span class=n>execute</span><span class=p>(</span><span class=s2>&#34;SELECT VERSION()&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=nb>print</span><span class=p>(</span><span class=k>await</span> <span class=n>cur</span><span class=o>.</span><span class=n>fetchone</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=vm>__name__</span> <span class=o>==</span> <span class=s1>&#39;__main__&#39;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>loop</span> <span class=o>=</span> <span class=n>asyncio</span><span class=o>.</span><span class=n>get_event_loop</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=n>loop</span><span class=o>.</span><span class=n>run_until_complete</span><span class=p>(</span><span class=n>test</span><span class=p>())</span>
+</span></span></code></pre></td></tr></table></div></div><p>此时通过<code>MysqlPool</code>使用的连接池虽然是单例的了，但是<code>MysqlPool</code>并不是，所以还需要控制<code>MysqlPool</code>的实例化过程，同时也要让整个数据库的操作过程变得简单</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>aiomysql</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>asyncio</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>functools</span> <span class=kn>import</span> <span class=n>wraps</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>MysqlPool</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>_pool</span> <span class=o>=</span> <span class=kc>None</span>
+</span></span><span class=line><span class=cl>    <span class=n>_instance</span> <span class=o>=</span> <span class=kc>None</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__new__</span><span class=p>(</span><span class=bp>cls</span><span class=p>,</span> <span class=o>*</span><span class=n>args</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=ow>not</span> <span class=bp>cls</span><span class=o>.</span><span class=n>_instance</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=bp>cls</span><span class=o>.</span><span class=n>_instance</span> <span class=o>=</span> <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__new__</span><span class=p>(</span><span class=bp>cls</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>cls</span><span class=o>.</span><span class=n>_instance</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nd>@classmethod</span>
+</span></span><span class=line><span class=cl>    <span class=k>async</span> <span class=k>def</span> <span class=nf>init_pool</span><span class=p>(</span><span class=bp>cls</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=k>try</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=ow>not</span> <span class=bp>cls</span><span class=o>.</span><span class=n>_pool</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=bp>cls</span><span class=o>.</span><span class=n>_pool</span> <span class=o>=</span> <span class=k>await</span> <span class=n>aiomysql</span><span class=o>.</span><span class=n>create_pool</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                    <span class=n>minsize</span><span class=o>=</span><span class=mi>5</span><span class=p>,</span>  <span class=c1># 连接池最小值</span>
+</span></span><span class=line><span class=cl>                    <span class=n>maxsize</span><span class=o>=</span><span class=mi>20</span><span class=p>,</span>  <span class=c1># 连接池最大值</span>
+</span></span><span class=line><span class=cl>                    <span class=n>host</span><span class=o>=</span><span class=s1>&#39;127.0.0.1&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=n>port</span><span class=o>=</span><span class=mi>3306</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=n>user</span><span class=o>=</span><span class=s1>&#39;pujic&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=n>password</span><span class=o>=</span><span class=s1>&#39;a&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=n>db</span><span class=o>=</span><span class=s1>&#39;demo&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=n>autocommit</span><span class=o>=</span><span class=kc>True</span><span class=p>,</span>  <span class=c1># 自动提交模式</span>
+</span></span><span class=line><span class=cl>                <span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>except</span> <span class=ne>Exception</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=nb>print</span><span class=p>(</span><span class=n>e</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nd>@classmethod</span>
+</span></span><span class=line><span class=cl>    <span class=k>async</span> <span class=k>def</span> <span class=nf>pool</span><span class=p>(</span><span class=bp>cls</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=c1># 也可以将连接池初始化的步骤放到类实例化后，减少初始化检查</span>
+</span></span><span class=line><span class=cl>        <span class=k>await</span> <span class=bp>cls</span><span class=o>.</span><span class=n>init_pool</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>cls</span><span class=o>.</span><span class=n>_pool</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>p1</span> <span class=o>=</span> <span class=n>MysqlPool</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>db_connection</span><span class=p>(</span><span class=n>func</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=nd>@wraps</span><span class=p>(</span><span class=n>func</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>async</span> <span class=k>def</span> <span class=nf>wrapper</span><span class=p>(</span><span class=o>*</span><span class=n>args</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=n>pool</span> <span class=o>=</span> <span class=k>await</span> <span class=n>p1</span><span class=o>.</span><span class=n>pool</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=k>async</span> <span class=k>with</span> <span class=n>pool</span><span class=o>.</span><span class=n>acquire</span><span class=p>()</span> <span class=k>as</span> <span class=n>conn</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>async</span> <span class=k>with</span> <span class=n>conn</span><span class=o>.</span><span class=n>cursor</span><span class=p>()</span> <span class=k>as</span> <span class=n>cursor</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=k>try</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=n>result</span> <span class=o>=</span> <span class=k>await</span> <span class=n>func</span><span class=p>(</span><span class=o>*</span><span class=n>args</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>,</span> <span class=n>cursor</span><span class=o>=</span><span class=n>cursor</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                    <span class=k>return</span> <span class=n>result</span>
+</span></span><span class=line><span class=cl>                <span class=k>except</span> <span class=ne>Exception</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=nb>print</span><span class=p>(</span><span class=n>e</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                    <span class=k>await</span> <span class=n>conn</span><span class=o>.</span><span class=n>rollback</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>wrapper</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nd>@db_connection</span>
+</span></span><span class=line><span class=cl><span class=k>async</span> <span class=k>def</span> <span class=nf>test</span><span class=p>(</span><span class=n>cursor</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>await</span> <span class=n>cursor</span><span class=o>.</span><span class=n>execute</span><span class=p>(</span><span class=s2>&#34;SELECT VERSION()&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=k>await</span> <span class=n>cursor</span><span class=o>.</span><span class=n>fetchone</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=vm>__name__</span> <span class=o>==</span> <span class=s1>&#39;__main__&#39;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>loop</span> <span class=o>=</span> <span class=n>asyncio</span><span class=o>.</span><span class=n>get_event_loop</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=n>loop</span><span class=o>.</span><span class=n>run_until_complete</span><span class=p>(</span><span class=n>test</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>	
+</span></span></code></pre></td></tr></table></div></div><p>到此MySQL的访问连接池就基本完成了</p><h2 id=结语>结语</h2><p>以上程序会在并发中出现的存在多个实例的问题就交给读者进行解决了</p><p>Python既然是面向对象语言，在进行工程化的程序开发时就更应该对程序进行高度的封装，避免使用重复冗余的代码，很多人在学习Python的时候总是感觉写起来很爽，那是因为学习过程中用到的东西基本都是Python社区的开发者们进行高度封装后的包，或者是Python标准库中高度封装好的包。当进入工程化开发的时候却发现看不懂别人的代码，自己的代码维护起来很困难，一改就是改几个关联文件。作为一个Python开发者，在进行Python程序学习和开发的时候应该将Python视为工程化语言，而不是脚本语言</p></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2021-04-08</span></div><div class=post-info-license></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw"></i>&nbsp;<a href=/tags/python/>Python</a>,&nbsp;<a href=/tags/mysql/>MySQL</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/posts/pandas%E6%95%B0%E6%8D%AE%E6%8F%8F%E8%BF%B0%E6%80%A7%E5%88%86%E6%9E%90/ class=prev rel=prev title=pandas数据描述性分析><i class="fas fa-angle-left fa-fw"></i>pandas数据描述性分析</a>
+<a href=/posts/kafka%E4%BD%BF%E7%94%A8/ class=next rel=next title=Kafka安装与使用>Kafka安装与使用<i class="fas fa-angle-right fa-fw"></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2019 - 2023</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=http://pujichun.ink target=_blank>普吉春</a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw"></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw"></i></a></div><script type=text/javascript src=/lib/smooth-scroll/smooth-scroll.min.js></script><script type=text/javascript src=/lib/autocomplete/autocomplete.min.js></script><script type=text/javascript src=/lib/lunr/lunr.min.js></script><script type=text/javascript src=/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=/lib/lazysizes/lazysizes.min.js></script><script type=text/javascript src=/lib/clipboard/clipboard.min.js></script><script type=text/javascript src=/lib/typeit/typeit.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:10},comment:{},data:{"id-1":"pujic","id-2":"pujic"},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"lunr"},typeit:{cursorChar:null,cursorSpeed:null,data:{"id-1":["id-1"],"id-2":["id-2"]},duration:null,speed:null}}</script><script type=text/javascript src=/js/theme.min.js></script></body></html>

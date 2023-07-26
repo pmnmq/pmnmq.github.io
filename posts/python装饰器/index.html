@@ -1,0 +1,700 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><meta http-equiv=x-ua-compatible content="IE=edge, chrome=1"><title>Python装饰器 - pujic</title><meta name=Description content><meta property="og:title" content="Python装饰器"><meta property="og:description" content="装饰器的原理和执行逻辑"><meta property="og:type" content="article"><meta property="og:url" content="http://example.org/posts/python%E8%A3%85%E9%A5%B0%E5%99%A8/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2020-07-11T16:55:47+00:00"><meta property="article:modified_time" content="2020-07-11T16:55:47+00:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="Python装饰器"><meta name=twitter:description content="装饰器的原理和执行逻辑"><meta name=application-name content="pujic"><meta name=apple-mobile-web-app-title content="pujic"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=http://example.org/posts/python%E8%A3%85%E9%A5%B0%E5%99%A8/><link rel=prev href=http://example.org/posts/%E5%88%9D%E8%AF%86gin%E6%A1%86%E6%9E%B6/><link rel=next href=http://example.org/posts/go-slice%E5%8E%9F%E7%90%86/><link rel=stylesheet href=/lib/normalize/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=/lib/fontawesome-free/all.min.css><link rel=stylesheet href=/lib/animate/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Python装饰器","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/example.org\/posts\/python%E8%A3%85%E9%A5%B0%E5%99%A8\/"},"genre":"posts","keywords":"装饰器, Python","wordcount":3658,"url":"http:\/\/example.org\/posts\/python%E8%A3%85%E9%A5%B0%E5%99%A8\/","datePublished":"2020-07-11T16:55:47+00:00","dateModified":"2020-07-11T16:55:47+00:00","publisher":{"@type":"Organization","name":"普吉春"},"author":{"@type":"Person","name":"普吉春"},"description":""}</script></head><body header-desktop=fixed header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":""==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:""==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title=pujic><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-1 class=typeit></span></a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>所有文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/categories/>分类 </a><a class=menu-item href=/about/>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin"></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw"></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=pujic><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-2 class=typeit></span></a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin"></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=/posts/ title>所有文章</a><a class=menu-item href=/tags/ title>标签</a><a class=menu-item href=/categories/ title>分类</a><a class=menu-item href=/about/ title>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw"></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animated flipInX">Python装饰器</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=http://pujichun.ink title=Author target=_blank rel="noopener noreffer author" class=author><i class="fas fa-user-circle fa-fw"></i>普吉春</a></span>&nbsp;<span class=post-category>收录于 <a href=/categories/python/><i class="far fa-folder fa-fw"></i>Python</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2020-07-11>2020-07-11</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 3658 字&nbsp;
+<i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 8 分钟&nbsp;</div></div><div class="details toc" id=toc-static kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right"></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#python何时执行装饰器>Python何时执行装饰器</a></li><li><a href=#维持原函数属性>维持原函数属性</a></li><li><a href=#装饰带参的函数>装饰带参的函数</a></li><li><a href=#给装饰器传入参数>给装饰器传入参数</a></li><li><a href=#控制装饰器是否装饰函数>控制装饰器是否装饰函数</a></li><li><a href=#多个装饰器装饰函数>多个装饰器装饰函数</a></li><li><a href=#总结>总结</a></li></ul></nav></div></div><div class=content id=content><p>装饰器的原理和执行逻辑</p><p>装饰器是可调用的对象，装饰器的参数是函数，函数在Python中也是对象。简单理解，装饰器就是一个特殊的函数，它的<strong>参数是函数</strong>，我们在执行装饰器时可以使用Python中的语法糖<code>@decorate</code>，也可以使用函数执行的方式运行<code>decorate(func)</code></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=c1># 假设现在有一个名为decorator的装饰器</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nd>@decorator</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>target</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;this target()&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>target</span> <span class=o>=</span> <span class=n>decorator</span><span class=p>(</span><span class=n>target</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>上面程序中两种执行方式不同，但是结果是相同的</p><h2 id=python何时执行装饰器>Python何时执行装饰器</h2><blockquote><p>Python中装饰器的一个关键特性是，它们在被装饰的函数定义之后立即执行</p></blockquote><p>Python何时执行装饰器是一个很重要的点，并不是说它有多复杂，而是决定了我们如何编写装饰器</p><p>当运行下面程序时将会报错。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>time</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>time_diff</span><span class=p>(</span><span class=n>func</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>start_time</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=n>func</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;程序运行时间为: &#34;</span><span class=p>,</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span> <span class=o>-</span> <span class=n>start_time</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nd>@time_diff</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>target</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=mi>10000</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=n>i</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>target</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><p>因为<code>target</code>函数中的程序在被定义之后就执行了，所以我们手动调用<code>target</code>将会是一个<code>NoneType</code>，那么这样我们就不能在想执行的时候执行它</p><p>因此我们想要能够像函数一样执行就需要给返回一个函数，在函数中定义一个函数，然后将这个函数作为对象返回</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>time</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>time_diff</span><span class=p>(</span><span class=n>func</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>	<span class=k>def</span> <span class=nf>inner</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>		<span class=n>start_time</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>		<span class=n>func</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>		<span class=nb>print</span><span class=p>(</span><span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span> <span class=o>-</span> <span class=n>start_time</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=n>inner</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nd>@time_diff</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>target</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>	<span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=mi>10000</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>		<span class=nb>print</span><span class=p>(</span><span class=n>i</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>target</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><p>此时我们就可以像函数一样调用这个被装饰的函数，这个过程其实我们可以通过装饰器的执行特性想到，当我们用装饰器装饰这个函数 的时候其实就是将这个函数当作参数传给了这个装饰器背后的函数，如果装饰器函数没有返回值，那么这个被装饰的函数将是<code>NoneType</code>，其实也就是上面第一个程序实例中的过程，只是上面的程序中并没有将装饰器函数写出来</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>time</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>time_diff</span><span class=p>(</span><span class=n>func</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>	<span class=k>def</span> <span class=nf>inner</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>		<span class=n>start_time</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>		<span class=n>func</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>		<span class=nb>print</span><span class=p>(</span><span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span> <span class=o>-</span> <span class=n>start_time</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=n>inner</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nd>@time_diff</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>target</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>	<span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=mi>10000</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>		<span class=nb>print</span><span class=p>(</span><span class=n>i</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>target</span> <span class=o>=</span> <span class=n>time_diff</span><span class=p>(</span><span class=n>target</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>上面的程序将装饰器的装饰过程还原为了函数闭包的写法</p><h2 id=维持原函数属性>维持原函数属性</h2><p>我们使用装饰器是有一些隐患的，我们通过程序的执行过程我们可以看到<code>target</code>这个函数最终是被指向<code>inner</code>这个函数的，我们可以通过查看函数的属性验证</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>time</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>time_diff</span><span class=p>(</span><span class=n>func</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>	<span class=k>def</span> <span class=nf>inner</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>		<span class=n>start_time</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>		<span class=n>func</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>		<span class=nb>print</span><span class=p>(</span><span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span> <span class=o>-</span> <span class=n>start_time</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=n>inner</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nd>@time_diff</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>target</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>	<span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=mi>10000</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>		<span class=nb>print</span><span class=p>(</span><span class=n>i</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>target</span><span class=o>.</span><span class=vm>__name__</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>此时的target指向的就是<code>inner</code>这个函数，编写装饰器时大多数时候都是重新返回一个函数，我们可以通过函数数学进行查看</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>target</span><span class=o>.</span><span class=vm>__name__</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>输出结果将会是<code>inner</code></p><p>此时如果我们再添加一个函数</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>time</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>time_diff</span><span class=p>(</span><span class=n>func</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>	<span class=k>def</span> <span class=nf>inner</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>		<span class=n>start_time</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>		<span class=n>func</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>		<span class=nb>print</span><span class=p>(</span><span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span> <span class=o>-</span> <span class=n>start_time</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=n>inner</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nd>@time_diff</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>target</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>	<span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=mi>10000</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>		<span class=nb>print</span><span class=p>(</span><span class=n>i</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nd>@time_diff</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>foo</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=mi>100</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=n>i</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>target</span><span class=o>.</span><span class=vm>__name__</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>foo</span><span class=o>.</span><span class=vm>__name__</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>此时我们会看到输出结果都是<code>inner</code>。<strong>注意：print函数中调用的是函数属性，并没有执行函数</strong>。</p><p>虽然函数的真实名字对我们目前的程序没有造成影响，但是一些特殊情况下函数的名称可能会对程序产生影响，为了消除装饰器带来的负面影响，我们可以使用<code>functool</code>中的<code>wraps</code>装饰器，这个装饰器能保留函数原来的名称和<code>docstring</code></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>functools</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>time</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>time_diff</span><span class=p>(</span><span class=n>func</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=nd>@functools.wraps</span><span class=p>(</span><span class=n>func</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>inner</span><span class=p>(</span><span class=o>*</span><span class=n>args</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=n>start_time</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=n>func</span><span class=p>(</span><span class=o>*</span><span class=n>args</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span> <span class=o>-</span> <span class=n>start_time</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>inner</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nd>@time_diff</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>target</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=mi>10000</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=n>i</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nd>@time_diff</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>foo</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=mi>100</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=n>i</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>target</span><span class=o>.</span><span class=vm>__name__</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>foo</span><span class=o>.</span><span class=vm>__name__</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>当然如果只在意函数的名字和docstring，我们也可以手动赋值</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>functools</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>time</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>time_diff</span><span class=p>(</span><span class=n>func</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=c1># @functools.wraps(func)</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>inner</span><span class=p>(</span><span class=o>*</span><span class=n>args</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;inner函数&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=n>start_time</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=n>func</span><span class=p>(</span><span class=o>*</span><span class=n>args</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span> <span class=o>-</span> <span class=n>start_time</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>inner</span><span class=o>.</span><span class=vm>__name__</span> <span class=o>=</span> <span class=n>func</span><span class=o>.</span><span class=vm>__name__</span>
+</span></span><span class=line><span class=cl>    <span class=n>inner</span><span class=o>.</span><span class=vm>__doc__</span> <span class=o>=</span> <span class=n>func</span><span class=o>.</span><span class=vm>__doc__</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>inner</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nd>@time_diff</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>target</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;target函数&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=mi>10000</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=n>i</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nd>@time_diff</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>foo</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;foo函数&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=mi>100</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=n>i</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>target</span><span class=o>.</span><span class=vm>__name__</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>foo</span><span class=o>.</span><span class=vm>__name__</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>target</span><span class=o>.</span><span class=vm>__doc__</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>foo</span><span class=o>.</span><span class=vm>__doc__</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>上面的程序中笔者已经将functools.wraps()这个装饰器注释掉了，读者可以自行注释<code>inner.__name__ = func.__name__</code>和<code>inner.__doc__ = func.__doc__</code>查看输出结果变化情况</p><h2 id=装饰带参的函数>装饰带参的函数</h2><p>在大部分应用场景中我们几乎都需要给函数传递参数，原函数的写法我们肯定是固定不变的，那么要如何在装饰器函数中给被装饰的函数传入参数呢？</p><p>以上面的装饰器为例，当装饰执行之后<code>target</code>指向的是<code>inner</code>这个函数，当我们在调用<code>target</code>函数时其实调用的是<code>inner</code>函数，因此这个参数需要传给<code>inner</code>函数，然后将接收到的参数传递给原函数就行了。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>time</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>time_diff</span><span class=p>(</span><span class=n>func</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>	<span class=k>def</span> <span class=nf>inner</span><span class=p>(</span><span class=o>*</span><span class=n>args</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>		<span class=n>start_time</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>		<span class=n>func</span><span class=p>(</span><span class=o>*</span><span class=n>args</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=nb>print</span><span class=p>(</span><span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span> <span class=o>-</span> <span class=n>start_time</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=n>inner</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nd>@time_diff</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>target</span><span class=p>(</span><span class=n>n</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>	<span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=n>n</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>		<span class=nb>print</span><span class=p>(</span><span class=n>i</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>target</span><span class=p>(</span><span class=mi>20</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>通过用不定长参数的接收方法达到让装饰器更通用的效果</p><h2 id=给装饰器传入参数>给装饰器传入参数</h2><p>在Flask、FastApi中路由函数都是被装饰器装饰的，在被装饰的时候会给装饰器传入一个路由参数</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>flask</span> <span class=kn>import</span> <span class=n>Flask</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>app</span> <span class=o>=</span> <span class=n>Flask</span><span class=p>(</span><span class=vm>__name__</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nd>@app.route</span><span class=p>(</span><span class=s2>&#34;/index&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>index</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=s2>&#34;&lt;h1&gt;Hello Decorate!&lt;/h1&gt;&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=vm>__name__</span> <span class=o>==</span> <span class=s2>&#34;__main__&#34;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>app</span><span class=o>.</span><span class=n>run</span><span class=p>(</span><span class=n>debug</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>不妨看看<code>route</code>这个装饰器的源码</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>def</span> <span class=nf>route</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>rule</span><span class=p>,</span> <span class=o>**</span><span class=n>options</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;A decorator that is used to register a view function for a
+</span></span></span><span class=line><span class=cl><span class=s2>        given URL rule.  This does the same thing as :meth:`add_url_rule`
+</span></span></span><span class=line><span class=cl><span class=s2>        but is intended for decorator usage::
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2>        @app.route(&#39;/&#39;)
+</span></span></span><span class=line><span class=cl><span class=s2>        def index():
+</span></span></span><span class=line><span class=cl><span class=s2>            return &#39;Hello World&#39;
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2>        For more information refer to :ref:`url-route-registrations`.
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2>        :param rule: the URL rule as string
+</span></span></span><span class=line><span class=cl><span class=s2>        :param endpoint: the endpoint for the registered URL rule.  Flask
+</span></span></span><span class=line><span class=cl><span class=s2>                         itself assumes the name of the view function as
+</span></span></span><span class=line><span class=cl><span class=s2>                         endpoint
+</span></span></span><span class=line><span class=cl><span class=s2>        :param options: the options to be forwarded to the underlying
+</span></span></span><span class=line><span class=cl><span class=s2>                        :class:`~werkzeug.routing.Rule` object.  A change
+</span></span></span><span class=line><span class=cl><span class=s2>                        to Werkzeug is handling of method options.  methods
+</span></span></span><span class=line><span class=cl><span class=s2>                        is a list of methods this rule should be limited
+</span></span></span><span class=line><span class=cl><span class=s2>                        to (``GET``, ``POST`` etc.).  By default a rule
+</span></span></span><span class=line><span class=cl><span class=s2>                        just listens for ``GET`` (and implicitly ``HEAD``).
+</span></span></span><span class=line><span class=cl><span class=s2>                        Starting with Flask 0.6, ``OPTIONS`` is implicitly
+</span></span></span><span class=line><span class=cl><span class=s2>                        added and handled by the standard request handling.
+</span></span></span><span class=line><span class=cl><span class=s2>        &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>decorator</span><span class=p>(</span><span class=n>f</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=n>endpoint</span> <span class=o>=</span> <span class=n>options</span><span class=o>.</span><span class=n>pop</span><span class=p>(</span><span class=s2>&#34;endpoint&#34;</span><span class=p>,</span> <span class=kc>None</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>add_url_rule</span><span class=p>(</span><span class=n>rule</span><span class=p>,</span> <span class=n>endpoint</span><span class=p>,</span> <span class=n>f</span><span class=p>,</span> <span class=o>**</span><span class=n>options</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>f</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>decorator</span>
+</span></span></code></pre></td></tr></table></div></div><p>从上面的源码中可以看出，如果我们要给装饰器函数传递参数，那么被装饰的函数作为参数被接收的逻辑就放到了内部真正要去修饰的函数参数当中，因此想要给装饰器函数传入参数是需要将函数传入的位置写到真正的装饰逻辑当中，二参数写到最外层的函数中。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>time</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>time_diff</span><span class=p>(</span><span class=o>*</span><span class=n>args</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>	<span class=nb>print</span><span class=p>(</span><span class=n>args</span><span class=p>,</span> <span class=n>kwargs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>def</span> <span class=nf>inner</span><span class=p>(</span><span class=n>func</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>		<span class=n>start_time</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>		<span class=n>func</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>		<span class=nb>print</span><span class=p>(</span><span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span> <span class=o>-</span> <span class=n>start_time</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=n>inner</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nd>@time_diff</span><span class=p>(</span><span class=s2>&#34;Hello Decorate&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>target</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>	<span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=mi>10</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>		<span class=nb>print</span><span class=p>(</span><span class=n>i</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>target</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><p>运行程序之后将会发生<code>NoneType</code>的error，这是为什么呢？我们明明已经返回了函数，但是为什么在我们调用这个函数之前函数又被提前调用了。这时候需要从装饰器的执行开始分析，**Python中装饰器的一个关键特性是，它们在被装饰的函数定义之后立即执行。**当使用<code>time_diff("Hello Decorate")</code>的时候它是被作为一个普通的闭包函数，而不是一个装饰器，真正的装饰器在内部，而<code>time_diff</code>返回的<code>inner</code>函数才是装饰器函数，返回的<code>inner</code>函数将<code>target</code>函数作为参数立刻形成装饰器的语法糖，然后装饰器被执行了，但是<code>inner</code>函数中是直接执行的<code>func</code>函数，所以在外部调用<code>target</code>函数的时候会发生<code>NoneType</code>的error。</p><p>要解决这个问题，我们继续使用函数的闭包特性就可以</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>time</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>time_diff</span><span class=p>(</span><span class=o>*</span><span class=n>args</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>wrapper</span><span class=p>(</span><span class=n>func</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=k>def</span> <span class=nf>inner</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>            <span class=nb>print</span><span class=p>(</span><span class=n>args</span><span class=p>,</span> <span class=n>kwargs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>start_time</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>            <span class=n>func</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>            <span class=nb>print</span><span class=p>(</span><span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span> <span class=o>-</span> <span class=n>start_time</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>inner</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>wrapper</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nd>@time_diff</span><span class=p>(</span><span class=s2>&#34;Hello Decorate&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>target</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=mi>10</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=n>i</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>target</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><p>此时一个复杂的装饰器就快实现了，装饰器难点就在于<strong>何时装饰</strong>，因此我们要给被装饰的函数传递参数的时候，这个参数写在<code>inner</code>函数当中就行。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>time</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>time_diff</span><span class=p>(</span><span class=n>msg</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=n>msg</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>wrapper</span><span class=p>(</span><span class=n>func</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=k>def</span> <span class=nf>inner</span><span class=p>(</span><span class=o>*</span><span class=n>args</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=n>start_time</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>            <span class=n>func</span><span class=p>(</span><span class=o>*</span><span class=n>args</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=nb>print</span><span class=p>(</span><span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span> <span class=o>-</span> <span class=n>start_time</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>inner</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>wrapper</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nd>@time_diff</span><span class=p>(</span><span class=s2>&#34;Hello Decorate&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>target</span><span class=p>(</span><span class=n>n</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=n>n</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=n>i</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>target</span><span class=p>(</span><span class=mi>11</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=控制装饰器是否装饰函数>控制装饰器是否装饰函数</h2><p>当我们不想这个函数被装饰器装饰的时候我们需要将装饰器的语法糖注释掉，但是如果被装饰的函数很多，那么就需要一个一个的去注释，因此我们需要一个开关控制装饰器是否被装饰</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>time</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>ok</span> <span class=o>=</span> <span class=kc>True</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>time_diff</span><span class=p>(</span><span class=n>switch</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>wrapper</span><span class=p>(</span><span class=n>func</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=k>def</span> <span class=nf>inner</span><span class=p>(</span><span class=o>*</span><span class=n>args</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>switch</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>start_time</span> <span class=o>=</span> <span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>                <span class=n>func</span><span class=p>(</span><span class=o>*</span><span class=n>args</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=nb>print</span><span class=p>(</span><span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()</span> <span class=o>-</span> <span class=n>start_time</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>func</span><span class=p>(</span><span class=o>*</span><span class=n>args</span><span class=p>,</span> <span class=o>**</span><span class=n>kwargs</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>inner</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>wrapper</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nd>@time_diff</span><span class=p>(</span><span class=n>switch</span><span class=o>=</span><span class=n>ok</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>target</span><span class=p>(</span><span class=n>n</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=n>n</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=n>i</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>target</span><span class=p>(</span><span class=mi>11</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>这样我们就能全局决定是否启用装饰器</p><h2 id=多个装饰器装饰函数>多个装饰器装饰函数</h2><p>在实际的开发过程中如果框架的功能完备，那么肯定会有log功能。但是如果轮子需要我们自己造，那么需要打log的地方可能稍微会有点多。曾经写过功能相对较为完善的一个简单的小脚本中，我实例化了一个logger对象，然后在多个文件间调用，整个log调用过程简直是我的噩梦，导致最后这个logger只是一个锦上添花的东西，其实我仅仅是想通过这个log监控我的程序调用栈。后来的优化方案就是使用装饰器，但是在使用装饰器的时候我发现了一个我不得不面对的问题，就是原有的程序的某些方法上已经有一个装饰器了，如果我要在添加一个装饰器该怎么加？</p><p>其实这个问题还是需要回到函数的调用，需要装饰的函数将被作为参数传递给装饰器，然后对这个函数进行加工，如果有第二个装饰器，那么第二个装饰器装饰的就是加工后返回的函数，这个过程可以拆解为函数的参数的传递</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>def</span> <span class=nf>decorator1</span><span class=p>(</span><span class=n>f</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>wrapper1</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;wrapper1&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>f</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>wrapper1</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>decorator2</span><span class=p>(</span><span class=n>f</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>wrapper2</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;wrapper2&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>f</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>wrapper2</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>a</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;hello&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>a</span> <span class=o>=</span> <span class=n>decorator1</span><span class=p>(</span><span class=n>a</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>a</span> <span class=o>=</span> <span class=n>decorator2</span><span class=p>(</span><span class=n>a</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>将最后两句代码简化</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>a</span> <span class=o>=</span> <span class=n>decorator2</span><span class=p>(</span><span class=n>decorator1</span><span class=p>(</span><span class=n>a</span><span class=p>))</span>
+</span></span></code></pre></td></tr></table></div></div><p>如果写为装饰器的语法糖</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>def</span> <span class=nf>decorator1</span><span class=p>(</span><span class=n>f</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>wrapper1</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;wrapper1&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>f</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>wrapper1</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>decorator2</span><span class=p>(</span><span class=n>f</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>wrapper2</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;wrapper2&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>f</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>wrapper2</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nd>@decorator2</span>
+</span></span><span class=line><span class=cl><span class=nd>@decorator1</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>a</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;hello&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>装饰器语法糖下方的程序都将是该装饰器的函数参数，当然前提需要下方的结果是一个函数，而<code>@decorator2</code>下方还是一个装饰器语法糖，那么就这样一层一层的套下去。其实我们也可以简单的理解为哪个装饰器先碰到需要被装饰的函数，那么就先执行哪个装饰器。</p><h2 id=总结>总结</h2><p>要在面试的时候破装饰器的题，或者想写好装饰器，笔者认为最关键的就是两点</p><ol><li>装饰器的参数是函数</li><li>装饰器在被装饰的函数定义之后立即执行</li></ol><p>这两点在笔者学习装饰器的时候几乎解决了所有问题</p></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2020-07-11</span></div><div class=post-info-license></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw"></i>&nbsp;<a href=/tags/%E8%A3%85%E9%A5%B0%E5%99%A8/>装饰器</a>,&nbsp;<a href=/tags/python/>Python</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/posts/%E5%88%9D%E8%AF%86gin%E6%A1%86%E6%9E%B6/ class=prev rel=prev title=初识Gin框架><i class="fas fa-angle-left fa-fw"></i>初识Gin框架</a>
+<a href=/posts/go-slice%E5%8E%9F%E7%90%86/ class=next rel=next title="Go Slice原理">Go Slice原理<i class="fas fa-angle-right fa-fw"></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2019 - 2023</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=http://pujichun.ink target=_blank>普吉春</a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw"></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw"></i></a></div><script type=text/javascript src=/lib/smooth-scroll/smooth-scroll.min.js></script><script type=text/javascript src=/lib/autocomplete/autocomplete.min.js></script><script type=text/javascript src=/lib/lunr/lunr.min.js></script><script type=text/javascript src=/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=/lib/lazysizes/lazysizes.min.js></script><script type=text/javascript src=/lib/clipboard/clipboard.min.js></script><script type=text/javascript src=/lib/typeit/typeit.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:10},comment:{},data:{"id-1":"pujic","id-2":"pujic"},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"lunr"},typeit:{cursorChar:null,cursorSpeed:null,data:{"id-1":["id-1"],"id-2":["id-2"]},duration:null,speed:null}}</script><script type=text/javascript src=/js/theme.min.js></script></body></html>

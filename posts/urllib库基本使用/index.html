@@ -1,0 +1,471 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><meta http-equiv=x-ua-compatible content="IE=edge, chrome=1"><title>urllib库基本使用 - pujic</title><meta name=Description content><meta property="og:title" content="urllib库基本使用"><meta property="og:description" content="在Python中，要发起一个请求获取服务器的响应，我们不需要去关心计算机怎么去发起的这个请求，更不需要知道计算机底层是怎样实现的这个通信，我们只需要关注我们的这个请求的URL、参数、等等的信息，而这一切Python标准库中的urllib库已经为我们准备好了"><meta property="og:type" content="article"><meta property="og:url" content="http://example.org/posts/urllib%E5%BA%93%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2020-03-01T17:24:57+00:00"><meta property="article:modified_time" content="2020-03-01T17:24:57+00:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="urllib库基本使用"><meta name=twitter:description content="在Python中，要发起一个请求获取服务器的响应，我们不需要去关心计算机怎么去发起的这个请求，更不需要知道计算机底层是怎样实现的这个通信，我们只需要关注我们的这个请求的URL、参数、等等的信息，而这一切Python标准库中的urllib库已经为我们准备好了"><meta name=application-name content="pujic"><meta name=apple-mobile-web-app-title content="pujic"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=http://example.org/posts/urllib%E5%BA%93%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/><link rel=prev href=http://example.org/posts/python-list%E5%88%87%E7%89%87/><link rel=next href=http://example.org/posts/%E4%BD%BF%E7%94%A8hexo%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2%E6%B5%81%E7%A8%8B/><link rel=stylesheet href=/lib/normalize/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=/lib/fontawesome-free/all.min.css><link rel=stylesheet href=/lib/animate/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"urllib库基本使用","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/example.org\/posts\/urllib%E5%BA%93%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8\/"},"genre":"posts","keywords":"Python, 网络爬虫","wordcount":4269,"url":"http:\/\/example.org\/posts\/urllib%E5%BA%93%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8\/","datePublished":"2020-03-01T17:24:57+00:00","dateModified":"2020-03-01T17:24:57+00:00","publisher":{"@type":"Organization","name":"普吉春"},"author":{"@type":"Person","name":"普吉春"},"description":""}</script></head><body header-desktop=fixed header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":""==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:""==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title=pujic><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-1 class=typeit></span></a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>所有文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/categories/>分类 </a><a class=menu-item href=/about/>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin"></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw"></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=pujic><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-2 class=typeit></span></a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin"></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=/posts/ title>所有文章</a><a class=menu-item href=/tags/ title>标签</a><a class=menu-item href=/categories/ title>分类</a><a class=menu-item href=/about/ title>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw"></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animated flipInX">urllib库基本使用</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=http://pujichun.ink title=Author target=_blank rel="noopener noreffer author" class=author><i class="fas fa-user-circle fa-fw"></i>普吉春</a></span>&nbsp;<span class=post-category>收录于 <a href=/categories/%E7%BD%91%E7%BB%9C%E7%88%AC%E8%99%AB/><i class="far fa-folder fa-fw"></i>网络爬虫</a>&nbsp;<a href=/categories/python/><i class="far fa-folder fa-fw"></i>Python</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2020-03-01>2020-03-01</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 4269 字&nbsp;
+<i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 9 分钟&nbsp;</div></div><div class="details toc" id=toc-static kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right"></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><ul><li><a href=#urllibrequest>urllib.request</a><ul><li><a href=#请求网页>请求网页</a></li><li><a href=#请求超时设置>请求超时设置</a></li></ul></li><li><a href=#urllibparse>urllib.parse</a></li><li><a href=#data参数>data参数</a></li><li><a href=#构造request对象>构造Request对象</a></li><li><a href=#handler和openerdirector>Handler和OpenerDirector</a><ul><li><a href=#cookie>cookie</a></li></ul></li><li><a href=#代理>代理</a></li></ul></li></ul></nav></div></div><div class=content id=content><p>在Python中，要发起一个请求获取服务器的响应，我们不需要去关心计算机怎么去发起的这个请求，更不需要知道计算机底层是怎样实现的这个通信，我们只需要关注我们的这个请求的URL、参数、等等的信息，而这一切Python标准库中的urllib库已经为我们准备好了</p><p>urllib是Python内置的一个HTTP请求库</p><p>Python3 urllib库官方文档地址：https://docs.python.org/3/library/urllib.html</p><p>urllib库包含四个基本的URL模块</p><table><thead><tr><th style=text-align:center>模块名称</th><th style=text-align:center>用途</th></tr></thead><tbody><tr><td style=text-align:center><a href=https://docs.python.org/zh-cn/3/library/urllib.request.html#module-urllib.request target=_blank rel="noopener noreffer"><code>urllib.request</code></a></td><td style=text-align:center>打开和读取URL</td></tr><tr><td style=text-align:center><a href=https://docs.python.org/zh-cn/3/library/urllib.error.html#module-urllib.error target=_blank rel="noopener noreffer"><code>urllib.error</code></a></td><td style=text-align:center>包含了urllib.request抛出的异常类型</td></tr><tr><td style=text-align:center><a href=https://docs.python.org/zh-cn/3/library/urllib.parse.html#module-urllib.parse target=_blank rel="noopener noreffer"><code>urllib.parse</code></a></td><td style=text-align:center>用于解析URL</td></tr><tr><td style=text-align:center><a href=https://docs.python.org/zh-cn/3/library/urllib.robotparser.html#module-urllib.robotparser target=_blank rel="noopener noreffer"><code>urllib.robotparser</code></a></td><td style=text-align:center>用于解析robots.txt文件</td></tr></tbody></table><h3 id=urllibrequest>urllib.request</h3><p>模拟浏览器像服务器发送请求，需要使用的是urllib.request模块，其中最基础的请求方法就是<code>urlopen()</code>方法</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>urllib</span><span class=o>.</span><span class=n>request</span><span class=o>.</span><span class=n>urlopen</span><span class=p>(</span><span class=n>url</span><span class=p>,</span> <span class=n>data</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=p>[</span><span class=n>timeout</span><span class=p>,</span> <span class=p>]</span><span class=o>*</span><span class=p>,</span> <span class=n>cafile</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>capath</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>cadefault</span><span class=o>=</span><span class=kc>False</span><span class=p>,</span> <span class=n>context</span><span class=o>=</span><span class=kc>None</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><ul><li><code>url</code>可以是字符串，也可以是自己构造的Request对象</li><li><code>data</code>是需要发送给服务器的数据对象，如果没有则不用填写，<code>默认为None</code></li><li><code>timeout</code>超时设置，是一个可选参数，传入超时时间后，如果在指定的时间内服务器没有响应则抛出<code>time out</code>异常</li><li><code>cafile</code>和<code>capath</code>代表 CA 证书和 CA 证书的路径。如果使用<code>HTTPS</code>则可能需要用到</li><li><code>context</code>参数必须是<code>ssl.SSLContext</code>类型，用来指定<code>SSL</code>设置</li></ul><h4 id=请求网页>请求网页</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>urllib.request</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>response</span> <span class=o>=</span> <span class=n>urllib</span><span class=o>.</span><span class=n>request</span><span class=o>.</span><span class=n>urlopen</span><span class=p>(</span><span class=s2>&#34;http://www.baidu.com&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>html</span> <span class=o>=</span> <span class=n>response</span><span class=o>.</span><span class=n>read</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>html</span><span class=o>.</span><span class=n>decode</span><span class=p>(</span><span class=s2>&#34;utf-8&#34;</span><span class=p>))</span>
+</span></span></code></pre></td></tr></table></div></div><ul><li>使用<code>urlopen</code>方法获取到的是一个<code>http.client.HTTPResponse</code>对象</li><li>使用<code>read()</code>方法将response中的网页源代码读出来</li><li>使用<code>decode()</code>方法将读取出来的网页源代码编码转换成<code>utf-8</code>编码</li></ul><p>可以通过下面的方法查看<code>http.client.HTTPResponse</code>对象的一些基本信息：</p><ul><li>response.getcode()，获取状态码</li><li>response.readline()，以字节流 返回所有得数据 以列表格式保存</li><li>response.getheaders()，获取响应头</li><li>response.geturl()，获取url</li></ul><h4 id=请求超时设置>请求超时设置</h4><p>在一些情况下，如果服务器识别到我们的爬虫不是一个正常的客户端，那么它可能就会延长返回结果，甚至返回的结果是迷惑我们的信息，那么即耗时也没拿到想要的数据，还有一种情况就是服务器的负载过高，那么返回响应的时间就会延长。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>urllib.request</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>response</span> <span class=o>=</span> <span class=n>urllib</span><span class=o>.</span><span class=n>request</span><span class=o>.</span><span class=n>urlopen</span><span class=p>(</span><span class=s2>&#34;http://tieba.baidu.com&#34;</span><span class=p>,</span> <span class=n>timeout</span><span class=o>=</span><span class=mf>0.1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>response</span><span class=o>.</span><span class=n>read</span><span class=p>()</span><span class=o>.</span><span class=n>decode</span><span class=p>(</span><span class=s1>&#39;utf-8&#39;</span><span class=p>))</span>
+</span></span></code></pre></td></tr></table></div></div><p>从上面的代码看，仅仅只需要两行代码就能从服务器上获取到一个响应体</p><p>但是事实上很多网站并没有这么<code>简单</code>，大多数情况服务器会读取请求传输过去的请求体，然后去判断到底是不是一个正常的客户端，如果不是，那么得到的响应体就是不正常的数据。</p><h3 id=urllibparse>urllib.parse</h3><p>大多数我们请求的url可能是不固定的，那么我们可能就面临着需要去构造url，因为Python是解释型语言，解释器只支持ASCII码，所以需要对url进行编码</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>urllib.request</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>urllib.parse</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>string</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>crawler</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=n>basis_url</span> <span class=o>=</span> <span class=s2>&#34;https://www.baidu.com/s?wd=&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=n>key_word</span> <span class=o>=</span> <span class=s2>&#34;ip&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=n>url</span> <span class=o>=</span> <span class=n>basis_url</span> <span class=o>+</span> <span class=n>key_word</span>
+</span></span><span class=line><span class=cl>    <span class=n>encode_url</span> <span class=o>=</span> <span class=n>urllib</span><span class=o>.</span><span class=n>parse</span><span class=o>.</span><span class=n>quote</span><span class=p>(</span><span class=n>key_word</span><span class=p>,</span> <span class=n>safe</span><span class=o>=</span><span class=n>string</span><span class=o>.</span><span class=n>printable</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>response</span> <span class=o>=</span> <span class=n>urllib</span><span class=o>.</span><span class=n>request</span><span class=o>.</span><span class=n>urlopen</span><span class=p>(</span><span class=n>encode_url</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>html</span> <span class=o>=</span> <span class=n>response</span><span class=o>.</span><span class=n>read</span><span class=p>()</span><span class=o>.</span><span class=n>decode</span><span class=p>(</span><span class=s2>&#34;utf-8&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=n>html</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=vm>__name__</span> <span class=o>==</span> <span class=s2>&#34;__main__&#34;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>crawler</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><p>当关键参数较多的时候可以构造为dict，然后使用<code>urlencode()</code>来进行编码</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>urllib.request</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>urllib.parse</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>crawler</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=n>basis_url</span> <span class=o>=</span> <span class=s2>&#34;http://www.baidu.com/s?&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=n>params</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;wd&#34;</span><span class=p>:</span> <span class=s2>&#34;男&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;value&#34;</span><span class=p>:</span> <span class=s2>&#34;20&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=n>encode_url</span> <span class=o>=</span> <span class=n>urllib</span><span class=o>.</span><span class=n>parse</span><span class=o>.</span><span class=n>urlencode</span><span class=p>(</span><span class=n>params</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=n>encode_url</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>url</span> <span class=o>=</span> <span class=n>basis_url</span> <span class=o>+</span> <span class=n>encode_url</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=n>url</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=vm>__name__</span> <span class=o>==</span> <span class=s2>&#34;__main__&#34;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>crawler</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><p><strong>注意：经过urlencode编码后的url已经是ASCII码了，但是如果还是问题，那么就再使用quote编码一次</strong></p><h3 id=data参数>data参数</h3><p>在请求某些网页时需要携带一些数据，我们就需要使用到 data</p><p>params 需要被转码成字节流，而 params 是一个字典，我们需要使用 urllib.parse.urlencode() 将字典转化为字符串，再使用 bytes() 转为字节流，最后使用 urlopen() 发起请求，请求是模拟用 POST 方式提交表单数据</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>urllib.request</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>urllib.parse</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>crawler</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=n>form_data</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;测试&#34;</span><span class=p>:</span> <span class=s2>&#34;post请求&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;编程语言&#34;</span><span class=p>:</span> <span class=s2>&#34;派森&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=n>data</span> <span class=o>=</span> <span class=nb>bytes</span><span class=p>(</span><span class=n>urllib</span><span class=o>.</span><span class=n>parse</span><span class=o>.</span><span class=n>urlencode</span><span class=p>(</span><span class=n>form_data</span><span class=p>),</span> <span class=n>encoding</span><span class=o>=</span><span class=s2>&#34;utf-8&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>response</span> <span class=o>=</span> <span class=n>urllib</span><span class=o>.</span><span class=n>request</span><span class=o>.</span><span class=n>urlopen</span><span class=p>(</span><span class=s2>&#34;http://httpbin.org/post&#34;</span><span class=p>,</span> <span class=n>data</span><span class=o>=</span><span class=n>data</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=n>response</span><span class=o>.</span><span class=n>read</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=vm>__name__</span> <span class=o>==</span> <span class=s2>&#34;__main__&#34;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>crawler</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><p>返回的数据中就可以看到上面提交的数据，只是数据是经过编码的</p><p>这个<code>http://httpbin.org</code>是一个用来做HTTP请求测试的网站</p><p><strong><code>实战1：利用必应翻译API，开发一个翻译程序</code></strong></p><p>必应翻译url：https://cn.bing.com/translator/</p><p>进入网站，打开浏览器<code>开发者工具</code>，定位到<code>Network</code></p><p><img class=lazyload src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405232309.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405232309.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405232309.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405232309.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405232309.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405232309.png></p><p>然后在必应翻译的文本框输入翻译的内容，比如说<code>爬虫</code>，然后注意Netword中的变化，会出现很多通信的请求API，然后我们需要找到翻译的API，获取到真实的URL地址，以及传输的信息</p><p><img class=lazyload src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405232333.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405232333.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405232333.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405232333.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405232333.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405232333.png></p><p>打开<code>ttranslatev3?is……</code>这个响应信息，往下拉就可以发现<code>Form Data</code>中的text的值就是我们需要翻译的文字</p><p>打开<code>Preview</code>这一项，可以看到这里面的text的值就是翻译的结果</p><p><img class=lazyload src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405232347.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405232347.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405232347.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405232347.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405232347.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405232347.png></p><p>上面的抓包过程可以多尝试几次</p><p>然后回到<code>Headers</code>中，在<code>General</code>中可以看到这次请求的基本信息，其中<code>Request URL</code>就是真实的url，<code>Request Method</code>就是请求方式，<code>Status Code</code>是这次请求的状态码，我们需要使用真实的url去发起请求</p><p><img class=lazyload src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405232401.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405232401.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405232401.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405232401.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405232401.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405232401.png></p><p>实例程序如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>urllib.parse</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>urllib.request</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>crawler</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=n>url</span> <span class=o>=</span> <span class=s2>&#34;https://cn.bing.com/ttranslatev3?isVertical=1&amp;&amp;IG=2B73CBCDC8F54EAFABF49389E29DC19A&amp;IID=translator.5028.2&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=n>form_data</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;fromLang&#34;</span><span class=p>:</span> <span class=s2>&#34;auto-detect&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;text&#34;</span><span class=p>:</span> <span class=s2>&#34;爬虫&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;to&#34;</span><span class=p>:</span> <span class=s2>&#34;en&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=n>data</span> <span class=o>=</span> <span class=nb>bytes</span><span class=p>(</span><span class=n>urllib</span><span class=o>.</span><span class=n>parse</span><span class=o>.</span><span class=n>urlencode</span><span class=p>(</span><span class=n>form_data</span><span class=p>),</span> <span class=n>encoding</span><span class=o>=</span><span class=s1>&#39;utf8&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>response</span> <span class=o>=</span> <span class=n>urllib</span><span class=o>.</span><span class=n>request</span><span class=o>.</span><span class=n>urlopen</span><span class=p>(</span><span class=n>url</span><span class=p>,</span> <span class=n>data</span><span class=o>=</span><span class=n>data</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=n>response</span><span class=o>.</span><span class=n>read</span><span class=p>()</span><span class=o>.</span><span class=n>decode</span><span class=p>(</span><span class=s1>&#39;utf-8&#39;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=vm>__name__</span> <span class=o>==</span> <span class=s2>&#34;__main__&#34;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>crawler</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>urllib.request</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>urllib.parse</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>BingSpider</span><span class=p>(</span><span class=nb>object</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>		<span class=bp>self</span><span class=o>.</span><span class=n>url</span> <span class=o>=</span> <span class=s2>&#34;https://cn.bing.com/ttranslatev3?isVertical=1&amp;&amp;IG=4FEF33F31181435589194F495E9386B0&amp;IID=translator.5028.2&#34;</span>
+</span></span><span class=line><span class=cl>		<span class=bp>self</span><span class=o>.</span><span class=n>from_data</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=s2>&#34;fromLang&#34;</span><span class=p>:</span> <span class=s2>&#34;auto-detect&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>			<span class=s2>&#34;text&#34;</span><span class=p>:</span> <span class=s2>&#34;爬虫&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>			<span class=s2>&#34;to&#34;</span><span class=p>:</span> <span class=s2>&#34;en&#34;</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=k>def</span> <span class=nf>crawl</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>		<span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>		爬虫下载模块
+</span></span></span><span class=line><span class=cl><span class=s2>		&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>		<span class=n>data</span> <span class=o>=</span> <span class=nb>bytes</span><span class=p>(</span><span class=n>urllib</span><span class=o>.</span><span class=n>parse</span><span class=o>.</span><span class=n>urlencode</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>from_data</span><span class=p>),</span> <span class=n>encoding</span><span class=o>=</span><span class=s2>&#34;utf-8&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=n>response</span> <span class=o>=</span> <span class=n>urllib</span><span class=o>.</span><span class=n>request</span><span class=o>.</span><span class=n>urlopen</span><span class=p>(</span><span class=n>url</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>url</span><span class=p>,</span> <span class=n>data</span><span class=o>=</span><span class=n>data</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=n>r</span> <span class=o>=</span> <span class=n>response</span><span class=o>.</span><span class=n>read</span><span class=p>()</span><span class=o>.</span><span class=n>decode</span><span class=p>(</span><span class=s2>&#34;utf-8&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=nb>print</span><span class=p>(</span><span class=n>r</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=k>def</span> <span class=nf>run</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>		<span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>		爬虫调度模块
+</span></span></span><span class=line><span class=cl><span class=s2>		&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>		<span class=bp>self</span><span class=o>.</span><span class=n>crawl</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=vm>__name__</span> <span class=o>==</span> <span class=s2>&#34;__main__&#34;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>	<span class=n>spider</span> <span class=o>=</span> <span class=n>BingSpider</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>	<span class=n>spider</span><span class=o>.</span><span class=n>run</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=构造request对象>构造Request对象</h3><p><code>urlopen()</code>可以支撑我们的一些简单的请求，但是请记住，一个没有请求头的爬虫是没有灵魂的。虽然不使用请求头也可以访问一些网页，但是这样的行为是直接告诉服务器“我是一个爬虫”，那么服务器可能就会拒绝程序的请求，因此我们需要进行伪装，这时候我们就需要去构造我们的HTTP请求体，一个Request对象。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>urllib.request</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>crawler</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>	<span class=n>url</span> <span class=o>=</span> <span class=s2>&#34;https://maoyan.com/&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=n>request</span> <span class=o>=</span> <span class=n>urllib</span><span class=o>.</span><span class=n>request</span><span class=o>.</span><span class=n>Request</span><span class=p>(</span><span class=n>url</span><span class=o>=</span><span class=n>url</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=n>response</span> <span class=o>=</span> <span class=n>urllib</span><span class=o>.</span><span class=n>request</span><span class=o>.</span><span class=n>urlopen</span><span class=p>(</span><span class=n>request</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nb>print</span><span class=p>(</span><span class=n>response</span><span class=o>.</span><span class=n>read</span><span class=p>()</span><span class=o>.</span><span class=n>decode</span><span class=p>(</span><span class=s1>&#39;utf-8&#39;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=vm>__name__</span> <span class=o>==</span> <span class=s1>&#39;__main__&#39;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>	<span class=n>crawler</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><p>执行上面的程序，程序将抛出异常<code>urllib.error.HTTPError: HTTP Error 403: Forbidden</code>，这是服务器禁止访问时程序产生的错误。</p><p>先看一下我们不伪装爬虫时的请求头是什么样的</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>urllib.request</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>crawler</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>	<span class=n>url</span> <span class=o>=</span> <span class=s2>&#34;http://www.httpbin.org/headers&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=n>headers</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=s2>&#34;User-agent&#34;</span><span class=p>:</span> <span class=s2>&#34;Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_8; en-us) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=n>response</span> <span class=o>=</span> <span class=n>urllib</span><span class=o>.</span><span class=n>request</span><span class=o>.</span><span class=n>urlopen</span><span class=p>(</span><span class=n>url</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nb>print</span><span class=p>(</span><span class=n>response</span><span class=o>.</span><span class=n>read</span><span class=p>()</span><span class=o>.</span><span class=n>decode</span><span class=p>(</span><span class=s1>&#39;utf-8&#39;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=vm>__name__</span> <span class=o>==</span> <span class=s1>&#39;__main__&#39;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>	<span class=n>crawler</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><p>从返回的信息中可以看出，这个爬虫的请求头（User-agent）是<code>"User-Agent": "Python-urllib/3.7"</code>，如果是这样，服务器很容易就可看穿我们的爬虫</p><p>这时候就需要加上请求头来伪装我们的爬虫</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>urllib</span><span class=o>.</span><span class=n>request</span><span class=o>.</span><span class=n>Request</span><span class=p>(</span><span class=n>url</span><span class=p>,</span> <span class=n>data</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>headers</span><span class=o>=</span><span class=p>{},</span> <span class=n>origin_req_host</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>unverifiable</span><span class=o>=</span><span class=kc>False</span><span class=p>,</span> <span class=n>method</span><span class=o>=</span><span class=kc>None</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>其中<code>headers</code>就是我们要传递的参数</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>urllib.request</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>crawler</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>	<span class=n>url</span> <span class=o>=</span> <span class=s2>&#34;https://maoyan.com/&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=n>headers</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=s2>&#34;User-agent&#34;</span><span class=p>:</span> <span class=s2>&#34;Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_8; en-us) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=n>request</span> <span class=o>=</span> <span class=n>urllib</span><span class=o>.</span><span class=n>request</span><span class=o>.</span><span class=n>Request</span><span class=p>(</span><span class=n>url</span><span class=o>=</span><span class=n>url</span><span class=p>,</span> <span class=n>headers</span><span class=o>=</span><span class=n>headers</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=n>response</span> <span class=o>=</span> <span class=n>urllib</span><span class=o>.</span><span class=n>request</span><span class=o>.</span><span class=n>urlopen</span><span class=p>(</span><span class=n>request</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nb>print</span><span class=p>(</span><span class=n>response</span><span class=o>.</span><span class=n>read</span><span class=p>()</span><span class=o>.</span><span class=n>decode</span><span class=p>(</span><span class=s1>&#39;utf-8&#39;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=vm>__name__</span> <span class=o>==</span> <span class=s1>&#39;__main__&#39;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>	<span class=n>crawler</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=handler和openerdirector>Handler和OpenerDirector</h3><p>原始的urlopen()方法已经够强大了，但是这并不能满足我们构建一个更加像浏览器的爬虫，所以这时候需要我们自己去构造我们的处理器（handler），然后通过OpenerDirector（opener）去使用处理器，其实urlopen就是一个Python为我们构造好的opener。</p><p>Handler 能处理请求（HTTP、HTTPS、FTP等）中的各种事情，它是通过 <code>urllib.request.BaseHandler</code>这个类来实现的。urllib.request.BaseHandler是所有的 Handler 的基类，其提供了最基本的Handler的方法</p><p>常见的Handler类：</p><ul><li><code>ProxyHandler</code>：为请求设置代理</li><li><code>HTTPCookieProcessor</code>：处理 HTTP 请求中的 Cookies</li><li><code>HTTPPasswordMgr</code>：用于管理密码，它维护了用户名密码的表。</li><li><code>HTTPBasicAuthHandler</code>：用于登录认证，一般和 <code>HTTPPasswordMgr</code> 结合使用。</li></ul><h4 id=cookie>cookie</h4><p>一个 Web 站点可能会为每一个访问者产生一个唯一的ID, 然后以 Cookie 文件的形式保存在每个用户的机器上。如果使用浏览器访问 Web, 会看到所有保存在硬盘上的 Cookie。在这个文件夹里每一个文件都是一个由“键/值”对组成的文本文件,另外还有一个文件保存有所有对应的 Web 站点的信息</p><p>当客户端再次访问这个 Web 站点时这些信息可供该站点使用。由于“Cookie”具有可以保存在本地客户端上的神奇特性, 因此它可以帮助我们实现记录用户个人信息的功能</p><p>我们可以通过使用cookie避免一些不要登录认证或者来完善的伪装我们的爬虫</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>http.cookiejar</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>urllib.request</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>crawler</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=n>url</span> <span class=o>=</span> <span class=s2>&#34;http://tieba.baidu.com/&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=n>headers</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;User-agent&#34;</span><span class=p>:</span> <span class=s2>&#34;Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_8; en-us) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;Cookie&#34;</span><span class=p>:</span> <span class=s2>&#34;cookies&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>request</span> <span class=o>=</span> <span class=n>urllib</span><span class=o>.</span><span class=n>request</span><span class=o>.</span><span class=n>Request</span><span class=p>(</span><span class=n>url</span><span class=p>,</span><span class=n>headers</span><span class=o>=</span><span class=n>headers</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>cookie</span> <span class=o>=</span> <span class=n>http</span><span class=o>.</span><span class=n>cookiejar</span><span class=o>.</span><span class=n>CookieJar</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=n>handler</span> <span class=o>=</span> <span class=n>urllib</span><span class=o>.</span><span class=n>request</span><span class=o>.</span><span class=n>HTTPCookieProcessor</span><span class=p>(</span><span class=n>cookie</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>opener</span> <span class=o>=</span> <span class=n>urllib</span><span class=o>.</span><span class=n>request</span><span class=o>.</span><span class=n>build_opener</span><span class=p>(</span><span class=n>handler</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>response</span> <span class=o>=</span> <span class=n>opener</span><span class=o>.</span><span class=n>open</span><span class=p>(</span><span class=n>requests</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=vm>__name__</span> <span class=o>==</span> <span class=s2>&#34;__main__&#34;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>	<span class=n>crawler</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><p>如果在构造完opener后使用<code>urllib.request.install_opener(opener)</code>，那么构造的这个opener将是一个全局的opener，如果之后凡是调用urlopen方法将会使用这个全局的opener方法</p><p><strong><code>实战二：B站评论</code></strong></p><p>找一个我们都喜欢的土味视频，打开浏览器的开发者工具调到Network，然后将页面拉到下面的评论框，发送一条评论</p><p>然后我可以很轻松的看到服务器给我们的浏览器返回了一个名字叫做add的包</p><p><img class=lazyload src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405232422.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405232422.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405232422.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405232422.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405232422.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405232422.png></p><p>点进去之后可以看到刚才发送的评论，以及这个视频的oid，可以多发送几条查看一下Request Headers和Form Data哪些参数会变化，会发生变化的参数分别是<code>Content-Length</code>这个是评论的长度、oid是视频的id，以及message</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>urllib.request</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>http.cookiejar</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>urllib.parse</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>gzip</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>crawler</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>	<span class=n>url</span> <span class=o>=</span> <span class=s2>&#34;https://api.bilibili.com/x/v2/reply/add&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=n>form_data</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=s2>&#34;oid&#34;</span><span class=p>:</span> 
+</span></span><span class=line><span class=cl>		<span class=s2>&#34;type&#34;</span><span class=p>:</span> <span class=mi>1</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>		<span class=s2>&#34;message&#34;</span><span class=p>:</span> 
+</span></span><span class=line><span class=cl>		<span class=s2>&#34;plat&#34;</span><span class=p>:</span> <span class=mi>1</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>		<span class=s2>&#34;jsonp&#34;</span><span class=p>:</span> <span class=s2>&#34;jsonp&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>		<span class=s2>&#34;csrf&#34;</span><span class=p>:</span> <span class=s2>&#34;ebfe0e90c2867d672bfcbe62fb1b257c&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=n>headers</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=s2>&#34;User-agent&#34;</span><span class=p>:</span> <span class=s2>&#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.122 Safari/537.36&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>		<span class=s2>&#34;Host&#34;</span><span class=p>:</span> <span class=s2>&#34;api.bilibili.com&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>		<span class=s2>&#34;Content-Type&#34;</span><span class=p>:</span> <span class=s2>&#34;application/x-www-form-urlencoded; charset=UTF-8&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>		<span class=s2>&#34;Accept&#34;</span><span class=p>:</span> <span class=s2>&#34;application/json, text/javascript, */*; q=0.01&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>		<span class=s2>&#34;Accept-Encoding&#34;</span><span class=p>:</span> <span class=s2>&#34;gzip, deflate, br&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>		<span class=s2>&#34;Accept-Language&#34;</span><span class=p>:</span> <span class=s2>&#34;zh-CN,zh;q=0.9&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>		<span class=s2>&#34;Connection&#34;</span><span class=p>:</span> <span class=s2>&#34;keep-alive&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>		<span class=s2>&#34;Origin&#34;</span><span class=p>:</span> <span class=s2>&#34;https://www.bilibili.com&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>		<span class=s2>&#34;Referer&#34;</span><span class=p>:</span> <span class=s2>&#34;https://www.bilibili.com/video/av88366823&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>		<span class=s2>&#34;Cookie&#34;</span><span class=p>:</span> 
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	
+</span></span><span class=line><span class=cl>	<span class=n>data</span> <span class=o>=</span> <span class=nb>bytes</span><span class=p>(</span><span class=n>urllib</span><span class=o>.</span><span class=n>parse</span><span class=o>.</span><span class=n>urlencode</span><span class=p>(</span><span class=n>form_data</span><span class=p>),</span> <span class=n>encoding</span><span class=o>=</span><span class=s2>&#34;utf-8&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=n>request</span> <span class=o>=</span> <span class=n>urllib</span><span class=o>.</span><span class=n>request</span><span class=o>.</span><span class=n>Request</span><span class=p>(</span><span class=n>url</span><span class=p>,</span><span class=n>headers</span><span class=o>=</span><span class=n>headers</span><span class=p>,</span> <span class=n>data</span><span class=o>=</span><span class=n>data</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=n>cookie</span> <span class=o>=</span> <span class=n>http</span><span class=o>.</span><span class=n>cookiejar</span><span class=o>.</span><span class=n>CookieJar</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>	<span class=n>handler</span> <span class=o>=</span> <span class=n>urllib</span><span class=o>.</span><span class=n>request</span><span class=o>.</span><span class=n>HTTPCookieProcessor</span><span class=p>(</span><span class=n>cookie</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=n>opener</span> <span class=o>=</span> <span class=n>urllib</span><span class=o>.</span><span class=n>request</span><span class=o>.</span><span class=n>build_opener</span><span class=p>(</span><span class=n>handler</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=n>response</span> <span class=o>=</span> <span class=n>opener</span><span class=o>.</span><span class=n>open</span><span class=p>(</span><span class=n>request</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=n>response</span> <span class=o>=</span> <span class=n>gzip</span><span class=o>.</span><span class=n>GzipFile</span><span class=p>(</span><span class=n>fileobj</span><span class=o>=</span><span class=n>response</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nb>print</span><span class=p>(</span><span class=n>response</span><span class=o>.</span><span class=n>read</span><span class=p>()</span><span class=o>.</span><span class=n>decode</span><span class=p>(</span><span class=s2>&#34;utf-8&#34;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>	
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=vm>__name__</span> <span class=o>==</span> <span class=s1>&#39;__main__&#39;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>	<span class=n>crawler</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=代理>代理</h3><p>写爬虫一般情况下都是要使用代理的，如果我们请求该网站频率过高，该网站会被封 IP，禁止我们的访问</p><ul><li>透明代理
+代理服务器将客户端的信息转发至目标访问对象，并没有完全隐藏客户端真实的身份。即服务器知道客户端使用了代理IP，并且知道客户端的真实IP地址。</li><li>普通匿名代理
+代理服务器用自己的IP代替了客户端的真实IP，但是告诉了目标访问对象这是代理访问。</li><li>高匿代理
+代理服务器良好地伪装了客户端，不但用一个随机的IP代替了客户端的IP，也隐藏了代理信息，服务器不会察觉到客户端是通过代理实现访问的，即用户仿佛就是直接使用代理服务器作为自己的客户端。</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>import</span> <span class=nn>urllib.request</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>spider</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=n>url</span> <span class=o>=</span> <span class=s2>&#34;http://www.httpbin.org/ip&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=n>proxy</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;http&#34;</span><span class=p>:</span> <span class=s2>&#34;110.243.2.58:9999&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;http&#34;</span><span class=p>:</span> <span class=s2>&#34;117.69.150.100:9999&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=n>proxy_handler</span> <span class=o>=</span> <span class=n>urllib</span><span class=o>.</span><span class=n>request</span><span class=o>.</span><span class=n>ProxyHandler</span><span class=p>(</span><span class=n>proxy</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>opener</span> <span class=o>=</span> <span class=n>urllib</span><span class=o>.</span><span class=n>request</span><span class=o>.</span><span class=n>build_opener</span><span class=p>(</span><span class=n>proxy_handler</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>urllib</span><span class=o>.</span><span class=n>request</span><span class=o>.</span><span class=n>install_opener</span><span class=p>(</span><span class=n>opener</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>request</span> <span class=o>=</span> <span class=n>urllib</span><span class=o>.</span><span class=n>request</span><span class=o>.</span><span class=n>Request</span><span class=p>(</span><span class=n>url</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>response</span> <span class=o>=</span> <span class=n>urllib</span><span class=o>.</span><span class=n>request</span><span class=o>.</span><span class=n>urlopen</span><span class=p>(</span><span class=n>request</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=n>response</span><span class=o>.</span><span class=n>read</span><span class=p>()</span><span class=o>.</span><span class=n>decode</span><span class=p>(</span><span class=s2>&#34;utf-8&#34;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=vm>__name__</span> <span class=o>==</span> <span class=s2>&#34;__main__&#34;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>spider</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2020-03-01</span></div><div class=post-info-license></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw"></i>&nbsp;<a href=/tags/python/>Python</a>,&nbsp;<a href=/tags/%E7%BD%91%E7%BB%9C%E7%88%AC%E8%99%AB/>网络爬虫</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/posts/python-list%E5%88%87%E7%89%87/ class=prev rel=prev title=List切片><i class="fas fa-angle-left fa-fw"></i>List切片</a>
+<a href=/posts/%E4%BD%BF%E7%94%A8hexo%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2%E6%B5%81%E7%A8%8B/ class=next rel=next title=使用Hexo框架搭建博客流程>使用Hexo框架搭建博客流程<i class="fas fa-angle-right fa-fw"></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2019 - 2023</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=http://pujichun.ink target=_blank>普吉春</a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw"></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw"></i></a></div><script type=text/javascript src=/lib/smooth-scroll/smooth-scroll.min.js></script><script type=text/javascript src=/lib/autocomplete/autocomplete.min.js></script><script type=text/javascript src=/lib/lunr/lunr.min.js></script><script type=text/javascript src=/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=/lib/lazysizes/lazysizes.min.js></script><script type=text/javascript src=/lib/clipboard/clipboard.min.js></script><script type=text/javascript src=/lib/typeit/typeit.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:10},comment:{},data:{"id-1":"pujic","id-2":"pujic"},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"lunr"},typeit:{cursorChar:null,cursorSpeed:null,data:{"id-1":["id-1"],"id-2":["id-2"]},duration:null,speed:null}}</script><script type=text/javascript src=/js/theme.min.js></script></body></html>

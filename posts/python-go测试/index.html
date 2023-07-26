@@ -1,0 +1,228 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><meta http-equiv=x-ua-compatible content="IE=edge, chrome=1"><title>Python and Go测试 - pujic</title><meta name=Description content><meta property="og:title" content="Python and Go测试"><meta property="og:description" content="程序做调试其实是比较麻烦的，但是得益于jet brains的IDE让我们调试起来十分方便，但是如果程序比较复杂，那么我们调试起来还是很麻烦，其实我做调试更多的是去看这个变量中存了哪些值是什么而不是为了因为程序有bug而去找bug，当程序出错的时候我更想快速的知道到底是哪里出错了，而不是慢慢的去调试"><meta property="og:type" content="article"><meta property="og:url" content="http://example.org/posts/python-go%E6%B5%8B%E8%AF%95/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2020-10-26T12:51:40+00:00"><meta property="article:modified_time" content="2020-10-26T12:51:40+00:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="Python and Go测试"><meta name=twitter:description content="程序做调试其实是比较麻烦的，但是得益于jet brains的IDE让我们调试起来十分方便，但是如果程序比较复杂，那么我们调试起来还是很麻烦，其实我做调试更多的是去看这个变量中存了哪些值是什么而不是为了因为程序有bug而去找bug，当程序出错的时候我更想快速的知道到底是哪里出错了，而不是慢慢的去调试"><meta name=application-name content="pujic"><meta name=apple-mobile-web-app-title content="pujic"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=http://example.org/posts/python-go%E6%B5%8B%E8%AF%95/><link rel=prev href=http://example.org/posts/go%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98/><link rel=next href=http://example.org/posts/python%E5%8D%8F%E7%A8%8B/><link rel=stylesheet href=/lib/normalize/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=/lib/fontawesome-free/all.min.css><link rel=stylesheet href=/lib/animate/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Python and Go测试","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/example.org\/posts\/python-go%E6%B5%8B%E8%AF%95\/"},"genre":"posts","keywords":"Go, Python, 测试","wordcount":2010,"url":"http:\/\/example.org\/posts\/python-go%E6%B5%8B%E8%AF%95\/","datePublished":"2020-10-26T12:51:40+00:00","dateModified":"2020-10-26T12:51:40+00:00","publisher":{"@type":"Organization","name":"普吉春"},"author":{"@type":"Person","name":"普吉春"},"description":""}</script></head><body header-desktop=fixed header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":""==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:""==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title=pujic><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-1 class=typeit></span></a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>所有文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/categories/>分类 </a><a class=menu-item href=/about/>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin"></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw"></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=pujic><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-2 class=typeit></span></a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin"></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=/posts/ title>所有文章</a><a class=menu-item href=/tags/ title>标签</a><a class=menu-item href=/categories/ title>分类</a><a class=menu-item href=/about/ title>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw"></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animated flipInX">Python and Go测试</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=http://pujichun.ink title=Author target=_blank rel="noopener noreffer author" class=author><i class="fas fa-user-circle fa-fw"></i>普吉春</a></span>&nbsp;<span class=post-category>收录于 <a href=/categories/go/><i class="far fa-folder fa-fw"></i>Go</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2020-10-26>2020-10-26</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 2010 字&nbsp;
+<i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 5 分钟&nbsp;</div></div><div class="details toc" id=toc-static kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right"></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#传统测试>传统测试</a></li><li><a href=#表格驱动测试>表格驱动测试</a><ul><li><a href=#python>Python</a></li><li><a href=#go>Go</a></li><li><a href=#代码覆盖率>代码覆盖率</a></li></ul></li><li><a href=#性能测试>性能测试</a><ul><li><a href=#python-1>Python</a></li><li><a href=#go-1>Go</a></li></ul></li></ul></nav></div></div><div class=content id=content><p>程序做调试其实是比较麻烦的，但是得益于<code>jet brains</code>的IDE让我们调试起来十分方便，但是如果程序比较复杂，那么我们调试起来还是很麻烦，其实我做调试更多的是去看这个变量中存了哪些值是什么而不是为了因为程序有bug而去找bug，当程序出错的时候我更想快速的知道到底是哪里出错了，而不是慢慢的去调试</p><h2 id=传统测试>传统测试</h2><p>传统的测试中测试数据和测试逻辑混在一起，出错信息也明确，下面有一段网上随便找的一个Python练习题的测试代码，这个题的意思是：传入一个字符串，如果长度小于3就直接返回。如果长度大于3并且是<code>ing</code>结尾那么就加上<code>ly</code>，如果结尾没有<code>ing</code>那么就加上<code>ing</code></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>def</span> <span class=nf>verbing</span><span class=p>(</span><span class=n>s</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>length</span> <span class=o>=</span> <span class=nb>len</span><span class=p>(</span><span class=n>s</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>length</span> <span class=o>&gt;</span> <span class=mi>3</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>s</span><span class=p>[</span><span class=o>-</span><span class=mi>3</span><span class=p>:]</span> <span class=o>==</span> <span class=s2>&#34;ing&#34;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>s</span> <span class=o>+</span> <span class=s2>&#34;ly&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>s</span> <span class=o>+</span> <span class=s2>&#34;ing&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>s</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>test</span><span class=p>(</span><span class=n>a</span><span class=p>,</span> <span class=n>b</span><span class=p>:</span> <span class=n>Any</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>a</span> <span class=o>==</span> <span class=n>b</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>prefix</span> <span class=o>=</span> <span class=s1>&#39; OK &#39;</span>
+</span></span><span class=line><span class=cl>    <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>prefix</span> <span class=o>=</span> <span class=s1>&#39;  X &#39;</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=s1>&#39;</span><span class=si>%s</span><span class=s1> got: </span><span class=si>%s</span><span class=s1> expected: </span><span class=si>%s</span><span class=s1>&#39;</span> <span class=o>%</span> <span class=p>(</span><span class=n>prefix</span><span class=p>,</span> <span class=nb>repr</span><span class=p>(</span><span class=n>a</span><span class=p>),</span> <span class=nb>repr</span><span class=p>(</span><span class=n>b</span><span class=p>)))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>main</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=n>test</span><span class=p>(</span><span class=n>verbing</span><span class=p>(</span><span class=s1>&#39;hail&#39;</span><span class=p>),</span> <span class=s1>&#39;hailing&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>test</span><span class=p>(</span><span class=n>verbing</span><span class=p>(</span><span class=s1>&#39;swiming&#39;</span><span class=p>),</span> <span class=s1>&#39;swimingly&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>test</span><span class=p>(</span><span class=n>verbing</span><span class=p>(</span><span class=s1>&#39;do&#39;</span><span class=p>),</span> <span class=s1>&#39;do&#39;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>这个测试呢是传统测试方式，测试逻辑也是比较简单，但是这个测试程序不会随便挂掉</p><h2 id=表格驱动测试>表格驱动测试</h2><h3 id=python>Python</h3><p>使用表格驱动测试能让我们将测试与数据分开，并且专注于数据而不是测试逻辑，Python的表格驱动测试逻辑写还算简单，但是在判断上就戳中了一大痛点，海象运算符在这里使用只会让程序变得更复杂</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>typing</span> <span class=kn>import</span> <span class=n>Dict</span><span class=p>,</span> <span class=n>Iterable</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>verbing</span><span class=p>(</span><span class=n>s</span><span class=p>:</span> <span class=nb>str</span><span class=p>)</span> <span class=o>-&gt;</span> <span class=nb>str</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>length</span> <span class=o>=</span> <span class=nb>len</span><span class=p>(</span><span class=n>s</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>length</span> <span class=o>&gt;</span> <span class=mi>3</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>s</span><span class=p>[</span><span class=o>-</span><span class=mi>3</span><span class=p>:]</span> <span class=o>==</span> <span class=s2>&#34;ing&#34;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>s</span> <span class=o>+</span> <span class=s2>&#34;ly&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>s</span> <span class=o>+</span> <span class=s2>&#34;ing&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>s</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>test</span><span class=p>(</span><span class=n>test_data</span><span class=p>:</span> <span class=n>Iterable</span><span class=p>[</span><span class=n>Dict</span><span class=p>]):</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>data</span> <span class=ow>in</span> <span class=n>test_data</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>verbing</span><span class=p>(</span><span class=n>data</span><span class=p>[</span><span class=s2>&#34;a&#34;</span><span class=p>])</span> <span class=o>!=</span> <span class=n>data</span><span class=p>[</span><span class=s2>&#34;b&#34;</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>            <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;X got: </span><span class=si>{</span><span class=n>data</span><span class=p>[</span><span class=s1>&#39;a&#39;</span><span class=p>]</span><span class=si>}</span><span class=s2> expected: </span><span class=si>{</span><span class=n>data</span><span class=p>[</span><span class=s1>&#39;b&#39;</span><span class=p>]</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=vm>__name__</span> <span class=o>==</span> <span class=s2>&#34;__main__&#34;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>test_data</span> <span class=o>=</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;a&#34;</span><span class=p>:</span> <span class=s2>&#34;hail&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;b&#34;</span><span class=p>:</span> <span class=s2>&#34;hailing&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=p>},</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;a&#34;</span><span class=p>:</span> <span class=s2>&#34;swiming&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;b&#34;</span><span class=p>:</span> <span class=s2>&#34;swimingly&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=p>},</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;a&#34;</span><span class=p>:</span> <span class=s2>&#34;do&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;b&#34;</span><span class=p>:</span> <span class=s2>&#34;do&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>]</span>
+</span></span><span class=line><span class=cl>    <span class=n>test</span><span class=p>(</span><span class=n>test_data</span><span class=o>=</span><span class=n>test_data</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>上面的程序中使用了<code>list</code>嵌套<code>dict</code>的方式，然后通过数据迭代来完成整个测试，将我们需要测试的数据和我们的测试逻辑完成了分离，因此当测试不通过的时候我们可以直接查看到错误数据是哪，而不需要去一个一个找。</p><h3 id=go>Go</h3><p>Go的表格驱动测试写起来就十分简单了，但是有一些格式上的要求，不过这些格式只会简化整个测试过程</p><ul><li>测试程序和被测试程序需要在一个包下，而且包的声明都需要是<code>main</code></li><li>创建的测试程序需要单独成文件，文件名称需要是<code>_test</code>结尾的</li><li>测试函数需要传递一个<code>testing.T</code>的指针</li></ul><p>下面是一个计算三角形的第三边的程序这个程序的名称叫做<code>triangle.go</code>，需要使用<code>calcTriangle</code>来算出第三边的长度</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;math&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>Triangle</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=kd>var</span> <span class=nx>a</span><span class=p>,</span> <span class=nx>b</span> <span class=kt>int</span>
+</span></span><span class=line><span class=cl>	<span class=nx>a</span><span class=p>,</span> <span class=nx>b</span> <span class=p>=</span> <span class=mi>3</span><span class=p>,</span> <span class=mi>4</span>
+</span></span><span class=line><span class=cl>	<span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=nf>calcTriangle</span><span class=p>(</span><span class=nx>a</span><span class=p>,</span> <span class=nx>b</span><span class=p>))</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>calcTriangle</span><span class=p>(</span><span class=nx>a</span><span class=p>,</span> <span class=nx>b</span> <span class=kt>int</span><span class=p>)</span> <span class=kt>int</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=kd>var</span> <span class=nx>c</span> <span class=kt>int</span>
+</span></span><span class=line><span class=cl>	<span class=nx>c</span> <span class=p>=</span> <span class=nb>int</span><span class=p>(</span><span class=nx>math</span><span class=p>.</span><span class=nf>Sqrt</span><span class=p>(</span><span class=nb>float64</span><span class=p>(</span><span class=nx>a</span><span class=o>*</span><span class=nx>a</span> <span class=o>+</span> <span class=nx>b</span><span class=o>*</span><span class=nx>b</span><span class=p>)))</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=nx>c</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>下面是测试程序，测试程序的名称叫做<code>triangle_test.go</code></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=s>&#34;testing&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>TestTriangle</span><span class=p>(</span><span class=nx>t</span> <span class=o>*</span><span class=nx>testing</span><span class=p>.</span><span class=nx>T</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>tests</span> <span class=o>:=</span> <span class=p>[]</span><span class=kd>struct</span><span class=p>{</span> <span class=nx>a</span><span class=p>,</span> <span class=nx>b</span><span class=p>,</span> <span class=nx>c</span> <span class=kt>int</span> <span class=p>}{</span>
+</span></span><span class=line><span class=cl>		<span class=p>{</span><span class=mi>3</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>5</span><span class=p>},</span>
+</span></span><span class=line><span class=cl>		<span class=p>{</span><span class=mi>5</span><span class=p>,</span> <span class=mi>12</span><span class=p>,</span> <span class=mi>13</span><span class=p>},</span>
+</span></span><span class=line><span class=cl>		<span class=p>{</span><span class=mi>8</span><span class=p>,</span> <span class=mi>15</span><span class=p>,</span> <span class=mi>17</span><span class=p>},</span>
+</span></span><span class=line><span class=cl>		<span class=p>{</span><span class=mi>30000</span><span class=p>,</span> <span class=mi>40000</span><span class=p>,</span> <span class=mi>50000</span><span class=p>},</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>for</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>tt</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>tests</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nx>actual</span> <span class=o>:=</span> <span class=nf>calcTriangle</span><span class=p>(</span><span class=nx>tt</span><span class=p>.</span><span class=nx>a</span><span class=p>,</span> <span class=nx>tt</span><span class=p>.</span><span class=nx>b</span><span class=p>);</span> <span class=nx>actual</span> <span class=o>!=</span> <span class=nx>tt</span><span class=p>.</span><span class=nx>c</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=nx>t</span><span class=p>.</span><span class=nf>Errorf</span><span class=p>(</span><span class=s>&#34;calcTriangle(%d, %d); got %d; expected %d&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>				<span class=nx>tt</span><span class=p>.</span><span class=nx>a</span><span class=p>,</span> <span class=nx>tt</span><span class=p>.</span><span class=nx>b</span><span class=p>,</span> <span class=nx>actual</span><span class=p>,</span> <span class=nx>tt</span><span class=p>.</span><span class=nx>c</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>在Go中做表格驱动测试比Python还简单，只需要声明一个<code>[]struct{}</code>就行，切片中的每个元素就是我们需要测试的数据集合，我们在测试取值的时候就能很简单的拿到值去做验证，而且Go中的三元表达式进一步的让这个测试逻辑写起来变得简单。</p><p>那么如果我们没有使用IDE，程序是在服务器上开发的，那么Go语言在测试上的强大就更能体现出来了，我们只需要进入到程序目录，然后使用命令就行</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=err>$</span> <span class=k>go</span> <span class=nx>test</span> <span class=p>.</span>
+</span></span></code></pre></td></tr></table></div></div><p>只需要这样一个简单的命令，终端就会输出测试的结果以及测试的时间</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>ok      pujichun.com/learngo/test/triangle      0.292s
+</span></span></code></pre></td></tr></table></div></div><h3 id=代码覆盖率>代码覆盖率</h3><p>我们在IDE中写完测试文件之后在点击运行的时候有一个<code>Run ……with Coverage</code>，可以通过这样运行程序来看我们测试的代码覆盖率</p><p><img class=lazyload src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405225047.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405225047.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405225047.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405225047.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405225047.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405225047.png></p><p>运行之后红的就是没有覆盖到的，绿色的就是覆盖到了的</p><p>也可以通过命令行来完成</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=k>go</span> <span class=nx>test</span> <span class=o>-</span><span class=nx>coverprofile</span><span class=p>=</span><span class=nx>t</span><span class=p>.</span><span class=nx>out</span>
+</span></span></code></pre></td></tr></table></div></div><p>然后这个覆盖结果就会输出到<code>t.out</code>这个文件中，但是这个文件看起来很麻烦，所以我们需要转换一下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=k>go</span> <span class=nx>tool</span> <span class=nx>cover</span> <span class=o>-</span><span class=nx>html</span><span class=p>=</span><span class=nx>t</span><span class=p>.</span><span class=nx>out</span>
+</span></span></code></pre></td></tr></table></div></div><p>然后就会将这个代码覆盖率转成html并打开</p><p><img class=lazyload src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405225107.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405225107.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405225107.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405225107.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405225107.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405225107.png></p><h2 id=性能测试>性能测试</h2><h3 id=python-1>Python</h3><p>Python的性能测试工具很多，我比较推荐的是<code>cProfile</code>因为模块是C语言写的，使用起来也很简单</p><p>我将上面的测试程序中测试部分封装到<code>main</code>函数中，然后只需要添加一行</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>cProfile</span><span class=o>.</span><span class=n>run</span><span class=p>(</span><span class=s2>&#34;main()&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>运行这个程序就会输出性能测试结果了</p><p>另外一个模块就是<code>line_profiler</code>这个模块使用起来极其简单</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>pip</span> <span class=n>install</span> <span class=n>line_profiler</span>
+</span></span></code></pre></td></tr></table></div></div><p>安装之后<code>kernprof.py</code>就会被添加到环境变量中</p><p>使用的时候只需要在需要测试的函数上加一个<code>@profile</code>装饰器就行</p><p>但是在运行的时候需要使用</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=n>kernprof</span> <span class=o>-</span><span class=n>l</span> <span class=o>-</span><span class=n>v</span> <span class=n>testing</span><span class=o>.</span><span class=n>py</span>
+</span></span></code></pre></td></tr></table></div></div><p>命令写起来虽然有一点麻烦，但是至少在我们不需要测试的时候也不要去改代码</p><p>当然了，Pycharm也是可以做的，而且看起来更美观一点，甚至直接把调用栈给可视化了出来，在调用栈中可以看到消耗时间的大小，只需要在运行的时候选择<code>Profile 程序文件名</code>即可</p><p><img class=lazyload src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405225134.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405225134.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405225134.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405225134.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405225134.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405225134.png></p><p><img class=lazyload src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405225153.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405225153.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405225153.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405225153.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405225153.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/20220405225153.png></p><h3 id=go-1>Go</h3><p>那么在Go中只需要创建测试文件即可，就像上面的表格驱动测试一样，而且两个逻辑是可以同时存在里面的，需要使用哪个就用哪个就行，这里在<code>triangle_test.go</code>中添加这个性能测试函数</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>BenchmarkTriangle</span><span class=p>(</span><span class=nx>b</span> <span class=o>*</span><span class=nx>testing</span><span class=p>.</span><span class=nx>B</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>x</span><span class=p>,</span> <span class=nx>y</span><span class=p>,</span> <span class=nx>z</span> <span class=o>:=</span> <span class=mi>30000</span><span class=p>,</span> <span class=mi>40000</span><span class=p>,</span> <span class=mi>50000</span>
+</span></span><span class=line><span class=cl>	<span class=k>for</span> <span class=nx>i</span> <span class=o>:=</span> <span class=mi>0</span><span class=p>;</span> <span class=nx>i</span> <span class=p>&lt;</span> <span class=nx>b</span><span class=p>.</span><span class=nx>N</span><span class=p>;</span> <span class=nx>i</span><span class=o>++</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nx>actual</span> <span class=o>:=</span> <span class=nf>calcTriangle</span><span class=p>(</span><span class=nx>x</span><span class=p>,</span> <span class=nx>y</span><span class=p>);</span> <span class=nx>actual</span> <span class=o>!=</span> <span class=nx>z</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=nx>b</span><span class=p>.</span><span class=nf>Errorf</span><span class=p>(</span><span class=s>&#34;calcTriangle(%d, %d); got %d; expected %d&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>				<span class=nx>x</span><span class=p>,</span> <span class=nx>y</span><span class=p>,</span> <span class=nx>actual</span><span class=p>,</span> <span class=nx>z</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>然后运行这个函数就能得到结果，上面的<code>b.N</code>就是<code>Go</code>语言自动分配的测试次数</p><p>命令行也可以执行</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=k>go</span> <span class=nx>test</span> <span class=o>-</span><span class=nx>bench</span> <span class=p>.</span>
+</span></span></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2020-10-26</span></div><div class=post-info-license></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw"></i>&nbsp;<a href=/tags/go/>Go</a>,&nbsp;<a href=/tags/python/>Python</a>,&nbsp;<a href=/tags/%E6%B5%8B%E8%AF%95/>测试</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/posts/go%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98/ class=prev rel=prev title=Go性能调优><i class="fas fa-angle-left fa-fw"></i>Go性能调优</a>
+<a href=/posts/python%E5%8D%8F%E7%A8%8B/ class=next rel=next title=Python协程>Python协程<i class="fas fa-angle-right fa-fw"></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2019 - 2023</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=http://pujichun.ink target=_blank>普吉春</a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw"></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw"></i></a></div><script type=text/javascript src=/lib/smooth-scroll/smooth-scroll.min.js></script><script type=text/javascript src=/lib/autocomplete/autocomplete.min.js></script><script type=text/javascript src=/lib/lunr/lunr.min.js></script><script type=text/javascript src=/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=/lib/lazysizes/lazysizes.min.js></script><script type=text/javascript src=/lib/clipboard/clipboard.min.js></script><script type=text/javascript src=/lib/typeit/typeit.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:10},comment:{},data:{"id-1":"pujic","id-2":"pujic"},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"lunr"},typeit:{cursorChar:null,cursorSpeed:null,data:{"id-1":["id-1"],"id-2":["id-2"]},duration:null,speed:null}}</script><script type=text/javascript src=/js/theme.min.js></script></body></html>

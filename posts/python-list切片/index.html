@@ -1,0 +1,429 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><meta http-equiv=x-ua-compatible content="IE=edge, chrome=1"><title>List切片 - pujic</title><meta name=Description content><meta property="og:title" content="List切片"><meta property="og:description" content="Python中的list对象是Python中最常用的数据类型，而list切片是让list对象变得灵活且方便操作的对象，对！切片也是一种对象！"><meta property="og:type" content="article"><meta property="og:url" content="http://example.org/posts/python-list%E5%88%87%E7%89%87/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2020-01-24T19:26:46+00:00"><meta property="article:modified_time" content="2020-01-24T19:26:46+00:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="List切片"><meta name=twitter:description content="Python中的list对象是Python中最常用的数据类型，而list切片是让list对象变得灵活且方便操作的对象，对！切片也是一种对象！"><meta name=application-name content="pujic"><meta name=apple-mobile-web-app-title content="pujic"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=http://example.org/posts/python-list%E5%88%87%E7%89%87/><link rel=prev href=http://example.org/posts/jetbrains%E5%AD%A6%E7%94%9F%E4%BC%98%E6%83%A0/><link rel=next href=http://example.org/posts/urllib%E5%BA%93%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/><link rel=stylesheet href=/lib/normalize/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=/lib/fontawesome-free/all.min.css><link rel=stylesheet href=/lib/animate/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"List切片","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/example.org\/posts\/python-list%E5%88%87%E7%89%87\/"},"genre":"posts","keywords":"Pyhton, 魔法函数, list","wordcount":3494,"url":"http:\/\/example.org\/posts\/python-list%E5%88%87%E7%89%87\/","datePublished":"2020-01-24T19:26:46+00:00","dateModified":"2020-01-24T19:26:46+00:00","publisher":{"@type":"Organization","name":"普吉春"},"author":{"@type":"Person","name":"普吉春"},"description":""}</script></head><body header-desktop=fixed header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":""==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:""==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title=pujic><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-1 class=typeit></span></a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>所有文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/categories/>分类 </a><a class=menu-item href=/about/>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin"></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw"></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=pujic><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-2 class=typeit></span></a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin"></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=/posts/ title>所有文章</a><a class=menu-item href=/tags/ title>标签</a><a class=menu-item href=/categories/ title>分类</a><a class=menu-item href=/about/ title>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw"></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animated flipInX">List切片</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=http://pujichun.ink title=Author target=_blank rel="noopener noreffer author" class=author><i class="fas fa-user-circle fa-fw"></i>普吉春</a></span>&nbsp;<span class=post-category>收录于 <a href=/categories/python/><i class="far fa-folder fa-fw"></i>Python</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2020-01-24>2020-01-24</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 3494 字&nbsp;
+<i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 7 分钟&nbsp;</div></div><div class="details toc" id=toc-static kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right"></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><ul><li><ul><li><a href=#返回包含原列表所有元素的新列表>返回包含原列表所有元素的新列表</a></li><li><a href=#返回包含原列表中所有元素的逆序列表>返回包含原列表中所有元素的逆序列表</a></li><li><a href=#隔一个取一个获取偶数位置的元素>隔一个取一个，获取偶数位置的元素</a></li><li><a href=#隔一个取一个获取奇数位置的元素>隔一个取一个，获取奇数位置的元素</a></li><li><a href=#指定切片开始和结束的位置>指定切片开始和结束的位置</a></li><li><a href=#切片的长度大于列表的长度时从列表尾部开始截断>切片的长度大于列表的长度时从列表尾部开始截断</a></li><li><a href=#切片的开始位置大于列表长度时返回空列表>切片的开始位置大于列表长度时，返回空列表</a></li><li><a href=#在列表尾部插入元素>在列表尾部插入元素</a></li><li><a href=#在列表头部插入元素>在列表头部插入元素</a></li><li><a href=#在列表中间位置插入元素>在列表中间位置插入元素</a></li><li><a href=#将一个列表中的元素以列表为单位复制多份>将一个列表中的元素以列表为单位复制多份</a></li><li><a href=#隔一个修改一个>隔一个修改一个</a></li><li><a href=#删除列表中的元素>删除列表中的元素</a></li></ul></li></ul></li></ul></nav></div></div><div class=content id=content><p>Python中的list对象是Python中最常用的数据类型，而<code>list切片</code>是让list对象变得灵活且方便操作的对象，对！切片也是一种对象！</p><p>切片是我们中文的称呼，官方的叫法是<code>slice</code>！</p><h1 id=slice的运用>slice的运用</h1><p>要想明白slice的实现原理，肯定要先明白slice的运用。
+切片模式：<code>[start:end:step]</code></p><ul><li>start表示切片开始的位置，默认为0</li><li>end表示切片截至（但不包含）位置（默认为列表长度）</li><li>step表示切取数据的步长（默认为1）</li><li>当start为0时可以省略，当end为列表长度时可以省略</li><li>当step为1时可以省略，并且省略步长时可以同时省掉一个冒号</li><li>当step为负整数时，表示反向切片，这时start应该要比end的值大才行</li></ul><h4 id=返回包含原列表所有元素的新列表>返回包含原列表所有元素的新列表</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>int_list</span> <span class=o>=</span> <span class=p>[</span><span class=mi>3</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>6</span><span class=p>,</span> <span class=mi>7</span><span class=p>,</span> <span class=mi>8</span><span class=p>,</span> <span class=mi>9</span><span class=p>,</span> <span class=mi>11</span><span class=p>,</span> <span class=mi>13</span><span class=p>,</span> <span class=mi>15</span><span class=p>,</span> <span class=mi>17</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>my_list</span> <span class=o>=</span> <span class=n>int_list</span><span class=p>[:]</span>
+</span></span></code></pre></td></tr></table></div></div><p>上面的返回结果虽然和原来是相同的，不过是一个全新的对象，也可以看成是<code>深拷贝</code>，由于end、step的长度都是默认的，所以他可以不写，而且也可以只写一个冒号（<code>:</code>）。对于<code>IntList</code>和<code>MyList</code>到底是不是两个对象，可以通过地址来确定</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=nb>id</span><span class=p>(</span><span class=n>int_list</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=nb>id</span><span class=p>(</span><span class=n>my_list</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>输出的两个地址肯定是不同的</p><p>可能会疑惑，为什么地址不同就是两个对象</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>a</span> <span class=o>=</span> <span class=p>[</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>b</span> <span class=o>=</span> <span class=n>a</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=nb>id</span><span class=p>(</span><span class=n>a</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=mi>1897328218248</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=nb>id</span><span class=p>(</span><span class=n>b</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=mi>1897328218248</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>b</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span> <span class=o>=</span> <span class=mi>30</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>a</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>30</span><span class=p>]</span>
+</span></span></code></pre></td></tr></table></div></div><p>可以看到，这种通过浅拷贝而来的对象，本质上是将这个列表的引用赋值给了另一个对象，而不是在内存中新开辟内存空间用来存放一个新的列表，所以是一个对象</p><h4 id=返回包含原列表中所有元素的逆序列表>返回包含原列表中所有元素的逆序列表</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>int_list</span> <span class=o>=</span> <span class=p>[</span><span class=mi>3</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>6</span><span class=p>,</span> <span class=mi>7</span><span class=p>,</span> <span class=mi>8</span><span class=p>,</span> <span class=mi>9</span><span class=p>,</span> <span class=mi>11</span><span class=p>,</span> <span class=mi>13</span><span class=p>,</span> <span class=mi>15</span><span class=p>,</span> <span class=mi>17</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>int_list</span><span class=p>[::</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=mi>17</span><span class=p>,</span> <span class=mi>15</span><span class=p>,</span> <span class=mi>13</span><span class=p>,</span> <span class=mi>11</span><span class=p>,</span> <span class=mi>9</span><span class=p>,</span> <span class=mi>8</span><span class=p>,</span> <span class=mi>7</span><span class=p>,</span> <span class=mi>6</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>3</span><span class=p>]</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=隔一个取一个获取偶数位置的元素>隔一个取一个，获取偶数位置的元素</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>int_list</span> <span class=o>=</span> <span class=p>[</span><span class=mi>3</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>6</span><span class=p>,</span> <span class=mi>7</span><span class=p>,</span> <span class=mi>8</span><span class=p>,</span> <span class=mi>9</span><span class=p>,</span> <span class=mi>11</span><span class=p>,</span> <span class=mi>13</span><span class=p>,</span> <span class=mi>15</span><span class=p>,</span> <span class=mi>17</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>int_list</span><span class=p>[::</span><span class=mi>2</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=mi>3</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>7</span><span class=p>,</span> <span class=mi>9</span><span class=p>,</span> <span class=mi>13</span><span class=p>,</span> <span class=mi>17</span><span class=p>]</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=隔一个取一个获取奇数位置的元素>隔一个取一个，获取奇数位置的元素</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>int_list</span> <span class=o>=</span> <span class=p>[</span><span class=mi>3</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>6</span><span class=p>,</span> <span class=mi>7</span><span class=p>,</span> <span class=mi>8</span><span class=p>,</span> <span class=mi>9</span><span class=p>,</span> <span class=mi>11</span><span class=p>,</span> <span class=mi>13</span><span class=p>,</span> <span class=mi>15</span><span class=p>,</span> <span class=mi>17</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>int_list</span><span class=p>[</span><span class=mi>1</span><span class=p>::</span><span class=mi>2</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=mi>4</span><span class=p>,</span> <span class=mi>6</span><span class=p>,</span> <span class=mi>8</span><span class=p>,</span> <span class=mi>11</span><span class=p>,</span> <span class=mi>15</span><span class=p>]</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=指定切片开始和结束的位置>指定切片开始和结束的位置</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>int_list</span> <span class=o>=</span> <span class=p>[</span><span class=mi>3</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>6</span><span class=p>,</span> <span class=mi>7</span><span class=p>,</span> <span class=mi>8</span><span class=p>,</span> <span class=mi>9</span><span class=p>,</span> <span class=mi>11</span><span class=p>,</span> <span class=mi>13</span><span class=p>,</span> <span class=mi>15</span><span class=p>,</span> <span class=mi>17</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>int_list</span><span class=p>[</span><span class=mi>3</span><span class=p>:</span><span class=mi>6</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=mi>6</span><span class=p>,</span> <span class=mi>7</span><span class=p>,</span> <span class=mi>8</span><span class=p>]</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=切片的长度大于列表的长度时从列表尾部开始截断>切片的长度大于列表的长度时从列表尾部开始截断</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>int_list</span> <span class=o>=</span> <span class=p>[</span><span class=mi>3</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>6</span><span class=p>,</span> <span class=mi>7</span><span class=p>,</span> <span class=mi>8</span><span class=p>,</span> <span class=mi>9</span><span class=p>,</span> <span class=mi>11</span><span class=p>,</span> <span class=mi>13</span><span class=p>,</span> <span class=mi>15</span><span class=p>,</span> <span class=mi>17</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>int_list</span><span class=p>[</span><span class=mi>3</span><span class=p>:</span><span class=mi>100</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=mi>6</span><span class=p>,</span> <span class=mi>7</span><span class=p>,</span> <span class=mi>8</span><span class=p>,</span> <span class=mi>9</span><span class=p>,</span> <span class=mi>11</span><span class=p>,</span> <span class=mi>13</span><span class=p>,</span> <span class=mi>15</span><span class=p>,</span> <span class=mi>17</span><span class=p>]</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=切片的开始位置大于列表长度时返回空列表>切片的开始位置大于列表长度时，返回空列表</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>int_list</span> <span class=o>=</span> <span class=p>[</span><span class=mi>3</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>6</span><span class=p>,</span> <span class=mi>7</span><span class=p>,</span> <span class=mi>8</span><span class=p>,</span> <span class=mi>9</span><span class=p>,</span> <span class=mi>11</span><span class=p>,</span> <span class=mi>13</span><span class=p>,</span> <span class=mi>15</span><span class=p>,</span> <span class=mi>17</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>int_list</span><span class=p>[</span><span class=mi>100</span><span class=p>:]</span>
+</span></span><span class=line><span class=cl><span class=p>[]</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=在列表尾部插入元素>在列表尾部插入元素</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>int_list</span> <span class=o>=</span> <span class=p>[</span><span class=mi>3</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>6</span><span class=p>,</span> <span class=mi>7</span><span class=p>,</span> <span class=mi>8</span><span class=p>,</span> <span class=mi>9</span><span class=p>,</span> <span class=mi>11</span><span class=p>,</span> <span class=mi>13</span><span class=p>,</span> <span class=mi>15</span><span class=p>,</span> <span class=mi>17</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>int_list</span><span class=p>[</span><span class=nb>len</span><span class=p>(</span><span class=n>int_list</span><span class=p>):]</span> <span class=o>=</span> <span class=p>[</span><span class=mi>0</span><span class=p>,</span> <span class=mi>0</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>int_list</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=mi>3</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>6</span><span class=p>,</span> <span class=mi>7</span><span class=p>,</span> <span class=mi>8</span><span class=p>,</span> <span class=mi>9</span><span class=p>,</span> <span class=mi>11</span><span class=p>,</span> <span class=mi>13</span><span class=p>,</span> <span class=mi>15</span><span class=p>,</span> <span class=mi>17</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>0</span><span class=p>]</span>
+</span></span></code></pre></td></tr></table></div></div><p>可以看到这一种切片操作已经改变了原来的IntList对象，相当于<code>IntList += [0, 0]</code>，而且增加的列表长度不是固定的。</p><h4 id=在列表头部插入元素>在列表头部插入元素</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>int_list</span> <span class=o>=</span> <span class=p>[</span><span class=mi>3</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>6</span><span class=p>,</span> <span class=mi>7</span><span class=p>,</span> <span class=mi>8</span><span class=p>,</span> <span class=mi>9</span><span class=p>,</span> <span class=mi>11</span><span class=p>,</span> <span class=mi>13</span><span class=p>,</span> <span class=mi>15</span><span class=p>,</span> <span class=mi>17</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>int_list</span><span class=p>[:</span><span class=mi>0</span><span class=p>]</span> <span class=o>=</span> <span class=p>[</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>int_list</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>6</span><span class=p>,</span> <span class=mi>7</span><span class=p>,</span> <span class=mi>8</span><span class=p>,</span> <span class=mi>9</span><span class=p>,</span> <span class=mi>11</span><span class=p>,</span> <span class=mi>13</span><span class=p>,</span> <span class=mi>15</span><span class=p>,</span> <span class=mi>17</span><span class=p>]</span>
+</span></span></code></pre></td></tr></table></div></div><p>这种方法相当于<code>[1, 2] += IntList</code></p><h4 id=在列表中间位置插入元素>在列表中间位置插入元素</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>int_list</span> <span class=o>=</span> <span class=p>[</span><span class=mi>3</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>6</span><span class=p>,</span> <span class=mi>7</span><span class=p>,</span> <span class=mi>8</span><span class=p>,</span> <span class=mi>9</span><span class=p>,</span> <span class=mi>11</span><span class=p>,</span> <span class=mi>13</span><span class=p>,</span> <span class=mi>15</span><span class=p>,</span> <span class=mi>17</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>int_list</span><span class=p>[</span><span class=mi>3</span><span class=p>:</span><span class=mi>3</span><span class=p>]</span> <span class=o>=</span> <span class=p>[</span><span class=mi>0</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>int_list</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=mi>3</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>6</span><span class=p>,</span> <span class=mi>7</span><span class=p>,</span> <span class=mi>8</span><span class=p>,</span> <span class=mi>9</span><span class=p>,</span> <span class=mi>11</span><span class=p>,</span> <span class=mi>13</span><span class=p>,</span> <span class=mi>15</span><span class=p>,</span> <span class=mi>17</span><span class=p>]</span>
+</span></span></code></pre></td></tr></table></div></div><p>这种插入方式也可以将元素更改</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>int_list</span> <span class=o>=</span> <span class=p>[</span><span class=mi>3</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>6</span><span class=p>,</span> <span class=mi>7</span><span class=p>,</span> <span class=mi>8</span><span class=p>,</span> <span class=mi>9</span><span class=p>,</span> <span class=mi>11</span><span class=p>,</span> <span class=mi>13</span><span class=p>,</span> <span class=mi>15</span><span class=p>,</span> <span class=mi>17</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>int_list</span><span class=p>[</span><span class=mi>1</span><span class=p>:</span><span class=mi>2</span><span class=p>]</span> <span class=o>=</span> <span class=p>[</span><span class=s1>&#39;a&#39;</span><span class=p>,</span> <span class=s1>&#39;b&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>int_list</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=mi>3</span><span class=p>,</span> <span class=s1>&#39;a&#39;</span><span class=p>,</span> <span class=s1>&#39;b&#39;</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>6</span><span class=p>,</span> <span class=mi>7</span><span class=p>,</span> <span class=mi>8</span><span class=p>,</span> <span class=mi>9</span><span class=p>,</span> <span class=mi>11</span><span class=p>,</span> <span class=mi>13</span><span class=p>,</span> <span class=mi>15</span><span class=p>,</span> <span class=mi>17</span><span class=p>]</span>
+</span></span></code></pre></td></tr></table></div></div><p>其实上面的三种插入元素的方式叫做<code>设置</code>更合适，总结为以下两点：</p><ul><li>当冒号前后位置相同时，在原列表指定位置前插入指定元素</li><li>当位置不同时，将指定元素设置到原列表指定位置</li></ul><h4 id=将一个列表中的元素以列表为单位复制多份>将一个列表中的元素以列表为单位复制多份</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>int_list</span> <span class=o>=</span> <span class=p>[</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>int_list</span> <span class=o>*</span> <span class=mi>3</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>]</span>
+</span></span></code></pre></td></tr></table></div></div><p>每一份都是接着上一份的结尾的</p><h4 id=隔一个修改一个>隔一个修改一个</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>int_list</span> <span class=o>=</span> <span class=p>[</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>6</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>int_list</span><span class=p>[::</span><span class=mi>2</span><span class=p>]</span> <span class=o>=</span> <span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>*</span> <span class=mi>3</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>int_list</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=mi>0</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>6</span><span class=p>]</span>
+</span></span></code></pre></td></tr></table></div></div><p>但是需要注意，左切片不连续的时候，等号两边的切片长度必须相等，像上面的代码中，左边切片<code>IntList[::2]</code>的长度是3，<code>[0] * 3</code>的长度也是3，长度不相同的话是会报错的，例如下面的程序</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>a</span> <span class=o>=</span> <span class=p>[</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>6</span><span class=p>,</span> <span class=mi>7</span><span class=p>,</span> <span class=mi>8</span><span class=p>,</span> <span class=mi>9</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>a</span><span class=p>[::</span><span class=mi>2</span><span class=p>]</span> <span class=o>=</span> <span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>*</span> <span class=mi>3</span>
+</span></span><span class=line><span class=cl><span class=n>Traceback</span> <span class=p>(</span><span class=n>most</span> <span class=n>recent</span> <span class=n>call</span> <span class=n>last</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>  <span class=n>File</span> <span class=s2>&#34;&lt;stdin&gt;&#34;</span><span class=p>,</span> <span class=n>line</span> <span class=mi>1</span><span class=p>,</span> <span class=ow>in</span> <span class=o>&lt;</span><span class=n>module</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl><span class=ne>ValueError</span><span class=p>:</span> <span class=n>attempt</span> <span class=n>to</span> <span class=n>assign</span> <span class=n>sequence</span> <span class=n>of</span> <span class=n>size</span> <span class=mi>3</span> <span class=n>to</span> <span class=n>extended</span> <span class=nb>slice</span> <span class=n>of</span> <span class=n>size</span> <span class=mi>5</span>
+</span></span></code></pre></td></tr></table></div></div><p>这里就报错了，原因是左边的切片长度是5，而右边的切片长度是3。</p><h4 id=删除列表中的元素>删除列表中的元素</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>int_list</span> <span class=o>=</span> <span class=p>[</span><span class=mi>1</span><span class=p>,</span><span class=mi>2</span><span class=p>,</span><span class=mi>3</span><span class=p>,</span><span class=mi>4</span><span class=p>,</span><span class=mi>5</span><span class=p>,</span><span class=mi>6</span><span class=p>,</span><span class=mi>7</span><span class=p>,</span><span class=mi>8</span><span class=p>,</span><span class=mi>9</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>int_list</span><span class=p>[:</span><span class=mi>3</span><span class=p>]</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>int_list</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=mi>4</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>6</span><span class=p>,</span> <span class=mi>7</span><span class=p>,</span> <span class=mi>8</span><span class=p>,</span> <span class=mi>9</span><span class=p>]</span>
+</span></span></code></pre></td></tr></table></div></div><p>上面的程序相当于<code>del int_list[:3]</code></p><h1 id=支持切片的对象>支持切片的对象</h1><p>一个对象要想支持切片操作，那么用来实例化它的类就要实现<code>__getitem__</code>这个魔法函数</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>class</span> <span class=nc>College</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>college_name</span><span class=p>,</span> <span class=n>class_name</span><span class=p>,</span> <span class=n>students</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>college_name</span> <span class=o>=</span> <span class=n>college_name</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>class_name</span> <span class=o>=</span> <span class=n>class_name</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>students</span> <span class=o>=</span> <span class=n>students</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1># 实现切片操作的关键函数 __getitem__</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__getitem__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>item</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=k>pass</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>students</span> <span class=o>=</span> <span class=p>[</span><span class=s1>&#39;李华&#39;</span><span class=p>,</span> <span class=s2>&#34;张三&#34;</span><span class=p>,</span> <span class=s2>&#34;王五&#34;</span><span class=p>,</span> <span class=s2>&#34;王大锤&#34;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=n>college</span> <span class=o>=</span> <span class=n>College</span><span class=p>(</span><span class=n>college_name</span><span class=o>=</span><span class=s2>&#34;信工&#34;</span><span class=p>,</span> <span class=n>class_name</span><span class=o>=</span><span class=s2>&#34;Python&#34;</span><span class=p>,</span> <span class=n>students</span><span class=o>=</span><span class=n>students</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>college</span><span class=p>[:</span><span class=mi>2</span><span class=p>])</span>
+</span></span></code></pre></td></tr></table></div></div><p>上面的程序虽然没有输出任何的东西，但是没有报错，说明是可以进行切片操作的，但是将<code>__getitem__</code>注释掉以后就会报错。</p><p>对象的切片操作会自动调用<code>__getitem__</code>函数，可以不用管其他的东西，然后将一切都交给<code>list</code>处理就好了</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>class</span> <span class=nc>College</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>college_name</span><span class=p>,</span> <span class=n>class_name</span><span class=p>,</span> <span class=n>students</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>college_name</span> <span class=o>=</span> <span class=n>college_name</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>class_name</span> <span class=o>=</span> <span class=n>class_name</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>students</span> <span class=o>=</span> <span class=n>students</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1># 实现切片操作的关键函数 __getitem__</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__getitem__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>item</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>students</span><span class=p>[</span><span class=n>item</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>students</span> <span class=o>=</span> <span class=p>[</span><span class=s1>&#39;李华&#39;</span><span class=p>,</span> <span class=s2>&#34;张三&#34;</span><span class=p>,</span> <span class=s2>&#34;王五&#34;</span><span class=p>,</span> <span class=s2>&#34;王大锤&#34;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=n>college</span> <span class=o>=</span> <span class=n>College</span><span class=p>(</span><span class=n>college_name</span><span class=o>=</span><span class=s2>&#34;信工&#34;</span><span class=p>,</span> <span class=n>class_name</span><span class=o>=</span><span class=s2>&#34;Python&#34;</span><span class=p>,</span> <span class=n>students</span><span class=o>=</span><span class=n>students</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>college</span><span class=p>[:</span><span class=mi>2</span><span class=p>])</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=nb>type</span><span class=p>(</span><span class=n>college</span><span class=p>))</span>
+</span></span><span class=line><span class=cl><span class=n>sub_list</span> <span class=o>=</span> <span class=n>college</span><span class=p>[:</span><span class=mi>2</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=nb>type</span><span class=p>(</span><span class=n>sub_list</span><span class=p>))</span>
+</span></span></code></pre></td></tr></table></div></div><p>上面的程序运行后的结果如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>[&#39;李华&#39;, &#39;张三&#39;]
+</span></span><span class=line><span class=cl>&lt;class &#39;__main__.College&#39;&gt;
+</span></span><span class=line><span class=cl>&lt;class &#39;list&#39;&gt;
+</span></span></code></pre></td></tr></table></div></div><p>可以看到，虽然college对象的类型是College，但是college经过切片后返回值对象是list类型，希望切片操作后返回的值的类型还是一个College类，而且当使用索引的时候能返回指定的值，那么还需要进一步的处理。</p><p>先来看看我们传入的这个<code>item</code>到底是什么，在<code>__getitem__</code>这个魔法函数中打印一下<code>item</code>这个对象</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>class</span> <span class=nc>College</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>college_name</span><span class=p>,</span> <span class=n>class_name</span><span class=p>,</span> <span class=n>students</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>college_name</span> <span class=o>=</span> <span class=n>college_name</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>class_name</span> <span class=o>=</span> <span class=n>class_name</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>students</span> <span class=o>=</span> <span class=n>students</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__getitem__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>item</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=n>item</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>students</span> <span class=o>=</span> <span class=p>[</span><span class=s1>&#39;李华&#39;</span><span class=p>,</span> <span class=s2>&#34;张三&#34;</span><span class=p>,</span> <span class=s2>&#34;王五&#34;</span><span class=p>,</span> <span class=s2>&#34;王大锤&#34;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=n>college</span> <span class=o>=</span> <span class=n>College</span><span class=p>(</span><span class=n>college_name</span><span class=o>=</span><span class=s2>&#34;信工&#34;</span><span class=p>,</span> <span class=n>class_name</span><span class=o>=</span><span class=s2>&#34;Python&#34;</span><span class=p>,</span> <span class=n>students</span><span class=o>=</span><span class=n>students</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>college</span><span class=p>[</span><span class=mi>1</span><span class=p>:</span><span class=mi>3</span><span class=p>:</span><span class=mi>1</span><span class=p>]</span>
+</span></span></code></pre></td></tr></table></div></div><p>程序的运行后会输出下面的结果</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>slice(1, 3, 1)
+</span></span></code></pre></td></tr></table></div></div><p>在进行切片操作的时候（<code>[start:end:step]</code>），Python会自动将切片的参数初始化成一个<code>slice</code>对象，然后将这个slice对象传递给item，但是传递的是索引（<code>[0]</code>），那么这个对象就是一个int类型，这样就不是切片。要判断一个对象的类型，可以使用<code>isinstance</code>来判断</p><p>想要返回一个和类型一样的对象值，那么就要获取当前对象的类型<code>type(对象)</code>或者类名，不推荐去获取类名。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>class</span> <span class=nc>College</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>college_name</span><span class=p>,</span> <span class=n>class_name</span><span class=p>,</span> <span class=n>students</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>college_name</span> <span class=o>=</span> <span class=n>college_name</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>class_name</span> <span class=o>=</span> <span class=n>class_name</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>students</span> <span class=o>=</span> <span class=n>students</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__getitem__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>item</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=bp>cls</span> <span class=o>=</span> <span class=nb>type</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=c1># cls = College</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=nb>isinstance</span><span class=p>(</span><span class=n>item</span><span class=p>,</span> <span class=nb>slice</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=bp>cls</span><span class=p>(</span><span class=n>college_name</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>college_name</span><span class=p>,</span> <span class=n>class_name</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>class_name</span><span class=p>,</span> <span class=n>students</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>students</span><span class=p>[</span><span class=n>item</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>        <span class=k>elif</span> <span class=nb>isinstance</span><span class=p>(</span><span class=n>item</span><span class=p>,</span> <span class=n>numbers</span><span class=o>.</span><span class=n>Integral</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=c1># 注意College类接收的是带[]的，索引得到的值要加上[]</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=bp>cls</span><span class=p>(</span><span class=n>college_name</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>college_name</span><span class=p>,</span> <span class=n>class_name</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>class_name</span><span class=p>,</span> <span class=n>students</span> <span class=o>=</span> <span class=p>[</span><span class=bp>self</span><span class=o>.</span><span class=n>students</span><span class=p>[</span><span class=n>item</span><span class=p>]])</span>
+</span></span><span class=line><span class=cl>        
+</span></span></code></pre></td></tr></table></div></div><p>这样得到的对象的返回值就是一个College类型的</p><p>当然如果在这里使用<code>print(group[:2])</code>这样的语法的话，虽然不报错，但是输出的却是地址，因此为了让College这个类看起来更像list，需要使用更多的协议</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=k>class</span> <span class=nc>College</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>college_name</span><span class=p>,</span> <span class=n>class_name</span><span class=p>,</span> <span class=n>students</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>college_name</span> <span class=o>=</span> <span class=n>college_name</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>class_name</span> <span class=o>=</span> <span class=n>class_name</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>students</span> <span class=o>=</span> <span class=n>students</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__getitem__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>item</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=bp>cls</span> <span class=o>=</span> <span class=nb>type</span><span class=p>(</span><span class=bp>self</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=c1># cls = College</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=nb>isinstance</span><span class=p>(</span><span class=n>item</span><span class=p>,</span> <span class=nb>slice</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=bp>cls</span><span class=p>(</span><span class=n>college_name</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>college_name</span><span class=p>,</span> <span class=n>class_name</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>class_name</span><span class=p>,</span> <span class=n>students</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>students</span><span class=p>[</span><span class=n>item</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>        <span class=k>elif</span> <span class=nb>isinstance</span><span class=p>(</span><span class=n>item</span><span class=p>,</span> <span class=n>numbers</span><span class=o>.</span><span class=n>Integral</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=c1># 注意College类接收的是带[]的，索引得到的值要加上[]</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=bp>cls</span><span class=p>(</span><span class=n>college_name</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>college_name</span><span class=p>,</span> <span class=n>class_name</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>class_name</span><span class=p>,</span> <span class=n>students</span> <span class=o>=</span> <span class=p>[</span><span class=bp>self</span><span class=o>.</span><span class=n>students</span><span class=p>[</span><span class=n>item</span><span class=p>]])</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__repr__</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=nb>repr</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>students</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__reversed__</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>students</span><span class=o>.</span><span class=n>reverse</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__len__</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=nb>len</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>students</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__iter__</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=nb>iter</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>students</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__contains__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>item</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>item</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>students</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=kc>True</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=kc>False</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>append</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>p_object</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>students</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>p_object</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>extend</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>iterable</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>students</span><span class=o>.</span><span class=n>extend</span><span class=p>(</span><span class=n>iterable</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>students</span> <span class=o>=</span> <span class=p>[</span><span class=s1>&#39;李华&#39;</span><span class=p>,</span> <span class=s2>&#34;张三&#34;</span><span class=p>,</span> <span class=s2>&#34;王五&#34;</span><span class=p>,</span> <span class=s2>&#34;王大锤&#34;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=n>college</span> <span class=o>=</span> <span class=n>College</span><span class=p>(</span><span class=n>college_name</span><span class=o>=</span><span class=s2>&#34;信工&#34;</span><span class=p>,</span> <span class=n>class_name</span><span class=o>=</span><span class=s2>&#34;Python&#34;</span><span class=p>,</span> <span class=n>students</span><span class=o>=</span><span class=n>students</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>college</span><span class=p>[:</span><span class=mi>2</span><span class=p>])</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=nb>len</span><span class=p>(</span><span class=n>college</span><span class=p>))</span>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=s2>&#34;王大锤&#34;</span> <span class=ow>in</span> <span class=n>college</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;yes&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>reversed</span><span class=p>(</span><span class=n>college</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=k>for</span> <span class=n>student</span> <span class=ow>in</span> <span class=n>college</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=n>student</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>运行结果如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>[&#39;李华&#39;, &#34;张三&#34;]
+</span></span><span class=line><span class=cl>4
+</span></span><span class=line><span class=cl>yes
+</span></span><span class=line><span class=cl>王大锤
+</span></span><span class=line><span class=cl>王五
+</span></span><span class=line><span class=cl>张三
+</span></span><span class=line><span class=cl>李华
+</span></span></code></pre></td></tr></table></div></div><h1 id=命名切片>命名切片</h1><p>前面已经知道了切片是一个对象，那么我们就能直接使用这个对象</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>items</span> <span class=o>=</span> <span class=p>[</span><span class=mi>0</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>6</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>a</span> <span class=o>=</span> <span class=nb>slice</span><span class=p>(</span><span class=mi>2</span><span class=p>,</span> <span class=mi>4</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>items</span><span class=p>[</span><span class=mi>2</span><span class=p>:</span><span class=mi>4</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>items</span><span class=p>[</span><span class=n>a</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>items</span><span class=p>[</span><span class=n>a</span><span class=p>]</span> <span class=o>=</span> <span class=p>[</span><span class=mi>10</span><span class=p>,</span><span class=mi>11</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>items</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=mi>0</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>10</span><span class=p>,</span> <span class=mi>11</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>6</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=k>del</span> <span class=n>items</span><span class=p>[</span><span class=n>a</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>items</span>
+</span></span><span class=line><span class=cl><span class=p>[</span><span class=mi>0</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>6</span><span class=p>]</span>
+</span></span></code></pre></td></tr></table></div></div><p>当然了，也可以通过调用它的 <code>a.start</code> , <code>a.stop</code> , <code>a.step</code> 属性来获取更多的信息</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>a</span> <span class=o>=</span> <span class=nb>slice</span><span class=p>(</span><span class=mi>5</span><span class=p>,</span> <span class=mi>50</span><span class=p>,</span> <span class=mi>2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>a</span><span class=o>.</span><span class=n>start</span>
+</span></span><span class=line><span class=cl><span class=mi>5</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>a</span><span class=o>.</span><span class=n>stop</span>
+</span></span><span class=line><span class=cl><span class=mi>50</span>
+</span></span><span class=line><span class=cl><span class=o>&gt;&gt;&gt;</span> <span class=n>a</span><span class=o>.</span><span class=n>step</span>
+</span></span><span class=line><span class=cl><span class=mi>2</span>
+</span></span></code></pre></td></tr></table></div></div><h1 id=结语>结语</h1><p>想让上面实现的可切片的类看起来更像list，可以参考list的源码，这里的重点是讲解如何实现一个可切片的对象</p><p>在Python中实例化一个对象的时候是这样的<code>obj = Class()</code></p><p>而上面的程序中想让College对象都是College类型的，使用的是类型转换去初始化对象，而我们在平时的程序中，要将一个其他类型的变量转换成str类型的变量使用的肯定是<code>obj = str(obj)</code>，这很明显就是一个str对象初始化的过程，<code>lis = list()</code>初始化一个空列表也是一样的。</p><p>在Python中一切皆对象，使用一切皆对象的思维来看Python程序，那么程序的设计过程将变得简单，也更容易写出<strong>Python风格的代码</strong>。</p></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2020-01-24</span></div><div class=post-info-license></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw"></i>&nbsp;<a href=/tags/pyhton/>Pyhton</a>,&nbsp;<a href=/tags/%E9%AD%94%E6%B3%95%E5%87%BD%E6%95%B0/>魔法函数</a>,&nbsp;<a href=/tags/list/>list</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/posts/jetbrains%E5%AD%A6%E7%94%9F%E4%BC%98%E6%83%A0/ class=prev rel=prev title=用学生身份免费使用IDE><i class="fas fa-angle-left fa-fw"></i>用学生身份免费使用IDE</a>
+<a href=/posts/urllib%E5%BA%93%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/ class=next rel=next title=urllib库基本使用>urllib库基本使用<i class="fas fa-angle-right fa-fw"></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2019 - 2023</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=http://pujichun.ink target=_blank>普吉春</a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw"></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw"></i></a></div><script type=text/javascript src=/lib/smooth-scroll/smooth-scroll.min.js></script><script type=text/javascript src=/lib/autocomplete/autocomplete.min.js></script><script type=text/javascript src=/lib/lunr/lunr.min.js></script><script type=text/javascript src=/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=/lib/lazysizes/lazysizes.min.js></script><script type=text/javascript src=/lib/clipboard/clipboard.min.js></script><script type=text/javascript src=/lib/typeit/typeit.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:10},comment:{},data:{"id-1":"pujic","id-2":"pujic"},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"lunr"},typeit:{cursorChar:null,cursorSpeed:null,data:{"id-1":["id-1"],"id-2":["id-2"]},duration:null,speed:null}}</script><script type=text/javascript src=/js/theme.min.js></script></body></html>

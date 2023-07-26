@@ -1,0 +1,530 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><meta http-equiv=x-ua-compatible content="IE=edge, chrome=1"><title>gRPC client resolve etcd - pujic</title><meta name=Description content><meta property="og:title" content="gRPC client resolve etcd"><meta property="og:description" content="gRPC client 在Dial时默认仅能解析一个TCP地址，并不能通过etcd拿到注册的server的ip地址，无法达到client与server一对多或多对多的场景，尽管可以使用nginx实现，但是当server扩缩容时nginx就显得十分鸡肋。"><meta property="og:type" content="article"><meta property="og:url" content="http://example.org/posts/grpc-client-resolver-etcd/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2022-04-15T22:12:34+08:00"><meta property="article:modified_time" content="2022-04-15T22:12:34+08:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="gRPC client resolve etcd"><meta name=twitter:description content="gRPC client 在Dial时默认仅能解析一个TCP地址，并不能通过etcd拿到注册的server的ip地址，无法达到client与server一对多或多对多的场景，尽管可以使用nginx实现，但是当server扩缩容时nginx就显得十分鸡肋。"><meta name=application-name content="pujic"><meta name=apple-mobile-web-app-title content="pujic"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=http://example.org/posts/grpc-client-resolver-etcd/><link rel=prev href=http://example.org/posts/go%E6%93%8D%E4%BD%9Cdocker/><link rel=next href=http://example.org/posts/archlinux-signature-is-marginal-trust/><link rel=stylesheet href=/lib/normalize/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=/lib/fontawesome-free/all.min.css><link rel=stylesheet href=/lib/animate/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"gRPC client resolve etcd","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/example.org\/posts\/grpc-client-resolver-etcd\/"},"genre":"posts","keywords":"gRPC, etcd","wordcount":1272,"url":"http:\/\/example.org\/posts\/grpc-client-resolver-etcd\/","datePublished":"2022-04-15T22:12:34+08:00","dateModified":"2022-04-15T22:12:34+08:00","publisher":{"@type":"Organization","name":"普吉春"},"author":{"@type":"Person","name":"普吉春"},"description":""}</script></head><body header-desktop=fixed header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":""==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:""==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title=pujic><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-1 class=typeit></span></a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>所有文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/categories/>分类 </a><a class=menu-item href=/about/>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin"></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw"></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=pujic><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-2 class=typeit></span></a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin"></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=/posts/ title>所有文章</a><a class=menu-item href=/tags/ title>标签</a><a class=menu-item href=/categories/ title>分类</a><a class=menu-item href=/about/ title>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw"></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animated flipInX">gRPC client resolve etcd</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=http://pujichun.ink title=Author target=_blank rel="noopener noreffer author" class=author><i class="fas fa-user-circle fa-fw"></i>普吉春</a></span>&nbsp;<span class=post-category>收录于 <a href=/categories/grpc/><i class="far fa-folder fa-fw"></i>gRPC</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2022-04-15>2022-04-15</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 1272 字&nbsp;
+<i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 3 分钟&nbsp;</div></div><div class="details toc" id=toc-static kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right"></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#register>register</a></li><li><a href=#resolver>resolver</a></li><li><a href=#example>example</a></li></ul></nav></div></div><div class=content id=content><p>gRPC client 在Dial时默认仅能解析一个TCP地址，并不能通过etcd拿到注册的server的ip地址，无法达到client与server一对多或多对多的场景，尽管可以使用nginx实现，但是当server扩缩容时nginx就显得十分鸡肋。</p><p>在grpc文档<a href=https://github.com/grpc/grpc/blob/master/doc/naming.md target=_blank rel="noopener noreffer">gRPC Name Resolution</a>中记录了解决方案，虽然文档中说的内容不是很详细，但是在etcd的<a href=https://github.com/etcd-io/etcd/blob/main/client/v3/naming/resolver/resolver.go target=_blank rel="noopener noreffer">resolver</a>和<a href=https://github.com/etcd-io/etcd/blob/main/client/v3/client.go target=_blank rel="noopener noreffer">v3 client</a>的源代码中解决方案已经很明确了</p><p>只需要实现Resolver和Build接口就能通过在客户端Dail的过程完成服务发现以及负载均衡</p><p>GitHub上有人实现了grpc resolver consul address的方法https://github.com/simplesurance/grpcconsulresolver</p><p>我实现的etcd版本服务注册与发现程序如下</p><h2 id=register>register</h2><p>register.go</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>etcd</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;context&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;log&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;time&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=nx>clientv3</span> <span class=s>&#34;go.etcd.io/etcd/client/v3&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//projectName namespace
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>const</span> <span class=nx>projectName</span> <span class=p>=</span> <span class=s>&#34;projectName&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>ServiceInfo</span> <span class=kd>struct</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>Name</span> <span class=kt>string</span>
+</span></span><span class=line><span class=cl>	<span class=nx>Addr</span> <span class=kt>string</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>Register</span> <span class=kd>struct</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>client</span>  <span class=o>*</span><span class=nx>clientv3</span><span class=p>.</span><span class=nx>Client</span>
+</span></span><span class=line><span class=cl>	<span class=nx>sInfo</span>   <span class=o>*</span><span class=nx>ServiceInfo</span>
+</span></span><span class=line><span class=cl>	<span class=nx>leaseID</span> <span class=nx>clientv3</span><span class=p>.</span><span class=nx>LeaseID</span>
+</span></span><span class=line><span class=cl>	<span class=nx>stop</span>    <span class=kd>chan</span> <span class=kd>struct</span><span class=p>{}</span>
+</span></span><span class=line><span class=cl>	<span class=nx>ttl</span>     <span class=kt>int64</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//NewRegister create register
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=nf>NewRegister</span><span class=p>(</span><span class=nx>endpoints</span> <span class=p>[]</span><span class=kt>string</span><span class=p>,</span> <span class=nx>sInfo</span> <span class=o>*</span><span class=nx>ServiceInfo</span><span class=p>)</span> <span class=p>(</span><span class=o>*</span><span class=nx>Register</span><span class=p>,</span> <span class=kt>error</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>client</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>clientv3</span><span class=p>.</span><span class=nf>New</span><span class=p>(</span><span class=nx>clientv3</span><span class=p>.</span><span class=nx>Config</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>Endpoints</span><span class=p>:</span>   <span class=nx>endpoints</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>		<span class=nx>DialTimeout</span><span class=p>:</span> <span class=mi>5</span> <span class=o>*</span> <span class=nx>time</span><span class=p>.</span><span class=nx>Second</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>	<span class=p>})</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=kc>nil</span><span class=p>,</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=o>&amp;</span><span class=nx>Register</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>client</span><span class=p>:</span> <span class=nx>client</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>		<span class=nx>sInfo</span><span class=p>:</span>  <span class=nx>sInfo</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>		<span class=nx>ttl</span><span class=p>:</span>    <span class=mi>10</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>		<span class=nx>stop</span><span class=p>:</span>   <span class=nb>make</span><span class=p>(</span><span class=kd>chan</span> <span class=kd>struct</span><span class=p>{},</span> <span class=mi>1</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>	<span class=p>},</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//Close register
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>r</span> <span class=o>*</span><span class=nx>Register</span><span class=p>)</span> <span class=nf>Close</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>r</span><span class=p>.</span><span class=nx>stop</span> <span class=o>&lt;-</span> <span class=kd>struct</span><span class=p>{}{}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//Key return a key of the service for register to etcd
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>r</span> <span class=o>*</span><span class=nx>Register</span><span class=p>)</span> <span class=nf>Key</span><span class=p>()</span> <span class=kt>string</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=nx>fmt</span><span class=p>.</span><span class=nf>Sprintf</span><span class=p>(</span><span class=s>&#34;/%s/%s/%s&#34;</span><span class=p>,</span> <span class=nx>projectName</span><span class=p>,</span> <span class=nx>r</span><span class=p>.</span><span class=nx>sInfo</span><span class=p>.</span><span class=nx>Name</span><span class=p>,</span> <span class=nx>r</span><span class=p>.</span><span class=nx>sInfo</span><span class=p>.</span><span class=nx>Addr</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//Value return a value of the service address for register to etcd
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>r</span> <span class=o>*</span><span class=nx>Register</span><span class=p>)</span> <span class=nf>Value</span><span class=p>()</span> <span class=kt>string</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=nx>r</span><span class=p>.</span><span class=nx>sInfo</span><span class=p>.</span><span class=nx>Addr</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//register service
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>r</span> <span class=o>*</span><span class=nx>Register</span><span class=p>)</span> <span class=nf>register</span><span class=p>()</span> <span class=p>(</span><span class=o>&lt;-</span><span class=kd>chan</span> <span class=o>*</span><span class=nx>clientv3</span><span class=p>.</span><span class=nx>LeaseKeepAliveResponse</span><span class=p>,</span> <span class=kt>error</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>ctx</span> <span class=o>:=</span> <span class=nx>context</span><span class=p>.</span><span class=nf>Background</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>	<span class=nx>lease</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>r</span><span class=p>.</span><span class=nx>client</span><span class=p>.</span><span class=nf>Grant</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>r</span><span class=p>.</span><span class=nx>ttl</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Fatalf</span><span class=p>(</span><span class=s>&#34;cannot create lease error: %s&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=nx>r</span><span class=p>.</span><span class=nx>leaseID</span> <span class=p>=</span> <span class=nx>lease</span><span class=p>.</span><span class=nx>ID</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=nx>_</span><span class=p>,</span> <span class=nx>err</span> <span class=p>=</span> <span class=nx>r</span><span class=p>.</span><span class=nx>client</span><span class=p>.</span><span class=nf>Put</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>r</span><span class=p>.</span><span class=nf>Key</span><span class=p>(),</span> <span class=nx>r</span><span class=p>.</span><span class=nf>Value</span><span class=p>(),</span> <span class=nx>clientv3</span><span class=p>.</span><span class=nf>WithLease</span><span class=p>(</span><span class=nx>lease</span><span class=p>.</span><span class=nx>ID</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=kc>nil</span><span class=p>,</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=nx>r</span><span class=p>.</span><span class=nx>client</span><span class=p>.</span><span class=nf>KeepAlive</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>lease</span><span class=p>.</span><span class=nx>ID</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// revoke revoke lease
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>r</span> <span class=o>*</span><span class=nx>Register</span><span class=p>)</span> <span class=nf>revoke</span><span class=p>()</span> <span class=kt>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>_</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>r</span><span class=p>.</span><span class=nx>client</span><span class=p>.</span><span class=nf>Revoke</span><span class=p>(</span><span class=nx>context</span><span class=p>.</span><span class=nf>TODO</span><span class=p>(),</span> <span class=nx>r</span><span class=p>.</span><span class=nx>leaseID</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=nx>log</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;register service:%s stop\n&#34;</span><span class=p>,</span> <span class=nx>r</span><span class=p>.</span><span class=nf>Key</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//keepAlive keep the register alive
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>r</span> <span class=o>*</span><span class=nx>Register</span><span class=p>)</span> <span class=nf>keepAlive</span><span class=p>()</span> <span class=kt>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>ch</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>r</span><span class=p>.</span><span class=nf>register</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Fatalf</span><span class=p>(</span><span class=s>&#34;keep alive faild error: %s&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=k>for</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>select</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>case</span> <span class=o>&lt;-</span><span class=nx>r</span><span class=p>.</span><span class=nx>stop</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>			<span class=k>goto</span> <span class=nx>BREAK</span>
+</span></span><span class=line><span class=cl>		<span class=k>case</span> <span class=o>&lt;-</span><span class=nx>r</span><span class=p>.</span><span class=nx>client</span><span class=p>.</span><span class=nf>Ctx</span><span class=p>().</span><span class=nf>Done</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>			<span class=k>return</span> <span class=nx>fmt</span><span class=p>.</span><span class=nf>Errorf</span><span class=p>(</span><span class=s>&#34;register service have been closed&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=k>case</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>ok</span> <span class=o>:=</span> <span class=o>&lt;-</span><span class=nx>ch</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>			<span class=k>if</span> <span class=p>!</span><span class=nx>ok</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>				<span class=nx>log</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=s>&#34;keep alive channel closed&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>				<span class=k>return</span> <span class=nx>r</span><span class=p>.</span><span class=nf>revoke</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>			<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=nx>BREAK</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>	<span class=nx>log</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=s>&#34;stop lease&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//Run start register
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>r</span> <span class=o>*</span><span class=nx>Register</span><span class=p>)</span> <span class=nf>Run</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>r</span><span class=p>.</span><span class=nf>Key</span><span class=p>()</span> <span class=o>==</span> <span class=s>&#34;&#34;</span> <span class=o>||</span> <span class=nx>r</span><span class=p>.</span><span class=nf>Value</span><span class=p>()</span> <span class=o>==</span> <span class=s>&#34;&#34;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Fatalln</span><span class=p>(</span><span class=s>&#34;cannot read service info&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=nx>log</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;register service {name: %s, address: %s}\n&#34;</span><span class=p>,</span> <span class=nx>r</span><span class=p>.</span><span class=nx>sInfo</span><span class=p>.</span><span class=nx>Name</span><span class=p>,</span> <span class=nx>r</span><span class=p>.</span><span class=nx>sInfo</span><span class=p>.</span><span class=nx>Addr</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>go</span> <span class=nx>r</span><span class=p>.</span><span class=nf>keepAlive</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=resolver>resolver</h2><p>resolver.go</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>etcd</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;context&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;sync&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;go.etcd.io/etcd/api/v3/mvccpb&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=nx>clientv3</span> <span class=s>&#34;go.etcd.io/etcd/client/v3&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;google.golang.org/grpc/resolver&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>Resolver</span> <span class=kd>struct</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>sync</span><span class=p>.</span><span class=nx>RWMutex</span>
+</span></span><span class=line><span class=cl>	<span class=nx>Client</span>    <span class=o>*</span><span class=nx>clientv3</span><span class=p>.</span><span class=nx>Client</span>
+</span></span><span class=line><span class=cl>	<span class=nx>cc</span>        <span class=nx>resolver</span><span class=p>.</span><span class=nx>ClientConn</span>
+</span></span><span class=line><span class=cl>	<span class=nx>prefix</span>    <span class=kt>string</span>
+</span></span><span class=line><span class=cl>	<span class=nx>addresses</span> <span class=kd>map</span><span class=p>[</span><span class=kt>string</span><span class=p>]</span><span class=nx>resolver</span><span class=p>.</span><span class=nx>Address</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>NewResolver</span><span class=p>(</span><span class=nx>endpoints</span> <span class=p>[]</span><span class=kt>string</span><span class=p>)</span> <span class=p>(</span><span class=o>*</span><span class=nx>Resolver</span><span class=p>,</span> <span class=kt>error</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>client</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>clientv3</span><span class=p>.</span><span class=nf>New</span><span class=p>(</span><span class=nx>clientv3</span><span class=p>.</span><span class=nx>Config</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>Endpoints</span><span class=p>:</span> <span class=nx>endpoints</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>	<span class=p>})</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=kc>nil</span><span class=p>,</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=nx>r</span> <span class=o>:=</span> <span class=o>&amp;</span><span class=nx>Resolver</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>Client</span><span class=p>:</span> <span class=nx>client</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=nx>r</span><span class=p>,</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//Build implement the Build interface
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>r</span> <span class=o>*</span><span class=nx>Resolver</span><span class=p>)</span> <span class=nf>Build</span><span class=p>(</span><span class=nx>target</span> <span class=nx>resolver</span><span class=p>.</span><span class=nx>Target</span><span class=p>,</span> <span class=nx>cc</span> <span class=nx>resolver</span><span class=p>.</span><span class=nx>ClientConn</span><span class=p>,</span> <span class=nx>opts</span> <span class=nx>resolver</span><span class=p>.</span><span class=nx>BuildOptions</span><span class=p>)</span> <span class=p>(</span><span class=nx>resolver</span><span class=p>.</span><span class=nx>Resolver</span><span class=p>,</span> <span class=kt>error</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>r</span><span class=p>.</span><span class=nx>cc</span> <span class=p>=</span> <span class=nx>cc</span>
+</span></span><span class=line><span class=cl>	<span class=nx>r</span><span class=p>.</span><span class=nx>prefix</span> <span class=p>=</span> <span class=nx>target</span><span class=p>.</span><span class=nx>URL</span><span class=p>.</span><span class=nx>Path</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=k>go</span> <span class=nx>r</span><span class=p>.</span><span class=nf>watcher</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>	<span class=nx>r</span><span class=p>.</span><span class=nf>ResolveNow</span><span class=p>(</span><span class=nx>resolver</span><span class=p>.</span><span class=nx>ResolveNowOptions</span><span class=p>{})</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=nx>r</span><span class=p>,</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//Scheme address scheme
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>r</span> <span class=o>*</span><span class=nx>Resolver</span><span class=p>)</span> <span class=nf>Scheme</span><span class=p>()</span> <span class=kt>string</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=s>&#34;etcd&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>r</span> <span class=o>*</span><span class=nx>Resolver</span><span class=p>)</span> <span class=nf>ResolveNow</span><span class=p>(</span><span class=nx>resolver</span><span class=p>.</span><span class=nx>ResolveNowOptions</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>r</span> <span class=o>*</span><span class=nx>Resolver</span><span class=p>)</span> <span class=nf>Close</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//watcher resolver keys from etcd and watch keys
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>r</span> <span class=o>*</span><span class=nx>Resolver</span><span class=p>)</span> <span class=nf>watcher</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>r</span><span class=p>.</span><span class=nx>addresses</span> <span class=p>=</span> <span class=nb>make</span><span class=p>(</span><span class=kd>map</span><span class=p>[</span><span class=kt>string</span><span class=p>]</span><span class=nx>resolver</span><span class=p>.</span><span class=nx>Address</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=nx>response</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>r</span><span class=p>.</span><span class=nx>Client</span><span class=p>.</span><span class=nf>Get</span><span class=p>(</span><span class=nx>context</span><span class=p>.</span><span class=nf>Background</span><span class=p>(),</span> <span class=nx>r</span><span class=p>.</span><span class=nx>prefix</span><span class=p>,</span> <span class=nx>clientv3</span><span class=p>.</span><span class=nf>WithPrefix</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>==</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>for</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>kv</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>response</span><span class=p>.</span><span class=nx>Kvs</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=nx>r</span><span class=p>.</span><span class=nf>setAddress</span><span class=p>(</span><span class=nb>string</span><span class=p>(</span><span class=nx>kv</span><span class=p>.</span><span class=nx>Key</span><span class=p>),</span> <span class=nb>string</span><span class=p>(</span><span class=nx>kv</span><span class=p>.</span><span class=nx>Value</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>		<span class=nx>r</span><span class=p>.</span><span class=nx>cc</span><span class=p>.</span><span class=nf>UpdateState</span><span class=p>(</span><span class=nx>resolver</span><span class=p>.</span><span class=nx>State</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=nx>Addresses</span><span class=p>:</span> <span class=nx>r</span><span class=p>.</span><span class=nf>getAddresses</span><span class=p>(),</span>
+</span></span><span class=line><span class=cl>		<span class=p>})</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=nx>watch</span> <span class=o>:=</span> <span class=nx>r</span><span class=p>.</span><span class=nx>Client</span><span class=p>.</span><span class=nf>Watch</span><span class=p>(</span><span class=nx>context</span><span class=p>.</span><span class=nf>Background</span><span class=p>(),</span> <span class=nx>r</span><span class=p>.</span><span class=nx>prefix</span><span class=p>,</span> <span class=nx>clientv3</span><span class=p>.</span><span class=nf>WithPrefix</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=k>for</span> <span class=nx>response</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>watch</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>for</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>event</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>response</span><span class=p>.</span><span class=nx>Events</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=k>switch</span> <span class=nx>event</span><span class=p>.</span><span class=nx>Type</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=k>case</span> <span class=nx>mvccpb</span><span class=p>.</span><span class=nx>PUT</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>				<span class=nx>r</span><span class=p>.</span><span class=nf>setAddress</span><span class=p>(</span><span class=nb>string</span><span class=p>(</span><span class=nx>event</span><span class=p>.</span><span class=nx>Kv</span><span class=p>.</span><span class=nx>Key</span><span class=p>),</span> <span class=nb>string</span><span class=p>(</span><span class=nx>event</span><span class=p>.</span><span class=nx>Kv</span><span class=p>.</span><span class=nx>Value</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>			<span class=k>case</span> <span class=nx>mvccpb</span><span class=p>.</span><span class=nx>DELETE</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>				<span class=nx>r</span><span class=p>.</span><span class=nf>delAddress</span><span class=p>(</span><span class=nb>string</span><span class=p>(</span><span class=nx>event</span><span class=p>.</span><span class=nx>Kv</span><span class=p>.</span><span class=nx>Key</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>			<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>		<span class=nx>r</span><span class=p>.</span><span class=nx>cc</span><span class=p>.</span><span class=nf>UpdateState</span><span class=p>(</span><span class=nx>resolver</span><span class=p>.</span><span class=nx>State</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=nx>Addresses</span><span class=p>:</span> <span class=nx>r</span><span class=p>.</span><span class=nf>getAddresses</span><span class=p>(),</span>
+</span></span><span class=line><span class=cl>		<span class=p>})</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//setAddress set the alive service address to the map
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>r</span> <span class=o>*</span><span class=nx>Resolver</span><span class=p>)</span> <span class=nf>setAddress</span><span class=p>(</span><span class=nx>key</span><span class=p>,</span> <span class=nx>address</span> <span class=kt>string</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>r</span><span class=p>.</span><span class=nf>Lock</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>	<span class=k>defer</span> <span class=nx>r</span><span class=p>.</span><span class=nf>Unlock</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>	<span class=nx>r</span><span class=p>.</span><span class=nx>addresses</span><span class=p>[</span><span class=nx>key</span><span class=p>]</span> <span class=p>=</span> <span class=nx>resolver</span><span class=p>.</span><span class=nx>Address</span><span class=p>{</span><span class=nx>Addr</span><span class=p>:</span> <span class=nb>string</span><span class=p>(</span><span class=nx>address</span><span class=p>)}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//delAddress delete the dead service address
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>r</span> <span class=o>*</span><span class=nx>Resolver</span><span class=p>)</span> <span class=nf>delAddress</span><span class=p>(</span><span class=nx>key</span> <span class=kt>string</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>r</span><span class=p>.</span><span class=nf>Lock</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>	<span class=k>defer</span> <span class=nx>r</span><span class=p>.</span><span class=nf>Unlock</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>	<span class=nb>delete</span><span class=p>(</span><span class=nx>r</span><span class=p>.</span><span class=nx>addresses</span><span class=p>,</span> <span class=nx>key</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>//getAddresses get resolver address from custom resolver
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>r</span> <span class=o>*</span><span class=nx>Resolver</span><span class=p>)</span> <span class=nf>getAddresses</span><span class=p>()</span> <span class=p>[]</span><span class=nx>resolver</span><span class=p>.</span><span class=nx>Address</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>addresses</span> <span class=o>:=</span> <span class=nb>make</span><span class=p>([]</span><span class=nx>resolver</span><span class=p>.</span><span class=nx>Address</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=nb>len</span><span class=p>(</span><span class=nx>r</span><span class=p>.</span><span class=nx>addresses</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=k>for</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>address</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>r</span><span class=p>.</span><span class=nx>addresses</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>addresses</span> <span class=p>=</span> <span class=nb>append</span><span class=p>(</span><span class=nx>addresses</span><span class=p>,</span> <span class=nx>address</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=nx>addresses</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>程序比较简单，可定制性也很强</p><h2 id=example>example</h2><p>server.go</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=nx>sInfo</span> <span class=o>:=</span> <span class=nx>ServiceInfo</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>Name</span><span class=p>:</span> <span class=s>&#34;hello&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>Addr</span><span class=p>:</span> <span class=s>&#34;127.0.0.1:8080&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>r</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nf>NewRegister</span><span class=p>([]</span><span class=kt>string</span><span class=p>{</span><span class=s>&#34;1.15.241.96:2379&#34;</span><span class=p>},</span> <span class=o>&amp;</span><span class=nx>sInfo</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nb>panic</span><span class=p>(</span><span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>defer</span> <span class=nx>r</span><span class=p>.</span><span class=nf>Close</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=nx>r</span><span class=p>.</span><span class=nf>Run</span><span class=p>()</span>
+</span></span></code></pre></td></tr></table></div></div><p>client.go</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=nx>r</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nf>NewResolver</span><span class=p>([]</span><span class=kt>string</span><span class=p>{</span><span class=s>&#34;1.15.241.96:2379&#34;</span><span class=p>})</span>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nb>panic</span><span class=p>(</span><span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>resolver</span><span class=p>.</span><span class=nf>Register</span><span class=p>(</span><span class=nx>r</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nx>ctx</span> <span class=o>:=</span> <span class=nx>context</span><span class=p>.</span><span class=nf>Background</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=nx>target</span> <span class=o>:=</span> <span class=nx>fmt</span><span class=p>.</span><span class=nf>Sprintf</span><span class=p>(</span><span class=s>&#34;etcd:///%s/hello&#34;</span><span class=p>,</span> <span class=nx>projectName</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>cc</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>grpc</span><span class=p>.</span><span class=nf>DialContext</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=nx>ctx</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>target</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>grpc</span><span class=p>.</span><span class=nf>WithDefaultServiceConfig</span><span class=p>(</span><span class=nx>fmt</span><span class=p>.</span><span class=nf>Sprintf</span><span class=p>(</span><span class=s>`{&#34;LoadBalancingPolicy&#34;: &#34;%s&#34;}`</span><span class=p>,</span> <span class=nx>roundrobin</span><span class=p>.</span><span class=nx>Name</span><span class=p>)),</span>
+</span></span><span class=line><span class=cl>    <span class=nx>grpc</span><span class=p>.</span><span class=nf>WithTransportCredentials</span><span class=p>(</span><span class=nx>insecure</span><span class=p>.</span><span class=nf>NewCredentials</span><span class=p>()),</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2022-04-15</span></div><div class=post-info-license></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw"></i>&nbsp;<a href=/tags/grpc/>gRPC</a>,&nbsp;<a href=/tags/etcd/>etcd</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/posts/go%E6%93%8D%E4%BD%9Cdocker/ class=prev rel=prev title=Go操作Docker><i class="fas fa-angle-left fa-fw"></i>Go操作Docker</a>
+<a href=/posts/archlinux-signature-is-marginal-trust/ class=next rel=next title="Archlinux Signature Is Marginal Trust">Archlinux Signature Is Marginal Trust<i class="fas fa-angle-right fa-fw"></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2019 - 2023</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=http://pujichun.ink target=_blank>普吉春</a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw"></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw"></i></a></div><script type=text/javascript src=/lib/smooth-scroll/smooth-scroll.min.js></script><script type=text/javascript src=/lib/autocomplete/autocomplete.min.js></script><script type=text/javascript src=/lib/lunr/lunr.min.js></script><script type=text/javascript src=/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=/lib/lazysizes/lazysizes.min.js></script><script type=text/javascript src=/lib/clipboard/clipboard.min.js></script><script type=text/javascript src=/lib/typeit/typeit.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:10},comment:{},data:{"id-1":"pujic","id-2":"pujic"},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"lunr"},typeit:{cursorChar:null,cursorSpeed:null,data:{"id-1":["id-1"],"id-2":["id-2"]},duration:null,speed:null}}</script><script type=text/javascript src=/js/theme.min.js></script></body></html>
