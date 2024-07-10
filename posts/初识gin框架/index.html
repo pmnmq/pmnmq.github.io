@@ -2,7 +2,7 @@
 Gin 是一个用 Go (Golang) 编写的 web 框架。 它是一个类似于 martini 但拥有更好性能的 API 框架, 由于 httprouter，速度提高了近 40 倍。 如果你是性能和高效的追求者, 你会爱上 Gin
 "><meta property="og:type" content="article"><meta property="og:url" content="http://example.org/posts/%E5%88%9D%E8%AF%86gin%E6%A1%86%E6%9E%B6/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2020-06-12T22:28:36+00:00"><meta property="article:modified_time" content="2020-06-12T22:28:36+00:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="初识Gin框架"><meta name=twitter:description content="
 Gin 是一个用 Go (Golang) 编写的 web 框架。 它是一个类似于 martini 但拥有更好性能的 API 框架, 由于 httprouter，速度提高了近 40 倍。 如果你是性能和高效的追求者, 你会爱上 Gin
-"><meta name=application-name content="pujic"><meta name=apple-mobile-web-app-title content="pujic"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=http://example.org/posts/%E5%88%9D%E8%AF%86gin%E6%A1%86%E6%9E%B6/><link rel=prev href=http://example.org/posts/go%E6%A0%87%E5%87%86%E5%BA%93-net-http/><link rel=next href=http://example.org/posts/python%E8%A3%85%E9%A5%B0%E5%99%A8/><link rel=stylesheet href=/lib/normalize/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=/lib/fontawesome-free/all.min.css><link rel=stylesheet href=/lib/animate/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"初识Gin框架","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/example.org\/posts\/%E5%88%9D%E8%AF%86gin%E6%A1%86%E6%9E%B6\/"},"genre":"posts","keywords":"gin, Go","wordcount":2076,"url":"http:\/\/example.org\/posts\/%E5%88%9D%E8%AF%86gin%E6%A1%86%E6%9E%B6\/","datePublished":"2020-06-12T22:28:36+00:00","dateModified":"2020-06-12T22:28:36+00:00","publisher":{"@type":"Organization","name":"普吉春"},"author":{"@type":"Person","name":"普吉春"},"description":""}</script></head><body header-desktop=fixed header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":""==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:""==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title=pujic><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-1 class=typeit></span></a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>所有文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/categories/>分类 </a><a class=menu-item href=/about/>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+"><meta name=application-name content="pujic"><meta name=apple-mobile-web-app-title content="pujic"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=http://example.org/posts/%E5%88%9D%E8%AF%86gin%E6%A1%86%E6%9E%B6/><link rel=prev href=http://example.org/posts/go%E6%A0%87%E5%87%86%E5%BA%93-net-http/><link rel=next href=http://example.org/posts/python%E8%A3%85%E9%A5%B0%E5%99%A8/><link rel=stylesheet href=/lib/normalize/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=/lib/fontawesome-free/all.min.css><link rel=stylesheet href=/lib/animate/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"初识Gin框架","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/example.org\/posts\/%E5%88%9D%E8%AF%86gin%E6%A1%86%E6%9E%B6\/"},"genre":"posts","keywords":"gin, Go","wordcount":2309,"url":"http:\/\/example.org\/posts\/%E5%88%9D%E8%AF%86gin%E6%A1%86%E6%9E%B6\/","datePublished":"2020-06-12T22:28:36+00:00","dateModified":"2020-06-12T22:28:36+00:00","publisher":{"@type":"Organization","name":"普吉春"},"author":{"@type":"Person","name":"普吉春"},"description":""}</script></head><body header-desktop=fixed header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":""==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:""==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title=pujic><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-1 class=typeit></span></a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>所有文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/categories/>分类 </a><a class=menu-item href=/about/>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
 <input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
 <a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw"></i></a>
 <a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw"></i></a>
@@ -11,7 +11,7 @@ Gin 是一个用 Go (Golang) 编写的 web 框架。 它是一个类似于 marti
 <a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw"></i></a>
 <a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw"></i></a>
 <span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin"></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=/posts/ title>所有文章</a><a class=menu-item href=/tags/ title>标签</a><a class=menu-item href=/categories/ title>分类</a><a class=menu-item href=/about/ title>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
-<i class="fas fa-adjust fa-fw"></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animated flipInX">初识Gin框架</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=http://pujichun.ink title=Author target=_blank rel="noopener noreffer author" class=author><i class="fas fa-user-circle fa-fw"></i>普吉春</a></span>&nbsp;<span class=post-category>收录于 <a href=/categories/go/><i class="far fa-folder fa-fw"></i>Go</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2020-06-12>2020-06-12</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 2076 字&nbsp;
+<i class="fas fa-adjust fa-fw"></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animated flipInX">初识Gin框架</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=http://pujichun.ink title=Author target=_blank rel="noopener noreffer author" class=author><i class="fas fa-user-circle fa-fw"></i>普吉春</a></span>&nbsp;<span class=post-category>收录于 <a href=/categories/go/><i class="far fa-folder fa-fw"></i>Go</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2020-06-12>2020-06-12</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 2309 字&nbsp;
 <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 5 分钟&nbsp;</div></div><div class="details toc" id=toc-static kept><div class="details-summary toc-title"><span>目录</span>
 <span><i class="details-icon fas fa-angle-right"></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#创建一个简单的web服务>创建一个简单的Web服务</a><ul><li><a href=#restful-api>Restful Api</a></li></ul></li><li><a href=#获取参数>获取参数</a><ul><li><a href=#获取querystring参数>获取Querystring参数</a></li><li><a href=#获取data-form参数>获取Data Form参数</a></li></ul></li><li><a href=#返回json数据>返回Json数据</a><ul><li><a href=#使用map>使用map</a></li><li><a href=#使用ginh>使用gin.H</a></li><li><a href=#使用结构体>使用结构体</a></li></ul></li><li><a href=#获取url路径参数>获取URL路径参数</a></li><li><a href=#参数绑定>参数绑定</a></li><li><a href=#路由组>路由组</a></li></ul></nav></div></div><div class=content id=content><blockquote><p>Gin 是一个用 Go (Golang) 编写的 web 框架。 它是一个类似于 <a href=https://github.com/go-martini/martini target=_blank rel="noopener noreffer">martini</a> 但拥有更好性能的 API 框架, 由于 <a href=https://github.com/julienschmidt/httprouter target=_blank rel="noopener noreffer">httprouter</a>，速度提高了近 40 倍。 如果你是性能和高效的追求者, 你会爱上 Gin</p></blockquote><p><a href=https://gin-gonic.com/zh-cn/docs/ target=_blank rel="noopener noreffer">Gin框架中文文档</a></p><ol><li><p>拉取仓库，进入到<code>github.com</code>目录下，创建<code>gin-gonic</code>文件夹，然后执行拉取命令</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
 </span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>git clone https://github.com/gin-gonic/gin.git
@@ -139,7 +139,7 @@ Gin 是一个用 Go (Golang) 编写的 web 框架。 它是一个类似于 marti
 </span><span class=lnt>14
 </span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
 </span></span><span class=line><span class=cl>	<span class=nx>r</span> <span class=o>:=</span> <span class=nx>gin</span><span class=p>.</span><span class=nf>Default</span><span class=p>()</span>
-</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl>	<span class=nx>r</span><span class=p>.</span><span class=nf>POST</span><span class=p>(</span><span class=s>&#34;post_form&#34;</span><span class=p>,</span> <span class=kd>func</span><span class=p>(</span><span class=nx>c</span> <span class=o>*</span><span class=nx>gin</span><span class=p>.</span><span class=nx>Context</span><span class=p>)</span> <span class=p>{</span>
 </span></span><span class=line><span class=cl>		<span class=nx>name</span> <span class=o>:=</span> <span class=nx>c</span><span class=p>.</span><span class=nf>DefaultPostForm</span><span class=p>(</span><span class=s>&#34;name&#34;</span><span class=p>,</span> <span class=s>&#34;user&#34;</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>		<span class=nx>age</span> <span class=o>:=</span> <span class=nx>c</span><span class=p>.</span><span class=nf>PostForm</span><span class=p>(</span><span class=s>&#34;age&#34;</span><span class=p>)</span>
@@ -274,7 +274,7 @@ Gin 是一个用 Go (Golang) 编写的 web 框架。 它是一个类似于 marti
 </span></span><span class=line><span class=cl>			<span class=s>&#34;age&#34;</span> <span class=p>:</span> <span class=nx>age</span><span class=p>,</span>
 </span></span><span class=line><span class=cl>		<span class=p>})</span>
 </span></span><span class=line><span class=cl>	<span class=p>})</span>
-</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl>    <span class=nx>r</span><span class=p>.</span><span class=nf>Run</span><span class=p>(</span><span class=s>&#34;:9090&#34;</span><span class=p>)</span>
 </span></span><span class=line><span class=cl><span class=p>}</span>
 </span></span></code></pre></td></tr></table></div></div><p>这时候访问本机9090端口后的任意符合<code>/name/age</code>这样的路径，那么参数都将被获取到</p><p>但是这时候如果访问任何路径都将被匹配，因为匹配是从头开始的，但是如果是不想访问这个层级的路径，那么就可能会被错误匹配到</p><p>这时候就需要重写匹配规则</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
@@ -309,7 +309,7 @@ Gin 是一个用 Go (Golang) 编写的 web 框架。 它是一个类似于 marti
 </span></span><span class=line><span class=cl>			<span class=s>&#34;age&#34;</span> <span class=p>:</span> <span class=nx>age</span><span class=p>,</span>
 </span></span><span class=line><span class=cl>		<span class=p>})</span>
 </span></span><span class=line><span class=cl>	<span class=p>})</span>
-</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl>	<span class=nx>r</span><span class=p>.</span><span class=nf>GET</span><span class=p>(</span><span class=s>&#34;/province/:city/:area&#34;</span><span class=p>,</span> <span class=kd>func</span><span class=p>(</span><span class=nx>c</span> <span class=o>*</span><span class=nx>gin</span><span class=p>.</span><span class=nx>Context</span><span class=p>)</span> <span class=p>{</span>
 </span></span><span class=line><span class=cl>		<span class=nx>city</span><span class=o>:=</span><span class=nx>c</span><span class=p>.</span><span class=nf>Param</span><span class=p>(</span><span class=s>&#34;city&#34;</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>		<span class=nx>area</span> <span class=o>:=</span> <span class=nx>c</span><span class=p>.</span><span class=nf>Param</span><span class=p>(</span><span class=s>&#34;area&#34;</span><span class=p>)</span>
@@ -321,7 +321,139 @@ Gin 是一个用 Go (Golang) 编写的 web 框架。 它是一个类似于 marti
 </span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl>	<span class=nx>r</span><span class=p>.</span><span class=nf>Run</span><span class=p>(</span><span class=s>&#34;:9090&#34;</span><span class=p>)</span>
 </span></span><span class=line><span class=cl><span class=p>}</span>
-</span></span></code></pre></td></tr></table></div></div><h2 id=参数绑定>参数绑定</h2><p>有时候我们从前端获取到的数据通常是多条，并且需要在程序中使用到这些数据，比如存储到数据库中，那么通常会使用结构体来操作数据，但是如果要获取的字段很多的话，从获取到赋值都是一个很繁琐的过程，使用Gin框架进行参数绑定就会方便很多</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go></code></pre></td></tr></table></div></div><h2 id=路由组>路由组</h2><p>一些情况下可能需要统一前缀的URL需求，比如视频网站的喜剧频道等等，通常涉及到分类的，某一个类别下基本都会有统一的URL前缀，这种情况下使用路由组将会方便很多，Gin 可以使用 Group 方法统一归类到路由组中</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span></span></code></pre></td></tr></table></div></div><h2 id=参数绑定>参数绑定</h2><p>有时候我们从前端获取到的数据通常是多条，并且需要在程序中使用到这些数据，比如存储到数据库中，那么通常会使用结构体来操作数据，但是如果要获取的字段很多的话，从获取到赋值都是一个很繁琐的过程，使用Gin框架进行参数绑定就会方便很多</p><ol><li>json 参数</li></ol><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>type</span> <span class=nx>UserInfo</span> <span class=kd>struct</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>Name</span> <span class=kt>string</span> <span class=s>`json:&#34;name&#34;`</span>
+</span></span><span class=line><span class=cl>    <span class=nx>Age</span>  <span class=kt>int</span>    <span class=s>`json:&#34;age&#34;`</span>
+</span></span><span class=line><span class=cl>    <span class=nx>Sex</span>  <span class=kt>string</span> <span class=s>`json:&#34;sex&#34;`</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>r</span> <span class=o>:=</span> <span class=nx>gin</span><span class=p>.</span><span class=nf>Default</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=nx>r</span><span class=p>.</span><span class=nf>POST</span><span class=p>(</span><span class=s>&#34;/&#34;</span><span class=p>,</span> <span class=kd>func</span><span class=p>(</span><span class=nx>c</span> <span class=o>*</span><span class=nx>gin</span><span class=p>.</span><span class=nx>Context</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>       <span class=kd>var</span> <span class=nx>userInfo</span> <span class=nx>UserInfo</span>
+</span></span><span class=line><span class=cl>       <span class=nx>err</span> <span class=o>:=</span> <span class=nx>c</span><span class=p>.</span><span class=nf>ShouldBindJSON</span><span class=p>(</span><span class=o>&amp;</span><span class=nx>userInfo</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>       <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>          <span class=nx>c</span><span class=p>.</span><span class=nf>JSON</span><span class=p>(</span><span class=mi>200</span><span class=p>,</span> <span class=nx>gin</span><span class=p>.</span><span class=nx>H</span><span class=p>{</span><span class=s>&#34;msg&#34;</span><span class=p>:</span> <span class=nx>err</span><span class=p>})</span>
+</span></span><span class=line><span class=cl>          <span class=k>return</span>
+</span></span><span class=line><span class=cl>       <span class=p>}</span>
+</span></span><span class=line><span class=cl>       <span class=nx>c</span><span class=p>.</span><span class=nf>JSON</span><span class=p>(</span><span class=mi>200</span><span class=p>,</span> <span class=nx>userInfo</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=p>})</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nx>r</span><span class=p>.</span><span class=nf>Run</span><span class=p>(</span><span class=s>&#34;:9090&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><ol start=2><li>URL查询参数</li></ol><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>type</span> <span class=nx>UserInfo</span> <span class=kd>struct</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>Name</span> <span class=kt>string</span> <span class=s>`json:&#34;name&#34; form:&#34;name&#34;`</span>
+</span></span><span class=line><span class=cl>    <span class=nx>Age</span>  <span class=kt>int</span>    <span class=s>`json:&#34;age&#34; form:&#34;age&#34;`</span>
+</span></span><span class=line><span class=cl>    <span class=nx>Sex</span>  <span class=kt>string</span> <span class=s>`json:&#34;sex&#34; form:&#34;sex&#34;`</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>r</span> <span class=o>:=</span> <span class=nx>gin</span><span class=p>.</span><span class=nf>Default</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nx>r</span><span class=p>.</span><span class=nf>POST</span><span class=p>(</span><span class=s>&#34;/query&#34;</span><span class=p>,</span> <span class=kd>func</span><span class=p>(</span><span class=nx>c</span> <span class=o>*</span><span class=nx>gin</span><span class=p>.</span><span class=nx>Context</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>       <span class=kd>var</span> <span class=nx>userInfo</span> <span class=nx>UserInfo</span>
+</span></span><span class=line><span class=cl>       <span class=nx>err</span> <span class=o>:=</span> <span class=nx>c</span><span class=p>.</span><span class=nf>ShouldBindQuery</span><span class=p>(</span><span class=o>&amp;</span><span class=nx>userInfo</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>       <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>          <span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>          <span class=nx>c</span><span class=p>.</span><span class=nf>JSON</span><span class=p>(</span><span class=mi>200</span><span class=p>,</span> <span class=nx>gin</span><span class=p>.</span><span class=nx>H</span><span class=p>{</span><span class=s>&#34;msg&#34;</span><span class=p>:</span> <span class=nx>err</span><span class=p>})</span>
+</span></span><span class=line><span class=cl>          <span class=k>return</span>
+</span></span><span class=line><span class=cl>       <span class=p>}</span>
+</span></span><span class=line><span class=cl>       <span class=nx>c</span><span class=p>.</span><span class=nf>JSON</span><span class=p>(</span><span class=mi>200</span><span class=p>,</span> <span class=nx>userInfo</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=p>})</span>
+</span></span><span class=line><span class=cl>    <span class=nx>r</span><span class=p>.</span><span class=nf>Run</span><span class=p>(</span><span class=s>&#34;:9090&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><ol start=3><li>form 参数</li></ol><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>type</span> <span class=nx>UserInfo</span> <span class=kd>struct</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>Name</span> <span class=kt>string</span> <span class=s>`form:&#34;name&#34;`</span>
+</span></span><span class=line><span class=cl>    <span class=nx>Age</span>  <span class=kt>int</span>    <span class=s>`form:&#34;age&#34;`</span>
+</span></span><span class=line><span class=cl>    <span class=nx>Sex</span>  <span class=kt>string</span> <span class=s>`form:&#34;sex&#34;`</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>r</span> <span class=o>:=</span> <span class=nx>gin</span><span class=p>.</span><span class=nf>Default</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nx>r</span><span class=p>.</span><span class=nf>POST</span><span class=p>(</span><span class=s>&#34;/form&#34;</span><span class=p>,</span> <span class=kd>func</span><span class=p>(</span><span class=nx>c</span> <span class=o>*</span><span class=nx>gin</span><span class=p>.</span><span class=nx>Context</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>       <span class=kd>var</span> <span class=nx>userInfo</span> <span class=nx>UserInfo</span>
+</span></span><span class=line><span class=cl>       <span class=nx>err</span> <span class=o>:=</span> <span class=nx>c</span><span class=p>.</span><span class=nf>ShouldBind</span><span class=p>(</span><span class=o>&amp;</span><span class=nx>userInfo</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>       <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>          <span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>          <span class=nx>c</span><span class=p>.</span><span class=nf>JSON</span><span class=p>(</span><span class=mi>200</span><span class=p>,</span> <span class=nx>gin</span><span class=p>.</span><span class=nx>H</span><span class=p>{</span><span class=s>&#34;msg&#34;</span><span class=p>:</span> <span class=s>&#34;你错了&#34;</span><span class=p>})</span>
+</span></span><span class=line><span class=cl>          <span class=k>return</span>
+</span></span><span class=line><span class=cl>       <span class=p>}</span>
+</span></span><span class=line><span class=cl>       <span class=nx>c</span><span class=p>.</span><span class=nf>JSON</span><span class=p>(</span><span class=mi>200</span><span class=p>,</span> <span class=nx>userInfo</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>})</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nx>r</span><span class=p>.</span><span class=nf>Run</span><span class=p>(</span><span class=s>&#34;:9090&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=路由组>路由组</h2><p>一些情况下可能需要统一前缀的URL需求，比如视频网站的喜剧频道等等，通常涉及到分类的，某一个类别下基本都会有统一的URL前缀，这种情况下使用路由组将会方便很多，Gin 可以使用 Group 方法统一归类到路由组中</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
 </span><span class=lnt> 2
 </span><span class=lnt> 3
 </span><span class=lnt> 4

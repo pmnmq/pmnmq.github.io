@@ -98,11 +98,11 @@
 </span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>MONGO_INITDB_ROOT_USERNAME</span><span class=p>:</span><span class=w> </span><span class=l>root</span><span class=w>
 </span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>MONGO_INITDB_ROOT_PASSWORD</span><span class=p>:</span><span class=w> </span><span class=l>example</span><span class=w>
 </span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>MONGO_INITDB_DATABASE</span><span class=p>:</span><span class=w> </span><span class=l>yapi</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>volumes</span><span class=p>:</span><span class=w> 
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>volumes</span><span class=p>:</span><span class=w>
 </span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=l>./mongo-conf:/docker-entrypoint-initdb.d</span><span class=w>
 </span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=l>./mongo/etc:/etc/mongo</span><span class=w>
 </span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=l>./mongo/data/db:/data/db</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>ports</span><span class=p>:</span><span class=w> 
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>ports</span><span class=p>:</span><span class=w>
 </span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=m>27017</span><span class=p>:</span><span class=m>27017</span><span class=w>
 </span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>healthcheck</span><span class=p>:</span><span class=w>
 </span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>test</span><span class=p>:</span><span class=w> </span><span class=p>[</span><span class=s2>&#34;CMD&#34;</span><span class=p>,</span><span class=w> </span><span class=s2>&#34;netstat -anp | grep 27017&#34;</span><span class=p>]</span><span class=w>
@@ -118,12 +118,12 @@
 </span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>command</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;yapi server&#34;</span><span class=w>
 </span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># 之后使用下面的命令</span><span class=w>
 </span></span></span><span class=line><span class=cl><span class=w>    </span><span class=c># command: &#34;node /my-yapi/vendors/server/app.js&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>volumes</span><span class=p>:</span><span class=w> 
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>volumes</span><span class=p>:</span><span class=w>
 </span></span></span><span class=line><span class=cl><span class=w>        </span>- <span class=l>./my-yapi:/my-yapi</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>ports</span><span class=p>:</span><span class=w> 
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>ports</span><span class=p>:</span><span class=w>
 </span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=m>9090</span><span class=p>:</span><span class=m>9090</span><span class=w>
 </span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=m>3000</span><span class=p>:</span><span class=m>3000</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>depends_on</span><span class=p>:</span><span class=w> 
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>depends_on</span><span class=p>:</span><span class=w>
 </span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=l>mongo</span><span class=w>
 </span></span></span></code></pre></td></tr></table></div></div><h2 id=kafka集群>kafka集群</h2><p>docker-compose.yaml</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
 </span><span class=lnt> 2
