@@ -18,7 +18,7 @@
 </span></span></code></pre></td></tr></table></div></div><p>命令执行成功后输出内容如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
 </span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-txt data-lang=txt><span class=line><span class=cl>This node joined a swarm as a worker.
 </span></span></code></pre></td></tr></table></div></div><p>在node1（manger节点）使用命令查看个节点列表</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
-</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>sudo docker node ls 
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>sudo docker node ls
 </span></span></code></pre></td></tr></table></div></div><h3 id=搭建私有仓库>搭建私有仓库</h3><p>由于本文后面章节中的内容会涉及到自建镜像的部署测试，所以需要搭建私有仓库进行部署，在node1中搭建：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
 </span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-shell data-lang=shell><span class=line><span class=cl>sudo docker run -d -p 5000:5000 -v /opt/data/registry:/var/lib/registry --restart<span class=o>=</span>always --name registry registry
 </span></span></code></pre></td></tr></table></div></div><p>在node1、2、3中配置<code>/etc/docker/daemon.json</code>，如果没有这个文件直接创建即可</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
