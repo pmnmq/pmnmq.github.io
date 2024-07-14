@@ -1,0 +1,146 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><meta http-equiv=x-ua-compatible content="IE=edge, chrome=1"><title>React Fiber架构 - pujic</title><meta name=Description content><meta property="og:title" content="React Fiber架构"><meta property="og:description" content="Fiber是React核心算法的重新实现，它改变了React的渲染机制，从递归渲染转变为基于任务的渲染。这种改变使得React能够更好地适应现代Web应用的需求，如更复杂的组件结构、更高的性能要求等。"><meta property="og:type" content="article"><meta property="og:url" content="http://example.org/posts/react-fiber%E6%9E%B6%E6%9E%84/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2022-07-15T00:55:02+08:00"><meta property="article:modified_time" content="2022-07-15T00:55:02+08:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="React Fiber架构"><meta name=twitter:description content="Fiber是React核心算法的重新实现，它改变了React的渲染机制，从递归渲染转变为基于任务的渲染。这种改变使得React能够更好地适应现代Web应用的需求，如更复杂的组件结构、更高的性能要求等。"><meta name=application-name content="pujic"><meta name=apple-mobile-web-app-title content="pujic"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=http://example.org/posts/react-fiber%E6%9E%B6%E6%9E%84/><link rel=prev href=http://example.org/posts/how-go-works/><link rel=next href=http://example.org/posts/yapi/><link rel=stylesheet href=/lib/normalize/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=/lib/fontawesome-free/all.min.css><link rel=stylesheet href=/lib/animate/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"React Fiber架构","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/example.org\/posts\/react-fiber%E6%9E%B6%E6%9E%84\/"},"genre":"posts","keywords":"web","wordcount":2026,"url":"http:\/\/example.org\/posts\/react-fiber%E6%9E%B6%E6%9E%84\/","datePublished":"2022-07-15T00:55:02+08:00","dateModified":"2022-07-15T00:55:02+08:00","publisher":{"@type":"Organization","name":"普吉春"},"author":{"@type":"Person","name":"普吉春"},"description":""}</script></head><body header-desktop=fixed header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":""==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:""==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title=pujic><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-1 class=typeit></span></a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>所有文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/categories/>分类 </a><a class=menu-item href=/about/>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin"></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw"></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=pujic><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-2 class=typeit></span></a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw"></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw"></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin"></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=/posts/ title>所有文章</a><a class=menu-item href=/tags/ title>标签</a><a class=menu-item href=/categories/ title>分类</a><a class=menu-item href=/about/ title>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw"></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animated flipInX">React Fiber架构</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=http://pujichun.ink title=Author target=_blank rel="noopener noreffer author" class=author><i class="fas fa-user-circle fa-fw"></i>普吉春</a></span>&nbsp;<span class=post-category>收录于 <a href=/categories/web/><i class="far fa-folder fa-fw"></i>web</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2022-07-15>2022-07-15</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 2026 字&nbsp;
+<i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 5 分钟&nbsp;</div></div><div class="details toc" id=toc-static kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right"></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#fiber-架构解决的问题>Fiber 架构解决的问题</a></li><li><a href=#fiber-做了什么>Fiber 做了什么</a></li></ul></nav></div></div><div class=content id=content><p>Fiber是React核心算法的重新实现，它改变了React的渲染机制，从递归渲染转变为基于任务的渲染。这种改变使得React能够更好地适应现代Web应用的需求，如更复杂的组件结构、更高的性能要求等。</p><p>JavaScript 引擎和页面渲染引擎两个线程是互斥的，当其中一个线程执行时，另一个线程只能挂起等待</p><p>如果 JavaScript 线程长时间地占用了主线程，那么渲染层面的更新就不得不长时间地等待，界面长时间不更新，会导致页面响应度变差，用户可能会感觉到卡顿</p><p>在 React 16 以前，React使用Stack Reconciler（堆栈协调器）来渲染组件，这个过程是同步且不可中断的。如果组件树的层级很深，或者组件的渲染过程复杂，递归会占用线程很长时间，导致UI渲染线程处于等待状态，用户可能会感受到页面卡顿。</p><h2 id=fiber-架构解决的问题>Fiber 架构解决的问题</h2><ol><li><strong>同步阻塞问题</strong>：<ul><li>React 的 Fiber 架构通过任务拆分和协作式调度的方式，将渲染过程分解成多个小任务，每个小任务只执行一小部分工作，然后将控制权交回给主线程。这样主线程可以在执行每个小任务之间处理其他任务，如响应用户交互，从而提高页面的响应性。</li></ul></li><li><strong>优化渲染性能</strong>：<ul><li>Fiber 架构引入了动态优先级和可中断渲染的特性。每个任务都被分配了一个权重值（优先级），React在协调过程中会动态调整任务的执行顺序，优先执行优先级高的任务。当某个任务的执行时间超过了当前帧的剩余时间时，Fiber 会暂停执行该任务，并在下一帧继续执行，从而避免阻塞整个 UI。</li></ul></li></ol><h2 id=fiber-做了什么>Fiber 做了什么</h2><p>在 React中，主要做了以下的操作：</p><ul><li>为每个增加了优先级，优先级高的任务可以中断低优先级的任务。然后再重新，注意是重新执行优先级低的任务</li><li>增加了异步任务，调用requestIdleCallback api，浏览器空闲的时候执行</li><li>dom diff 树变成了链表，一个 dom 对应两个 fiber（一个链表），对应两个队列，这都是为找到被中断的任务，重新执行</li></ul><p>Fiber 是对 React核心算法（即调和过程）的重写</p><p>Fiber 是 React 内部所定义的一种数据结构，它是 Fiber 树结构的节点单位，也就是 React 16 新架构下的虚拟DOM</p><p>一个 Fiber 就是一个 JavaScript 对象，包含了元素的信息、该元素的更新操作队列、类型</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-javascript data-lang=javascript><span class=line><span class=cl><span class=nx>type</span> <span class=nx>Fiber</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// 用于标记fiber的WorkTag类型，主要表示当前fiber代表的组件类型如FunctionComponent、ClassComponent等
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>tag</span><span class=o>:</span> <span class=nx>WorkTag</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// ReactElement里面的key
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>key</span><span class=o>:</span> <span class=kc>null</span> <span class=o>|</span> <span class=nx>string</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// ReactElement.type，调用`createElement`的第一个参数
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>elementType</span><span class=o>:</span> <span class=nx>any</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// The resolved function/class/ associated with this fiber.
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>// 表示当前代表的节点类型
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>type</span><span class=o>:</span> <span class=nx>any</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// 表示当前FiberNode对应的element组件实例
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>stateNode</span><span class=o>:</span> <span class=nx>any</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// 指向他在Fiber节点树中的`parent`，用来在处理完这个节点之后向上返回
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=k>return</span><span class=o>:</span> <span class=nx>Fiber</span> <span class=o>|</span> <span class=kc>null</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// 指向自己的第一个子节点
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>child</span><span class=o>:</span> <span class=nx>Fiber</span> <span class=o>|</span> <span class=kc>null</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// 指向自己的兄弟结构，兄弟节点的return指向同一个父节点
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>sibling</span><span class=o>:</span> <span class=nx>Fiber</span> <span class=o>|</span> <span class=kc>null</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=nx>index</span><span class=o>:</span> <span class=nx>number</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>ref</span><span class=o>:</span> <span class=kc>null</span> <span class=o>|</span> <span class=p>(((</span><span class=nx>handle</span><span class=o>:</span> <span class=nx>mixed</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=k>void</span><span class=p>)</span> <span class=o>&amp;</span> <span class=p>{</span> <span class=nx>_stringRef</span><span class=o>:</span> <span class=o>?</span><span class=nx>string</span> <span class=p>})</span> <span class=o>|</span> <span class=nx>RefObject</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// 当前处理过程中的组件props对象
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>pendingProps</span><span class=o>:</span> <span class=nx>any</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// 上一次渲染完成之后的props
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>memoizedProps</span><span class=o>:</span> <span class=nx>any</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// 该Fiber对应的组件产生的Update会存放在这个队列里面
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>updateQueue</span><span class=o>:</span> <span class=nx>UpdateQueue</span><span class=o>&lt;</span><span class=nx>any</span><span class=o>&gt;</span> <span class=o>|</span> <span class=kc>null</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// 上一次渲染的时候的state
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>memoizedState</span><span class=o>:</span> <span class=nx>any</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// 一个列表，存放这个Fiber依赖的context
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>firstContextDependency</span><span class=o>:</span> <span class=nx>ContextDependency</span><span class=o>&lt;</span><span class=nx>mixed</span><span class=o>&gt;</span> <span class=o>|</span> <span class=kc>null</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>mode</span><span class=o>:</span> <span class=nx>TypeOfMode</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// Effect
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>// 用来记录Side Effect
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>effectTag</span><span class=o>:</span> <span class=nx>SideEffectTag</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// 单链表用来快速查找下一个side effect
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>nextEffect</span><span class=o>:</span> <span class=nx>Fiber</span> <span class=o>|</span> <span class=kc>null</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// 子树中第一个side effect
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>firstEffect</span><span class=o>:</span> <span class=nx>Fiber</span> <span class=o>|</span> <span class=kc>null</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// 子树中最后一个side effect
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>lastEffect</span><span class=o>:</span> <span class=nx>Fiber</span> <span class=o>|</span> <span class=kc>null</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// 代表任务在未来的哪个时间点应该被完成，之后版本改名为 lanes
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>expirationTime</span><span class=o>:</span> <span class=nx>ExpirationTime</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// 快速确定子树中是否有不在等待的变化
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>childExpirationTime</span><span class=o>:</span> <span class=nx>ExpirationTime</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// fiber的版本池，即记录fiber更新过程，便于恢复
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>alternate</span><span class=o>:</span> <span class=nx>Fiber</span> <span class=o>|</span> <span class=kc>null</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>Fiber 把渲染更新过程拆分成多个子任务，每次只做一小部分，做完看是否还有剩余时间，如果有继续下一个任务；如果没有，挂起当前任务，将时间控制权交给主线程，等主线程不忙的时候在继续执行</p><p>即可以中断与恢复，恢复后也可以复用之前的中间状态，并给不同的任务赋予不同的优先级，其中每个任务更新单元为 React Element 对应的 Fiber 节点</p><p>Fiber架构通过 requestIdleCallback 等 API 实现了异步渲染，这使得 React 能够在浏览器空闲时执行渲染任务，从而减少对用户交互的干扰。而不会影响延迟关键事件，如动画和输入响应</p><p>首先 React 中任务切割为多个步骤，分批完成。在完成一部分任务之后，将控制权交回给浏览器，让浏览器有时间再进行页面的渲染。等浏览器忙完之后有剩余时间，再继续之前 React 未完成的任务，是一种合作式调度。</p><p>该实现过程是基于 Fiber 节点实现，作为静态的数据结构来说，每个 Fiber 节点对应一个 React element，保存了该组件的类型（函数组件/类组件/原生组件等等）、对应的 DOM 节点等信息。</p><p>作为动态的工作单元来说，每个 Fiber 节点保存了本次更新中该组件改变的状态、要执行的工作。</p><p>每个 Fiber 节点有个对应的 React element，多个 Fiber节点根据如下三个属性构建一颗树：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-javascript data-lang=javascript><span class=line><span class=cl><span class=c1>// 指向父级Fiber节点
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>this</span><span class=p>.</span><span class=k>return</span> <span class=o>=</span> <span class=kc>null</span>
+</span></span><span class=line><span class=cl><span class=c1>// 指向子Fiber节点
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>this</span><span class=p>.</span><span class=nx>child</span> <span class=o>=</span> <span class=kc>null</span>
+</span></span><span class=line><span class=cl><span class=c1>// 指向右边第一个兄弟Fiber节点
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>this</span><span class=p>.</span><span class=nx>sibling</span> <span class=o>=</span> <span class=kc>null</span>
+</span></span></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2022-07-15</span></div><div class=post-info-license></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw"></i>&nbsp;<a href=/tags/web/>Web</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/posts/how-go-works/ class=prev rel=prev title=Go语言是如何运行的><i class="fas fa-angle-left fa-fw"></i>Go语言是如何运行的</a>
+<a href=/posts/yapi/ class=next rel=next title=YApi>YApi<i class="fas fa-angle-right fa-fw"></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2019 - 2024</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=http://pujichun.ink target=_blank>普吉春</a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw"></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw"></i></a></div><script type=text/javascript src=/lib/smooth-scroll/smooth-scroll.min.js></script><script type=text/javascript src=/lib/autocomplete/autocomplete.min.js></script><script type=text/javascript src=/lib/lunr/lunr.min.js></script><script type=text/javascript src=/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=/lib/lazysizes/lazysizes.min.js></script><script type=text/javascript src=/lib/clipboard/clipboard.min.js></script><script type=text/javascript src=/lib/typeit/typeit.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:10},comment:{},data:{"id-1":"pujic","id-2":"pujic"},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"lunr"},typeit:{cursorChar:null,cursorSpeed:null,data:{"id-1":["id-1"],"id-2":["id-2"]},duration:null,speed:null}}</script><script type=text/javascript src=/js/theme.min.js></script></body></html>
