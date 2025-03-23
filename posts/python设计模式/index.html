@@ -1,68 +1,18 @@
-<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><meta http-equiv=x-ua-compatible content="IE=edge, chrome=1"><title>Python设计模式 - pmnmq</title><meta name=Description content><meta property="og:title" content="Python设计模式"><meta property="og:description" content="设计模式：对软件中普遍存在（反复出现）的各种问题，所提出的解决方案。每一个设计模式都系统地命名、解释和评价了面向对象系统中一个重要的和重复出现的设计。"><meta property="og:type" content="article"><meta property="og:url" content="http://example.org/posts/python%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2020-12-13T18:49:25+00:00"><meta property="article:modified_time" content="2020-12-13T18:49:25+00:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="Python设计模式"><meta name=twitter:description content="设计模式：对软件中普遍存在（反复出现）的各种问题，所提出的解决方案。每一个设计模式都系统地命名、解释和评价了面向对象系统中一个重要的和重复出现的设计。"><meta name=application-name content="pmnmq"><meta name=apple-mobile-web-app-title content="pmnmq"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=http://example.org/posts/python%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/><link rel=prev href=http://example.org/posts/nginx%E6%89%98%E7%AE%A1%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6/><link rel=next href=http://example.org/posts/cookbook%E7%AC%AC%E4%B8%80%E7%AB%A0-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/><link rel=stylesheet href=/lib/normalize/normalize.min.css><link rel=stylesheet href=/css/style.min.css><link rel=stylesheet href=/lib/fontawesome-free/all.min.css><link rel=stylesheet href=/lib/animate/animate.min.css><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Python设计模式","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/example.org\/posts\/python%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F\/"},"genre":"posts","keywords":"Python, Python进阶","wordcount":2333,"url":"http:\/\/example.org\/posts\/python%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F\/","datePublished":"2020-12-13T18:49:25+00:00","dateModified":"2020-12-13T18:49:25+00:00","publisher":{"@type":"Organization","name":"普吉春"},"author":{"@type":"Person","name":"普吉春"},"description":""}</script></head><body header-desktop=fixed header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":""==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:""==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title=pmnmq><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-1 class=typeit></span></a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>所有文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/categories/>分类 </a><a class=menu-item href=/about/>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<!doctype html><html lang=zh-CN><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>Python设计模式 - pmnmq</title><meta name=Description content="This is my cool site"><meta property="og:url" content="http://example.org/posts/python%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">
+<meta property="og:site_name" content="pmnmq"><meta property="og:title" content="Python设计模式"><meta property="og:description" content="设计模式：对软件中普遍存在（反复出现）的各种问题，所提出的解决方案。每一个设计模式都系统地命名、解释和评价了面向对象系统中一个重要的和重复出现的设计。"><meta property="og:locale" content="zh_CN"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2020-12-13T18:49:25+00:00"><meta property="article:modified_time" content="2020-12-13T18:49:25+00:00"><meta property="article:tag" content="Python"><meta property="article:tag" content="Python进阶"><meta name=twitter:card content="summary"><meta name=twitter:title content="Python设计模式"><meta name=twitter:description content="设计模式：对软件中普遍存在（反复出现）的各种问题，所提出的解决方案。每一个设计模式都系统地命名、解释和评价了面向对象系统中一个重要的和重复出现的设计。"><meta name=application-name content="My cool site"><meta name=apple-mobile-web-app-title content="My cool site"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.ico><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=http://example.org/posts/python%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/><link rel=prev href=http://example.org/posts/nginx%E6%89%98%E7%AE%A1%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6/><link rel=next href=http://example.org/posts/cookbook%E7%AC%AC%E4%B8%80%E7%AB%A0-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/><link rel=stylesheet href=/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Python设计模式","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"http:\/\/example.org\/posts\/python%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F\/"},"genre":"posts","keywords":"Python, Python进阶","wordcount":1982,"url":"http:\/\/example.org\/posts\/python%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F\/","datePublished":"2020-12-13T18:49:25+00:00","dateModified":"2020-12-13T18:49:25+00:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"pmnmq"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":"auto"==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:"auto"==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title=pmnmq><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-1 class=typeit></span></a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>所有文章 </a><a class=menu-item href=/tags/>标签 </a><a class=menu-item href=/categories/>分类 </a><a class=menu-item href=/about/>关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
 <input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
-<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw"></i></a>
-<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw"></i></a>
-<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin"></i></span>
-</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw"></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=pmnmq><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-2 class=typeit></span></a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
-<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw"></i></a>
-<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw"></i></a>
-<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin"></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=/posts/ title>所有文章</a><a class=menu-item href=/tags/ title>标签</a><a class=menu-item href=/categories/ title>分类</a><a class=menu-item href=/about/ title>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
-<i class="fas fa-adjust fa-fw"></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animated flipInX">Python设计模式</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=http://pujichun.ink title=Author target=_blank rel="noopener noreffer author" class=author><i class="fas fa-user-circle fa-fw"></i>普吉春</a></span>&nbsp;<span class=post-category>收录于 <a href=/categories/python/><i class="far fa-folder fa-fw"></i>Python</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime=2020-12-13>2020-12-13</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 2333 字&nbsp;
-<i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 5 分钟&nbsp;</div></div><div class="details toc" id=toc-static kept><div class="details-summary toc-title"><span>目录</span>
-<span><i class="details-icon fas fa-angle-right"></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#创建性模式>创建性模式</a><ul><li><a href=#简单工厂模式>简单工厂模式</a></li><li><a href=#工厂方法模式>工厂方法模式</a></li><li><a href=#抽象工厂模式>抽象工厂模式</a></li><li><a href=#建造者模式>建造者模式</a></li><li><a href=#单例模式>单例模式</a></li></ul></li></ul></nav></div></div><div class=content id=content><p>设计模式：对软件中普遍存在（反复出现）的各种问题，所提出的解决方案。每一个设计模式都系统地命名、解释和评价了面向对象系统中一个重要的和重复出现的设计。</p><p>面向对象三大特性：</p><ul><li>封装</li><li>继承</li><li>多态</li></ul><h2 id=创建性模式>创建性模式</h2><h3 id=简单工厂模式>简单工厂模式</h3><p>不直接向客户端暴露对象创建的实现细节，而是通过一个工厂类来负责创建产品类的实例</p><ul><li>角色：<ul><li>工厂角色（Creator）</li><li>抽象产品角色（Product）</li><li>具体产品角色（Concrete Product）</li></ul></li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
-</span><span class=lnt> 2
-</span><span class=lnt> 3
-</span><span class=lnt> 4
-</span><span class=lnt> 5
-</span><span class=lnt> 6
-</span><span class=lnt> 7
-</span><span class=lnt> 8
-</span><span class=lnt> 9
-</span><span class=lnt>10
-</span><span class=lnt>11
-</span><span class=lnt>12
-</span><span class=lnt>13
-</span><span class=lnt>14
-</span><span class=lnt>15
-</span><span class=lnt>16
-</span><span class=lnt>17
-</span><span class=lnt>18
-</span><span class=lnt>19
-</span><span class=lnt>20
-</span><span class=lnt>21
-</span><span class=lnt>22
-</span><span class=lnt>23
-</span><span class=lnt>24
-</span><span class=lnt>25
-</span><span class=lnt>26
-</span><span class=lnt>27
-</span><span class=lnt>28
-</span><span class=lnt>29
-</span><span class=lnt>30
-</span><span class=lnt>31
-</span><span class=lnt>32
-</span><span class=lnt>33
-</span><span class=lnt>34
-</span><span class=lnt>35
-</span><span class=lnt>36
-</span><span class=lnt>37
-</span><span class=lnt>38
-</span><span class=lnt>39
-</span><span class=lnt>40
-</span><span class=lnt>41
-</span><span class=lnt>42
-</span><span class=lnt>43
-</span><span class=lnt>44
-</span><span class=lnt>45
-</span><span class=lnt>46
-</span><span class=lnt>47
-</span><span class=lnt>48
-</span><span class=lnt>49
-</span><span class=lnt>50
-</span><span class=lnt>51
-</span><span class=lnt>52
-</span><span class=lnt>53
-</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=s2>&#34;&#34;&#34;
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i>
+</a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i>
+</a><span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i>
+</span></span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title=pmnmq><img class="lazyload logo" src=/svg/loading.min.svg data-src=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png data-srcset="https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 1.5x, https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png 2x" data-sizes=auto alt=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png title=https://pujichun-blog-1301170821.cos.ap-chengdu.myqcloud.com/img/favicon.png><span id=id-2 class=typeit></span></a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i>
+</a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i>
+</a><span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=/posts/ title>所有文章</a><a class=menu-item href=/tags/ title>标签</a><a class=menu-item href=/categories/ title>分类</a><a class=menu-item href=/about/ title>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Python设计模式</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=http://pujichun.ink title=Author target=_blank rel="noopener noreffer author" class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>pmnmq</a></span>&nbsp;<span class=post-category>收录于 <a href=/categories/python/><i class="far fa-folder fa-fw" aria-hidden=true></i>Python</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2020-12-13>2020-12-13</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;约 1982 字&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;预计阅读 4 分钟&nbsp;</div></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#创建性模式>创建性模式</a><ul><li><a href=#简单工厂模式>简单工厂模式</a></li><li><a href=#工厂方法模式>工厂方法模式</a></li><li><a href=#抽象工厂模式>抽象工厂模式</a></li><li><a href=#建造者模式>建造者模式</a></li><li><a href=#单例模式>单例模式</a></li></ul></li></ul></nav></div></div><div class=content id=content><p>设计模式：对软件中普遍存在（反复出现）的各种问题，所提出的解决方案。每一个设计模式都系统地命名、解释和评价了面向对象系统中一个重要的和重复出现的设计。</p><p>面向对象三大特性：</p><ul><li>封装</li><li>继承</li><li>多态</li></ul><h2 id=创建性模式>创建性模式</h2><h3 id=简单工厂模式>简单工厂模式</h3><p>不直接向客户端暴露对象创建的实现细节，而是通过一个工厂类来负责创建产品类的实例</p><ul><li>角色：<ul><li>工厂角色（Creator）</li><li>抽象产品角色（Product）</li><li>具体产品角色（Concrete Product）</li></ul></li></ul><div class="code-block code-line-numbers" style="counter-reset:code-block 0"><div class="code-header language-python"><span class=code-title><i class="arrow fas fa-angle-right fa-fw" aria-hidden=true></i></span>
+<span class=ellipses><i class="fas fa-ellipsis-h fa-fw" aria-hidden=true></i></span>
+<span class=copy title=复制到剪贴板><i class="far fa-copy fa-fw" aria-hidden=true></i></span></div><div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=s2>&#34;&#34;&#34;
 </span></span></span><span class=line><span class=cl><span class=s2>简单工厂模式
 </span></span></span><span class=line><span class=cl><span class=s2>&#34;&#34;&#34;</span>
 </span></span><span class=line><span class=cl>
@@ -114,72 +64,9 @@
 </span></span><span class=line><span class=cl><span class=k>if</span> <span class=vm>__name__</span> <span class=o>==</span> <span class=s2>&#34;__main__&#34;</span><span class=p>:</span>
 </span></span><span class=line><span class=cl>    <span class=n>pf</span> <span class=o>=</span> <span class=n>PaymentFactory</span><span class=p>()</span>
 </span></span><span class=line><span class=cl>    <span class=n>pm</span> <span class=o>=</span> <span class=n>pf</span><span class=o>.</span><span class=n>create_payment</span><span class=p>(</span><span class=s2>&#34;wechat&#34;</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>    <span class=n>pm</span><span class=o>.</span><span class=n>pay</span><span class=p>(</span><span class=mi>100</span><span class=p>)</span>
-</span></span></code></pre></td></tr></table></div></div><ul><li>优点：<ul><li>隐藏了对象创建的实现细节</li><li>客户端不需要修改代码</li></ul></li><li>缺点<ul><li>违反了单一职责原则，将几种创建逻辑放到一个工厂类中</li><li>当添加新产品是，需要修改工厂类代码，违反了开闭原则</li></ul></li></ul><h3 id=工厂方法模式>工厂方法模式</h3><p>定义一个用于创建对象的接口，让子类决定实例化哪一个产品</p><ul><li>角色：<ul><li>抽象工厂角色（Creator）</li><li>具体工厂角色（Concrete Creator）</li><li>抽象产品角色（Product）</li><li>具体产品角色（Concrete Product）</li></ul></li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
-</span><span class=lnt> 2
-</span><span class=lnt> 3
-</span><span class=lnt> 4
-</span><span class=lnt> 5
-</span><span class=lnt> 6
-</span><span class=lnt> 7
-</span><span class=lnt> 8
-</span><span class=lnt> 9
-</span><span class=lnt>10
-</span><span class=lnt>11
-</span><span class=lnt>12
-</span><span class=lnt>13
-</span><span class=lnt>14
-</span><span class=lnt>15
-</span><span class=lnt>16
-</span><span class=lnt>17
-</span><span class=lnt>18
-</span><span class=lnt>19
-</span><span class=lnt>20
-</span><span class=lnt>21
-</span><span class=lnt>22
-</span><span class=lnt>23
-</span><span class=lnt>24
-</span><span class=lnt>25
-</span><span class=lnt>26
-</span><span class=lnt>27
-</span><span class=lnt>28
-</span><span class=lnt>29
-</span><span class=lnt>30
-</span><span class=lnt>31
-</span><span class=lnt>32
-</span><span class=lnt>33
-</span><span class=lnt>34
-</span><span class=lnt>35
-</span><span class=lnt>36
-</span><span class=lnt>37
-</span><span class=lnt>38
-</span><span class=lnt>39
-</span><span class=lnt>40
-</span><span class=lnt>41
-</span><span class=lnt>42
-</span><span class=lnt>43
-</span><span class=lnt>44
-</span><span class=lnt>45
-</span><span class=lnt>46
-</span><span class=lnt>47
-</span><span class=lnt>48
-</span><span class=lnt>49
-</span><span class=lnt>50
-</span><span class=lnt>51
-</span><span class=lnt>52
-</span><span class=lnt>53
-</span><span class=lnt>54
-</span><span class=lnt>55
-</span><span class=lnt>56
-</span><span class=lnt>57
-</span><span class=lnt>58
-</span><span class=lnt>59
-</span><span class=lnt>60
-</span><span class=lnt>61
-</span><span class=lnt>62
-</span><span class=lnt>63
-</span><span class=lnt>64
-</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=s2>&#34;&#34;&#34;
+</span></span><span class=line><span class=cl>    <span class=n>pm</span><span class=o>.</span><span class=n>pay</span><span class=p>(</span><span class=mi>100</span><span class=p>)</span></span></span></code></pre></div></div><ul><li>优点：<ul><li>隐藏了对象创建的实现细节</li><li>客户端不需要修改代码</li></ul></li><li>缺点<ul><li>违反了单一职责原则，将几种创建逻辑放到一个工厂类中</li><li>当添加新产品是，需要修改工厂类代码，违反了开闭原则</li></ul></li></ul><h3 id=工厂方法模式>工厂方法模式</h3><p>定义一个用于创建对象的接口，让子类决定实例化哪一个产品</p><ul><li>角色：<ul><li>抽象工厂角色（Creator）</li><li>具体工厂角色（Concrete Creator）</li><li>抽象产品角色（Product）</li><li>具体产品角色（Concrete Product）</li></ul></li></ul><div class="code-block code-line-numbers" style="counter-reset:code-block 0"><div class="code-header language-python"><span class=code-title><i class="arrow fas fa-angle-right fa-fw" aria-hidden=true></i></span>
+<span class=ellipses><i class="fas fa-ellipsis-h fa-fw" aria-hidden=true></i></span>
+<span class=copy title=复制到剪贴板><i class="far fa-copy fa-fw" aria-hidden=true></i></span></div><div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=s2>&#34;&#34;&#34;
 </span></span></span><span class=line><span class=cl><span class=s2>工厂模式
 </span></span></span><span class=line><span class=cl><span class=s2>&#34;&#34;&#34;</span>
 </span></span><span class=line><span class=cl>
@@ -242,133 +129,9 @@
 </span></span><span class=line><span class=cl><span class=k>if</span> <span class=vm>__name__</span> <span class=o>==</span> <span class=s2>&#34;__main__&#34;</span><span class=p>:</span>
 </span></span><span class=line><span class=cl>    <span class=n>pf</span> <span class=o>=</span> <span class=n>WechatPayFactory</span><span class=p>()</span>
 </span></span><span class=line><span class=cl>    <span class=n>pm</span> <span class=o>=</span> <span class=n>pf</span><span class=o>.</span><span class=n>create_payment</span><span class=p>(</span><span class=s2>&#34;wechat&#34;</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>    <span class=n>pm</span><span class=o>.</span><span class=n>pay</span><span class=p>(</span><span class=mi>100</span><span class=p>)</span>
-</span></span></code></pre></td></tr></table></div></div><ul><li>优点：<ul><li>每个具体产品都对应一个具体的工厂类，不需要修改代码</li><li>隐藏了对象创建的实现细节</li></ul></li><li>缺点<ul><li>每增加一个具体产品类，就必须增加一个相应的具体工厂类</li></ul></li></ul><h3 id=抽象工厂模式>抽象工厂模式</h3><p>定义一个工厂类接口，让工厂子类来创建一系列相关或相互依赖的对象</p><p>相比工厂方法模式，抽象工厂模式中的每一个具体工厂类都生产一套产品</p><p>角色：</p><ul><li>抽象工厂角色（Creator）</li><li>具体工厂角色（Concrete Creator）</li><li>抽象产品角色（Product）</li><li>具体产品角色（Concrete Product）</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
-</span><span class=lnt>  2
-</span><span class=lnt>  3
-</span><span class=lnt>  4
-</span><span class=lnt>  5
-</span><span class=lnt>  6
-</span><span class=lnt>  7
-</span><span class=lnt>  8
-</span><span class=lnt>  9
-</span><span class=lnt> 10
-</span><span class=lnt> 11
-</span><span class=lnt> 12
-</span><span class=lnt> 13
-</span><span class=lnt> 14
-</span><span class=lnt> 15
-</span><span class=lnt> 16
-</span><span class=lnt> 17
-</span><span class=lnt> 18
-</span><span class=lnt> 19
-</span><span class=lnt> 20
-</span><span class=lnt> 21
-</span><span class=lnt> 22
-</span><span class=lnt> 23
-</span><span class=lnt> 24
-</span><span class=lnt> 25
-</span><span class=lnt> 26
-</span><span class=lnt> 27
-</span><span class=lnt> 28
-</span><span class=lnt> 29
-</span><span class=lnt> 30
-</span><span class=lnt> 31
-</span><span class=lnt> 32
-</span><span class=lnt> 33
-</span><span class=lnt> 34
-</span><span class=lnt> 35
-</span><span class=lnt> 36
-</span><span class=lnt> 37
-</span><span class=lnt> 38
-</span><span class=lnt> 39
-</span><span class=lnt> 40
-</span><span class=lnt> 41
-</span><span class=lnt> 42
-</span><span class=lnt> 43
-</span><span class=lnt> 44
-</span><span class=lnt> 45
-</span><span class=lnt> 46
-</span><span class=lnt> 47
-</span><span class=lnt> 48
-</span><span class=lnt> 49
-</span><span class=lnt> 50
-</span><span class=lnt> 51
-</span><span class=lnt> 52
-</span><span class=lnt> 53
-</span><span class=lnt> 54
-</span><span class=lnt> 55
-</span><span class=lnt> 56
-</span><span class=lnt> 57
-</span><span class=lnt> 58
-</span><span class=lnt> 59
-</span><span class=lnt> 60
-</span><span class=lnt> 61
-</span><span class=lnt> 62
-</span><span class=lnt> 63
-</span><span class=lnt> 64
-</span><span class=lnt> 65
-</span><span class=lnt> 66
-</span><span class=lnt> 67
-</span><span class=lnt> 68
-</span><span class=lnt> 69
-</span><span class=lnt> 70
-</span><span class=lnt> 71
-</span><span class=lnt> 72
-</span><span class=lnt> 73
-</span><span class=lnt> 74
-</span><span class=lnt> 75
-</span><span class=lnt> 76
-</span><span class=lnt> 77
-</span><span class=lnt> 78
-</span><span class=lnt> 79
-</span><span class=lnt> 80
-</span><span class=lnt> 81
-</span><span class=lnt> 82
-</span><span class=lnt> 83
-</span><span class=lnt> 84
-</span><span class=lnt> 85
-</span><span class=lnt> 86
-</span><span class=lnt> 87
-</span><span class=lnt> 88
-</span><span class=lnt> 89
-</span><span class=lnt> 90
-</span><span class=lnt> 91
-</span><span class=lnt> 92
-</span><span class=lnt> 93
-</span><span class=lnt> 94
-</span><span class=lnt> 95
-</span><span class=lnt> 96
-</span><span class=lnt> 97
-</span><span class=lnt> 98
-</span><span class=lnt> 99
-</span><span class=lnt>100
-</span><span class=lnt>101
-</span><span class=lnt>102
-</span><span class=lnt>103
-</span><span class=lnt>104
-</span><span class=lnt>105
-</span><span class=lnt>106
-</span><span class=lnt>107
-</span><span class=lnt>108
-</span><span class=lnt>109
-</span><span class=lnt>110
-</span><span class=lnt>111
-</span><span class=lnt>112
-</span><span class=lnt>113
-</span><span class=lnt>114
-</span><span class=lnt>115
-</span><span class=lnt>116
-</span><span class=lnt>117
-</span><span class=lnt>118
-</span><span class=lnt>119
-</span><span class=lnt>120
-</span><span class=lnt>121
-</span><span class=lnt>122
-</span><span class=lnt>123
-</span><span class=lnt>124
-</span><span class=lnt>125
-</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>abc</span> <span class=kn>import</span> <span class=n>abstractmethod</span><span class=p>,</span> <span class=n>ABCMeta</span>
+</span></span><span class=line><span class=cl>    <span class=n>pm</span><span class=o>.</span><span class=n>pay</span><span class=p>(</span><span class=mi>100</span><span class=p>)</span></span></span></code></pre></div></div><ul><li>优点：<ul><li>每个具体产品都对应一个具体的工厂类，不需要修改代码</li><li>隐藏了对象创建的实现细节</li></ul></li><li>缺点<ul><li>每增加一个具体产品类，就必须增加一个相应的具体工厂类</li></ul></li></ul><h3 id=抽象工厂模式>抽象工厂模式</h3><p>定义一个工厂类接口，让工厂子类来创建一系列相关或相互依赖的对象</p><p>相比工厂方法模式，抽象工厂模式中的每一个具体工厂类都生产一套产品</p><p>角色：</p><ul><li>抽象工厂角色（Creator）</li><li>具体工厂角色（Concrete Creator）</li><li>抽象产品角色（Product）</li><li>具体产品角色（Concrete Product）</li></ul><div class="code-block code-line-numbers" style="counter-reset:code-block 0"><div class="code-header language-python"><span class=code-title><i class="arrow fas fa-angle-right fa-fw" aria-hidden=true></i></span>
+<span class=ellipses><i class="fas fa-ellipsis-h fa-fw" aria-hidden=true></i></span>
+<span class=copy title=复制到剪贴板><i class="far fa-copy fa-fw" aria-hidden=true></i></span></div><div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>abc</span> <span class=kn>import</span> <span class=n>abstractmethod</span><span class=p>,</span> <span class=n>ABCMeta</span>
 </span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl><span class=c1># 抽象产品</span>
@@ -492,95 +255,9 @@
 </span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl><span class=k>if</span> <span class=vm>__name__</span> <span class=o>==</span> <span class=s1>&#39;__main__&#39;</span><span class=p>:</span>
 </span></span><span class=line><span class=cl>    <span class=n>p1</span> <span class=o>=</span> <span class=n>make_phone</span><span class=p>(</span><span class=n>XiaoMiFactory</span><span class=p>())</span>
-</span></span><span class=line><span class=cl>    <span class=n>p1</span><span class=o>.</span><span class=n>show_info</span><span class=p>()</span>
-</span></span></code></pre></td></tr></table></div></div><ul><li>优点：<ul><li>将客户端与类的具体实现相分离</li><li>每个工厂创建了一个完整的产品系列，使得易于交换产品系列</li><li>有利于产品的一致性</li></ul></li><li>缺点<ul><li>难以支持新种类的（抽象产品）</li></ul></li></ul><h3 id=建造者模式>建造者模式</h3><p>将一个复杂对象的构建与它的表示分离，使得同样的构建过程可以创建不同的表示</p><p>建造者模式与抽象工厂模式相似，也是用来创建复杂对象。主要区别是建造者模式着重一步步构建一个复杂对象，而抽象工厂模式着重于多个系列产品对象</p><ul><li><p>角色</p><ul><li>抽象建造者（Builder）</li><li>具体建造者（Concrete Builder）</li><li>指挥者（Director）</li><li>产品（Product）</li></ul></li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
-</span><span class=lnt> 2
-</span><span class=lnt> 3
-</span><span class=lnt> 4
-</span><span class=lnt> 5
-</span><span class=lnt> 6
-</span><span class=lnt> 7
-</span><span class=lnt> 8
-</span><span class=lnt> 9
-</span><span class=lnt>10
-</span><span class=lnt>11
-</span><span class=lnt>12
-</span><span class=lnt>13
-</span><span class=lnt>14
-</span><span class=lnt>15
-</span><span class=lnt>16
-</span><span class=lnt>17
-</span><span class=lnt>18
-</span><span class=lnt>19
-</span><span class=lnt>20
-</span><span class=lnt>21
-</span><span class=lnt>22
-</span><span class=lnt>23
-</span><span class=lnt>24
-</span><span class=lnt>25
-</span><span class=lnt>26
-</span><span class=lnt>27
-</span><span class=lnt>28
-</span><span class=lnt>29
-</span><span class=lnt>30
-</span><span class=lnt>31
-</span><span class=lnt>32
-</span><span class=lnt>33
-</span><span class=lnt>34
-</span><span class=lnt>35
-</span><span class=lnt>36
-</span><span class=lnt>37
-</span><span class=lnt>38
-</span><span class=lnt>39
-</span><span class=lnt>40
-</span><span class=lnt>41
-</span><span class=lnt>42
-</span><span class=lnt>43
-</span><span class=lnt>44
-</span><span class=lnt>45
-</span><span class=lnt>46
-</span><span class=lnt>47
-</span><span class=lnt>48
-</span><span class=lnt>49
-</span><span class=lnt>50
-</span><span class=lnt>51
-</span><span class=lnt>52
-</span><span class=lnt>53
-</span><span class=lnt>54
-</span><span class=lnt>55
-</span><span class=lnt>56
-</span><span class=lnt>57
-</span><span class=lnt>58
-</span><span class=lnt>59
-</span><span class=lnt>60
-</span><span class=lnt>61
-</span><span class=lnt>62
-</span><span class=lnt>63
-</span><span class=lnt>64
-</span><span class=lnt>65
-</span><span class=lnt>66
-</span><span class=lnt>67
-</span><span class=lnt>68
-</span><span class=lnt>69
-</span><span class=lnt>70
-</span><span class=lnt>71
-</span><span class=lnt>72
-</span><span class=lnt>73
-</span><span class=lnt>74
-</span><span class=lnt>75
-</span><span class=lnt>76
-</span><span class=lnt>77
-</span><span class=lnt>78
-</span><span class=lnt>79
-</span><span class=lnt>80
-</span><span class=lnt>81
-</span><span class=lnt>82
-</span><span class=lnt>83
-</span><span class=lnt>84
-</span><span class=lnt>85
-</span><span class=lnt>86
-</span><span class=lnt>87
-</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>abc</span> <span class=kn>import</span> <span class=n>ABCMeta</span><span class=p>,</span> <span class=n>abstractmethod</span>
+</span></span><span class=line><span class=cl>    <span class=n>p1</span><span class=o>.</span><span class=n>show_info</span><span class=p>()</span></span></span></code></pre></div></div><ul><li>优点：<ul><li>将客户端与类的具体实现相分离</li><li>每个工厂创建了一个完整的产品系列，使得易于交换产品系列</li><li>有利于产品的一致性</li></ul></li><li>缺点<ul><li>难以支持新种类的（抽象产品）</li></ul></li></ul><h3 id=建造者模式>建造者模式</h3><p>将一个复杂对象的构建与它的表示分离，使得同样的构建过程可以创建不同的表示</p><p>建造者模式与抽象工厂模式相似，也是用来创建复杂对象。主要区别是建造者模式着重一步步构建一个复杂对象，而抽象工厂模式着重于多个系列产品对象</p><ul><li><p>角色</p><ul><li>抽象建造者（Builder）</li><li>具体建造者（Concrete Builder）</li><li>指挥者（Director）</li><li>产品（Product）</li></ul></li></ul><div class="code-block code-line-numbers" style="counter-reset:code-block 0"><div class="code-header language-python"><span class=code-title><i class="arrow fas fa-angle-right fa-fw" aria-hidden=true></i></span>
+<span class=ellipses><i class="fas fa-ellipsis-h fa-fw" aria-hidden=true></i></span>
+<span class=copy title=复制到剪贴板><i class="far fa-copy fa-fw" aria-hidden=true></i></span></div><div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>abc</span> <span class=kn>import</span> <span class=n>ABCMeta</span><span class=p>,</span> <span class=n>abstractmethod</span>
 </span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl><span class=c1># 产品</span>
@@ -666,30 +343,9 @@
 </span></span><span class=line><span class=cl>    <span class=n>director</span> <span class=o>=</span> <span class=n>PlayerDirector</span><span class=p>()</span>
 </span></span><span class=line><span class=cl>    <span class=n>p</span> <span class=o>=</span> <span class=n>director</span><span class=o>.</span><span class=n>build_player</span><span class=p>(</span><span class=n>builder</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=n>p</span><span class=p>)</span>
-</span></span><span class=line><span class=cl>  
-</span></span></code></pre></td></tr></table></div></div><ul><li>优点<ul><li>隐藏了一个产品的内部结构何装配过程</li><li>将构造代码与表示代码分开</li><li>可以对构造过程进行更精细的控制</li></ul></li></ul><h3 id=单例模式>单例模式</h3><p>保证一个类只有一个实例，并提供一个访问它的全局访问点</p><ul><li>角色：<ul><li>单例（Singleton）</li></ul></li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
-</span><span class=lnt> 2
-</span><span class=lnt> 3
-</span><span class=lnt> 4
-</span><span class=lnt> 5
-</span><span class=lnt> 6
-</span><span class=lnt> 7
-</span><span class=lnt> 8
-</span><span class=lnt> 9
-</span><span class=lnt>10
-</span><span class=lnt>11
-</span><span class=lnt>12
-</span><span class=lnt>13
-</span><span class=lnt>14
-</span><span class=lnt>15
-</span><span class=lnt>16
-</span><span class=lnt>17
-</span><span class=lnt>18
-</span><span class=lnt>19
-</span><span class=lnt>20
-</span><span class=lnt>21
-</span><span class=lnt>22
-</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>abc</span> <span class=kn>import</span> <span class=n>ABCMeta</span><span class=p>,</span> <span class=n>abstractmethod</span>
+</span></span><span class=line><span class=cl>  </span></span></code></pre></div></div><ul><li>优点<ul><li>隐藏了一个产品的内部结构何装配过程</li><li>将构造代码与表示代码分开</li><li>可以对构造过程进行更精细的控制</li></ul></li></ul><h3 id=单例模式>单例模式</h3><p>保证一个类只有一个实例，并提供一个访问它的全局访问点</p><ul><li>角色：<ul><li>单例（Singleton）</li></ul></li></ul><div class="code-block code-line-numbers" style="counter-reset:code-block 0"><div class="code-header language-python"><span class=code-title><i class="arrow fas fa-angle-right fa-fw" aria-hidden=true></i></span>
+<span class=ellipses><i class="fas fa-ellipsis-h fa-fw" aria-hidden=true></i></span>
+<span class=copy title=复制到剪贴板><i class="far fa-copy fa-fw" aria-hidden=true></i></span></div><div class=highlight><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl><span class=kn>from</span> <span class=nn>abc</span> <span class=kn>import</span> <span class=n>ABCMeta</span><span class=p>,</span> <span class=n>abstractmethod</span>
 </span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>Singleton</span><span class=p>:</span>
@@ -710,7 +366,5 @@
 </span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=n>m1</span><span class=o>.</span><span class=n>a</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=n>m2</span><span class=o>.</span><span class=n>a</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=nb>id</span><span class=p>(</span><span class=n>m1</span><span class=p>))</span>
-</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=nb>id</span><span class=p>(</span><span class=n>m2</span><span class=p>))</span>
-</span></span></code></pre></td></tr></table></div></div><ul><li>优点：<ul><li>对唯一实例的受控访问</li><li>单例相当于全局变量，但防止了命名空间被污染</li></ul></li></ul></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2020-12-13</span></div><div class=post-info-license></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw"></i>&nbsp;<a href=/tags/python/>Python</a>,&nbsp;<a href=/tags/python%E8%BF%9B%E9%98%B6/>Python进阶</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/posts/nginx%E6%89%98%E7%AE%A1%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6/ class=prev rel=prev title=nginx托管静态文件><i class="fas fa-angle-left fa-fw"></i>nginx托管静态文件</a>
-<a href=/posts/cookbook%E7%AC%AC%E4%B8%80%E7%AB%A0-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/ class=next rel=next title=cookbook第一章-数据结构和算法>cookbook第一章-数据结构和算法<i class="fas fa-angle-right fa-fw"></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line><i class="far fa-copyright fa-fw"></i><span itemprop=copyrightYear>2019 - 2024</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=http://pujichun.ink target=_blank>普吉春</a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw"></i>
-</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw"></i></a></div><script type=text/javascript src=/lib/smooth-scroll/smooth-scroll.min.js></script><script type=text/javascript src=/lib/autocomplete/autocomplete.min.js></script><script type=text/javascript src=/lib/lunr/lunr.min.js></script><script type=text/javascript src=/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=/lib/lazysizes/lazysizes.min.js></script><script type=text/javascript src=/lib/clipboard/clipboard.min.js></script><script type=text/javascript src=/lib/typeit/typeit.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:10},comment:{},data:{"id-1":"pmnmq","id-2":"pmnmq"},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"lunr"},typeit:{cursorChar:null,cursorSpeed:null,data:{"id-1":["id-1"],"id-2":["id-2"]},duration:null,speed:null}}</script><script type=text/javascript src=/js/theme.min.js></script></body></html>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=nb>id</span><span class=p>(</span><span class=n>m2</span><span class=p>))</span></span></span></code></pre></div></div><ul><li>优点：<ul><li>对唯一实例的受控访问</li><li>单例相当于全局变量，但防止了命名空间被污染</li></ul></li></ul></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2020-12-13</span></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 X" data-sharer=x data-url=http://example.org/posts/python%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/ data-title=Python设计模式 data-hashtags=Python,Python进阶><i class="fab fa-x-twitter fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Threads" data-sharer=threads data-url=http://example.org/posts/python%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/ data-title=Python设计模式><i class="fab fa-threads fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=http://example.org/posts/python%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/ data-hashtag=Python><i class="fab fa-facebook-square fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Hacker News" data-sharer=hackernews data-url=http://example.org/posts/python%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/ data-title=Python设计模式><i class="fab fa-hacker-news fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Line" data-sharer=line data-url=http://example.org/posts/python%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/ data-title=Python设计模式><i data-svg-src=https://cdn.jsdelivr.net/npm/simple-icons@14.9.0/icons/line.svg aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=http://example.org/posts/python%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/ data-title=Python设计模式><i class="fab fa-weibo fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Diaspora" data-sharer=diaspora data-url=http://example.org/posts/python%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/ data-title=Python设计模式 data-description><i class="fab fa-diaspora fa-fw" aria-hidden=true></i></a><a href="https://t.me/share/url?url=http%3a%2f%2fexample.org%2fposts%2fpython%25E8%25AE%25BE%25E8%25AE%25A1%25E6%25A8%25A1%25E5%25BC%258F%2f&amp;text=Python%e8%ae%be%e8%ae%a1%e6%a8%a1%e5%bc%8f" target=_blank title="分享到 Telegram"><i class="fab fa-telegram fa-fw" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=/tags/python/>Python</a>,&nbsp;<a href=/tags/python%E8%BF%9B%E9%98%B6/>Python进阶</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主页</a></span></section></div><div class=post-nav><a href=/posts/nginx%E6%89%98%E7%AE%A1%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6/ class=prev rel=prev title=nginx托管静态文件><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>nginx托管静态文件</a>
+<a href=/posts/cookbook%E7%AC%AC%E4%B8%80%E7%AB%A0-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/ class=next rel=next title=cookbook第一章-数据结构和算法>cookbook第一章-数据结构和算法<i class="fas fa-angle-right fa-fw" aria-hidden=true></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line itemscope itemtype=http://schema.org/CreativeWork><i class="far fa-copyright fa-fw" aria-hidden=true></i><span itemprop=copyrightYear>2019 - 2025</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=http://pujichun.ink target=_blank>pmnmq</a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i></a></div><div id=fixed-buttons-hidden><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><script src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script src=https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js></script><script src=/lib/lunr/lunr.stemmer.support.min.js></script><script src=/lib/lunr/lunr.zh.min.js></script><script src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script src=https://cdn.jsdelivr.net/npm/sharer.js@0.5.2/sharer.min.js></script><script src=https://cdn.jsdelivr.net/npm/typeit@8.6.0/dist/index.umd.js></script><script>window.config={comment:{},data:{"id-1":"pmnmq","id-2":"pmnmq"},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:50,type:"lunr"},typeit:{cursorChar:"|",cursorSpeed:1e3,data:{"id-1":["id-1"],"id-2":["id-2"]},duration:-1,speed:100}}</script><script src=/js/theme.min.js></script></body></html>
